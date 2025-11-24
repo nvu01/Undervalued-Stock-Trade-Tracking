@@ -3,7 +3,7 @@
 <html lang="en">
 <head><meta charset="utf-8"/>
 <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
-<title>new trades</title><script src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.1.10/require.min.js"></script>
+<title>new trades 2</title><script src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.1.10/require.min.js"></script>
 <style type="text/css">
     pre { line-height: 125%; }
 td.linenos .normal { color: inherit; background-color: transparent; padding-left: 5px; padding-right: 5px; }
@@ -7843,6 +7843,56 @@ a.anchor-link {
 </div>
 </div>
 </div>
+</div><div class="jp-Cell jp-CodeCell jp-Notebook-cell" id="cell-id=4ed63cc3-9e29-4dc9-b706-1987fbdb0710">
+<div class="jp-Cell-inputWrapper" tabindex="0">
+<div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
+</div>
+<div class="jp-InputArea jp-Cell-inputArea">
+<div class="jp-InputPrompt jp-InputArea-prompt">In [5]:</div>
+<div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
+<div class="cm-editor cm-s-jupyter">
+<div class="highlight hl-ipython3"><pre><span></span><span class="n">df</span><span class="o">.</span><span class="n">info</span><span class="p">()</span>
+</pre></div>
+</div>
+</div>
+</div>
+</div>
+<div class="jp-Cell-outputWrapper">
+<div class="jp-Collapser jp-OutputCollapser jp-Cell-outputCollapser">
+</div>
+<div class="jp-OutputArea jp-Cell-outputArea">
+<div class="jp-OutputArea-child">
+<div class="jp-OutputPrompt jp-OutputArea-prompt"></div>
+<div class="jp-RenderedText jp-OutputArea-output" data-mime-type="text/plain" tabindex="0">
+<pre>&lt;class 'pandas.core.frame.DataFrame'&gt;
+RangeIndex: 431 entries, 0 to 430
+Data columns (total 6 columns):
+ #   Column      Non-Null Count  Dtype  
+---  ------      --------------  -----  
+ 0   Exec Time   425 non-null    object 
+ 1   Side        431 non-null    object 
+ 2   Pos Effect  431 non-null    object 
+ 3   Symbol      431 non-null    object 
+ 4   Qty         431 non-null    int64  
+ 5   Price       431 non-null    float64
+dtypes: float64(1), int64(1), object(4)
+memory usage: 20.3+ KB
+</pre>
+</div>
+</div>
+</div>
+</div>
+</div>
+<div class="jp-Cell jp-MarkdownCell jp-Notebook-cell" id="cell-id=f894ae24-3d24-48a0-b9f4-1c2982c21f2e">
+<div class="jp-Cell-inputWrapper" tabindex="0">
+<div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
+</div>
+<div class="jp-InputArea jp-Cell-inputArea"><div class="jp-InputPrompt jp-InputArea-prompt">
+</div><div class="jp-RenderedHTMLCommon jp-RenderedMarkdown jp-MarkdownOutput" data-mime-type="text/markdown">
+<p>Some rows don't have a value for 'Exec Time' because some option trades are linked together as one order. So they have the same execution time as the first trade in that order.</p>
+</div>
+</div>
+</div>
 </div>
 <div class="jp-Cell jp-MarkdownCell jp-Notebook-cell" id="cell-id=6b73b393-6a14-440a-8176-2e86d79d3d20">
 <div class="jp-Cell-inputWrapper" tabindex="0">
@@ -7859,7 +7909,7 @@ a.anchor-link {
 <div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
 </div>
 <div class="jp-InputArea jp-Cell-inputArea">
-<div class="jp-InputPrompt jp-InputArea-prompt">In [5]:</div>
+<div class="jp-InputPrompt jp-InputArea-prompt">In [6]:</div>
 <div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
 <div class="cm-editor cm-s-jupyter">
 <div class="highlight hl-ipython3"><pre><span></span><span class="c1"># Load the overlapping_stocks.xlsx</span>
@@ -7875,7 +7925,7 @@ a.anchor-link {
 </div>
 <div class="jp-OutputArea jp-Cell-outputArea">
 <div class="jp-OutputArea-child jp-OutputArea-executeResult">
-<div class="jp-OutputPrompt jp-OutputArea-prompt">Out[5]:</div>
+<div class="jp-OutputPrompt jp-OutputArea-prompt">Out[6]:</div>
 <div class="jp-RenderedHTMLCommon jp-RenderedHTML jp-OutputArea-output jp-OutputArea-executeResult" data-mime-type="text/html" tabindex="0">
 <div>
 <style scoped="">
@@ -7946,7 +7996,7 @@ a.anchor-link {
 <div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
 </div>
 <div class="jp-InputArea jp-Cell-inputArea">
-<div class="jp-InputPrompt jp-InputArea-prompt">In [6]:</div>
+<div class="jp-InputPrompt jp-InputArea-prompt">In [7]:</div>
 <div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
 <div class="cm-editor cm-s-jupyter">
 <div class="highlight hl-ipython3"><pre><span></span><span class="c1"># Check the data types of overlapping dataframe</span>
@@ -7984,11 +8034,11 @@ memory usage: 228.0+ bytes
 <div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
 </div>
 <div class="jp-InputArea jp-Cell-inputArea">
-<div class="jp-InputPrompt jp-InputArea-prompt">In [7]:</div>
+<div class="jp-InputPrompt jp-InputArea-prompt">In [8]:</div>
 <div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
 <div class="cm-editor cm-s-jupyter">
 <div class="highlight hl-ipython3"><pre><span></span><span class="c1"># Check the data types of df dataframe</span>
-<span class="n">df</span><span class="o">.</span><span class="n">info</span><span class="p">()</span>
+<span class="n">df</span><span class="p">[</span><span class="s1">'Exec Time'</span><span class="p">]</span><span class="o">.</span><span class="n">dtypes</span>
 </pre></div>
 </div>
 </div>
@@ -7998,23 +8048,10 @@ memory usage: 228.0+ bytes
 <div class="jp-Collapser jp-OutputCollapser jp-Cell-outputCollapser">
 </div>
 <div class="jp-OutputArea jp-Cell-outputArea">
-<div class="jp-OutputArea-child">
-<div class="jp-OutputPrompt jp-OutputArea-prompt"></div>
-<div class="jp-RenderedText jp-OutputArea-output" data-mime-type="text/plain" tabindex="0">
-<pre>&lt;class 'pandas.core.frame.DataFrame'&gt;
-RangeIndex: 431 entries, 0 to 430
-Data columns (total 6 columns):
- #   Column      Non-Null Count  Dtype  
----  ------      --------------  -----  
- 0   Exec Time   425 non-null    object 
- 1   Side        431 non-null    object 
- 2   Pos Effect  431 non-null    object 
- 3   Symbol      431 non-null    object 
- 4   Qty         431 non-null    int64  
- 5   Price       431 non-null    float64
-dtypes: float64(1), int64(1), object(4)
-memory usage: 20.3+ KB
-</pre>
+<div class="jp-OutputArea-child jp-OutputArea-executeResult">
+<div class="jp-OutputPrompt jp-OutputArea-prompt">Out[8]:</div>
+<div class="jp-RenderedText jp-OutputArea-output jp-OutputArea-executeResult" data-mime-type="text/plain" tabindex="0">
+<pre>dtype('O')</pre>
 </div>
 </div>
 </div>
@@ -8026,25 +8063,11 @@ memory usage: 20.3+ KB
 </div>
 <div class="jp-InputArea jp-Cell-inputArea"><div class="jp-InputPrompt jp-InputArea-prompt">
 </div><div class="jp-RenderedHTMLCommon jp-RenderedMarkdown jp-MarkdownOutput" data-mime-type="text/markdown">
-<p>The "Exec Time" must have <code>datetime64</code> data type in order to be compared with "Exec Date". However, <code>datetime64</code> data type has unpredictable behavior. The "Exec Time" column in the original df should not be converted. A copy of the original df is created to allow the conversion of the copied "Exec Time" which can also be used for this comparison. This avoids altering the original data and avoids the unpredictable behavior I may experience when comparing "Exec Time" columns from multiple CSV files later in the analysis.</p>
+<p>The <strong>"Exec Time"</strong> must have <code>datetime64</code> data type in order to be compared with <strong>"Exec Date"</strong> in <strong>overlapping</strong> dataframe. However, <code>datetime64</code> data type has unpredictable behavior. The <strong>"Exec Time"</strong> column in the original <strong>df</strong> should not be converted. Instead, a temporary column named <strong>"Exec Date"</strong> in <strong>df</strong> is created to extract date from <strong>"Exec Time"</strong> and these date values have <code>datetime64</code> datatype which allows for date comparison and matching with <strong>overlapping</strong>'s <strong>"Exec Date"</strong>. This avoids altering the original data and the unpredictable behavior I may experience when comparing <strong>"Exec Time"</strong> columns from multiple CSV files later in the analysis.</p>
 </div>
 </div>
 </div>
-</div><div class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs" id="cell-id=83f906fd-a02c-426c-bae6-2f2090933971">
-<div class="jp-Cell-inputWrapper" tabindex="0">
-<div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
-</div>
-<div class="jp-InputArea jp-Cell-inputArea">
-<div class="jp-InputPrompt jp-InputArea-prompt">In [8]:</div>
-<div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
-<div class="cm-editor cm-s-jupyter">
-<div class="highlight hl-ipython3"><pre><span></span><span class="n">df_copy</span> <span class="o">=</span> <span class="n">df</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
-</pre></div>
-</div>
-</div>
-</div>
-</div>
-</div><div class="jp-Cell jp-CodeCell jp-Notebook-cell" id="cell-id=07815bcb-6ea5-4012-af49-9b5d77581b13">
+</div><div class="jp-Cell jp-CodeCell jp-Notebook-cell" id="cell-id=598a7287-3866-4830-bec7-1629f5a23cfb">
 <div class="jp-Cell-inputWrapper" tabindex="0">
 <div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
 </div>
@@ -8052,53 +8075,10 @@ memory usage: 20.3+ KB
 <div class="jp-InputPrompt jp-InputArea-prompt">In [9]:</div>
 <div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
 <div class="cm-editor cm-s-jupyter">
-<div class="highlight hl-ipython3"><pre><span></span><span class="c1"># Change the data types of Exec Time to datetime64</span>
-<span class="n">df_copy</span><span class="p">[</span><span class="s1">'Exec Time'</span><span class="p">]</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">to_datetime</span><span class="p">(</span><span class="n">df_copy</span><span class="p">[</span><span class="s1">'Exec Time'</span><span class="p">],</span> <span class="nb">format</span><span class="o">=</span><span class="s1">'%m/</span><span class="si">%d</span><span class="s1">/%y %H:%M:%S'</span><span class="p">)</span>
-<span class="n">df_copy</span><span class="o">.</span><span class="n">info</span><span class="p">()</span>
-</pre></div>
-</div>
-</div>
-</div>
-</div>
-<div class="jp-Cell-outputWrapper">
-<div class="jp-Collapser jp-OutputCollapser jp-Cell-outputCollapser">
-</div>
-<div class="jp-OutputArea jp-Cell-outputArea">
-<div class="jp-OutputArea-child">
-<div class="jp-OutputPrompt jp-OutputArea-prompt"></div>
-<div class="jp-RenderedText jp-OutputArea-output" data-mime-type="text/plain" tabindex="0">
-<pre>&lt;class 'pandas.core.frame.DataFrame'&gt;
-RangeIndex: 431 entries, 0 to 430
-Data columns (total 6 columns):
- #   Column      Non-Null Count  Dtype         
----  ------      --------------  -----         
- 0   Exec Time   425 non-null    datetime64[ns]
- 1   Side        431 non-null    object        
- 2   Pos Effect  431 non-null    object        
- 3   Symbol      431 non-null    object        
- 4   Qty         431 non-null    int64         
- 5   Price       431 non-null    float64       
-dtypes: datetime64[ns](1), float64(1), int64(1), object(3)
-memory usage: 20.3+ KB
-</pre>
-</div>
-</div>
-</div>
-</div>
-</div><div class="jp-Cell jp-CodeCell jp-Notebook-cell" id="cell-id=5f8bdf37-a329-41d8-8bae-6e799aeabfcd">
-<div class="jp-Cell-inputWrapper" tabindex="0">
-<div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
-</div>
-<div class="jp-InputArea jp-Cell-inputArea">
-<div class="jp-InputPrompt jp-InputArea-prompt">In [10]:</div>
-<div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
-<div class="cm-editor cm-s-jupyter">
-<div class="highlight hl-ipython3"><pre><span></span><span class="c1"># Identify df's rows (row indices) that match overlapping's records</span>
-<span class="n">df_copy</span><span class="p">[</span><span class="s1">'Exec Date'</span><span class="p">]</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">to_datetime</span><span class="p">(</span><span class="n">df_copy</span><span class="p">[</span><span class="s1">'Exec Time'</span><span class="p">]</span><span class="o">.</span><span class="n">dt</span><span class="o">.</span><span class="n">date</span><span class="p">)</span>   <span class="c1"># Extract date from 'Exec Time'</span>
-<span class="n">df_copy</span><span class="p">[</span><span class="s1">'orig_index'</span><span class="p">]</span> <span class="o">=</span> <span class="n">df_copy</span><span class="o">.</span><span class="n">index</span>   <span class="c1"># Create a column to show the original indices in df</span>
-<span class="n">merged</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">merge</span><span class="p">(</span><span class="n">df_copy</span><span class="p">,</span> <span class="n">overlapping</span><span class="p">,</span> <span class="n">how</span><span class="o">=</span><span class="s1">'inner'</span><span class="p">,</span> <span class="n">on</span><span class="o">=</span><span class="p">[</span><span class="s1">'Exec Date'</span><span class="p">,</span><span class="s1">'Symbol'</span><span class="p">,</span> <span class="s1">'Qty'</span><span class="p">,</span> <span class="s1">'Price'</span><span class="p">])</span>
-<span class="n">filter_indices</span> <span class="o">=</span> <span class="n">merged</span><span class="p">[</span><span class="s1">'orig_index'</span><span class="p">]</span>
-<span class="n">merged</span>
+<div class="highlight hl-ipython3"><pre><span></span><span class="n">df</span><span class="p">[</span><span class="s1">'Exec Date'</span><span class="p">]</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">to_datetime</span><span class="p">(</span><span class="n">df</span><span class="p">[</span><span class="s1">'Exec Time'</span><span class="p">],</span> <span class="nb">format</span><span class="o">=</span><span class="s1">'%m/</span><span class="si">%d</span><span class="s1">/%y %H:%M:%S'</span><span class="p">)</span><span class="o">.</span><span class="n">dt</span><span class="o">.</span><span class="n">normalize</span><span class="p">()</span>   <span class="c1"># Convert data from 'Exec Time' to datetime64[ns] and extract the dates</span>
+<span class="n">merged</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">merge</span><span class="p">(</span><span class="n">df</span><span class="p">,</span> <span class="n">overlapping</span><span class="p">,</span> <span class="n">how</span><span class="o">=</span><span class="s1">'left'</span><span class="p">,</span> <span class="n">on</span><span class="o">=</span><span class="p">[</span><span class="s1">'Exec Date'</span><span class="p">,</span><span class="s1">'Symbol'</span><span class="p">,</span> <span class="s1">'Qty'</span><span class="p">,</span> <span class="s1">'Price'</span><span class="p">],</span> <span class="n">indicator</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+<span class="n">df</span> <span class="o">=</span> <span class="n">merged</span><span class="p">[</span><span class="n">merged</span><span class="p">[</span><span class="s1">'_merge'</span><span class="p">]</span> <span class="o">==</span> <span class="s1">'left_only'</span><span class="p">]</span><span class="o">.</span><span class="n">drop</span><span class="p">(</span><span class="n">columns</span><span class="o">=</span><span class="p">[</span><span class="s1">'_merge'</span><span class="p">,</span> <span class="s1">'Exec Date'</span><span class="p">])</span>
+<span class="n">df</span>
 </pre></div>
 </div>
 </div>
@@ -8109,7 +8089,7 @@ memory usage: 20.3+ KB
 </div>
 <div class="jp-OutputArea jp-Cell-outputArea">
 <div class="jp-OutputArea-child jp-OutputArea-executeResult">
-<div class="jp-OutputPrompt jp-OutputArea-prompt">Out[10]:</div>
+<div class="jp-OutputPrompt jp-OutputArea-prompt">Out[9]:</div>
 <div class="jp-RenderedHTMLCommon jp-RenderedHTML jp-OutputArea-output jp-OutputArea-executeResult" data-mime-type="text/html" tabindex="0">
 <div>
 <style scoped="">
@@ -8135,62 +8115,112 @@ memory usage: 20.3+ KB
 <th>Symbol</th>
 <th>Qty</th>
 <th>Price</th>
-<th>Exec Date</th>
-<th>orig_index</th>
 </tr>
 </thead>
 <tbody>
 <tr>
 <th>0</th>
-<td>2025-09-23 09:30:00</td>
+<td>11/20/24 16:20:24</td>
 <td>BUY</td>
 <td>TO OPEN</td>
-<td>CVE</td>
-<td>4</td>
-<td>17.25</td>
-<td>2025-09-23</td>
-<td>266</td>
+<td>NVDA</td>
+<td>10</td>
+<td>141.5200</td>
 </tr>
 <tr>
 <th>1</th>
-<td>2025-10-10 09:51:53</td>
-<td>BUY</td>
-<td>TO OPEN</td>
-<td>VICI</td>
-<td>2</td>
-<td>31.00</td>
-<td>2025-10-10</td>
-<td>337</td>
+<td>11/20/24 16:22:50</td>
+<td>SELL</td>
+<td>TO CLOSE</td>
+<td>NVDA</td>
+<td>-10</td>
+<td>142.0000</td>
 </tr>
 <tr>
 <th>2</th>
-<td>2025-11-07 09:30:01</td>
+<td>11/21/24 12:15:12</td>
+<td>SELL</td>
+<td>TO CLOSE</td>
+<td>ET</td>
+<td>-1</td>
+<td>3.1000</td>
+</tr>
+<tr>
+<th>3</th>
+<td>12/5/24 15:59:01</td>
 <td>BUY</td>
 <td>TO OPEN</td>
-<td>CTSH</td>
-<td>25</td>
-<td>72.66</td>
-<td>2025-11-07</td>
-<td>410</td>
+<td>MSI</td>
+<td>5</td>
+<td>495.0000</td>
+</tr>
+<tr>
+<th>4</th>
+<td>12/6/24 11:16:32</td>
+<td>SELL</td>
+<td>TO CLOSE</td>
+<td>AMZN</td>
+<td>-10</td>
+<td>225.0100</td>
+</tr>
+<tr>
+<th>...</th>
+<td>...</td>
+<td>...</td>
+<td>...</td>
+<td>...</td>
+<td>...</td>
+<td>...</td>
+</tr>
+<tr>
+<th>426</th>
+<td>11/14/25 07:00:10</td>
+<td>BUY</td>
+<td>TO OPEN</td>
+<td>EW</td>
+<td>2</td>
+<td>86.1100</td>
+</tr>
+<tr>
+<th>427</th>
+<td>11/14/25 09:30:02</td>
+<td>BUY</td>
+<td>TO OPEN</td>
+<td>RLJ</td>
+<td>30</td>
+<td>7.4600</td>
+</tr>
+<tr>
+<th>428</th>
+<td>11/14/25 10:51:37</td>
+<td>SELL</td>
+<td>TO CLOSE</td>
+<td>WBD</td>
+<td>-5</td>
+<td>23.0000</td>
+</tr>
+<tr>
+<th>429</th>
+<td>11/14/25 13:10:10</td>
+<td>SELL</td>
+<td>TO CLOSE</td>
+<td>CM</td>
+<td>-1</td>
+<td>87.0000</td>
+</tr>
+<tr>
+<th>430</th>
+<td>11/14/25 13:43:45</td>
+<td>SELL</td>
+<td>TO CLOSE</td>
+<td>SATS</td>
+<td>-1</td>
+<td>67.9974</td>
 </tr>
 </tbody>
 </table>
+<p>428 rows × 6 columns</p>
 </div>
-</div>
-</div>
-</div>
-</div>
-</div><div class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs" id="cell-id=160b4483-ff09-4cf6-bc17-cd8202186848">
-<div class="jp-Cell-inputWrapper" tabindex="0">
-<div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
-</div>
-<div class="jp-InputArea jp-Cell-inputArea">
-<div class="jp-InputPrompt jp-InputArea-prompt">In [11]:</div>
-<div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
-<div class="cm-editor cm-s-jupyter">
-<div class="highlight hl-ipython3"><pre><span></span><span class="c1"># Filter out overlapping trades based on filter_indices</span>
-<span class="n">df</span> <span class="o">=</span> <span class="n">df</span><span class="o">.</span><span class="n">drop</span><span class="p">(</span><span class="n">filter_indices</span><span class="p">)</span>
-</pre></div>
 </div>
 </div>
 </div>
@@ -8200,7 +8230,7 @@ memory usage: 20.3+ KB
 <div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
 </div>
 <div class="jp-InputArea jp-Cell-inputArea">
-<div class="jp-InputPrompt jp-InputArea-prompt">In [12]:</div>
+<div class="jp-InputPrompt jp-InputArea-prompt">In [10]:</div>
 <div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
 <div class="cm-editor cm-s-jupyter">
 <div class="highlight hl-ipython3"><pre><span></span><span class="c1"># The number of entries is now 428, reduced from 431</span>
@@ -8240,7 +8270,7 @@ memory usage: 23.4+ KB
 <div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
 </div>
 <div class="jp-InputArea jp-Cell-inputArea">
-<div class="jp-InputPrompt jp-InputArea-prompt">In [13]:</div>
+<div class="jp-InputPrompt jp-InputArea-prompt">In [11]:</div>
 <div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
 <div class="cm-editor cm-s-jupyter">
 <div class="highlight hl-ipython3"><pre><span></span><span class="c1"># Check if a random record in overlapping dataframe is in the filtered df</span>
@@ -8255,7 +8285,7 @@ memory usage: 23.4+ KB
 </div>
 <div class="jp-OutputArea jp-Cell-outputArea">
 <div class="jp-OutputArea-child jp-OutputArea-executeResult">
-<div class="jp-OutputPrompt jp-OutputArea-prompt">Out[13]:</div>
+<div class="jp-OutputPrompt jp-OutputArea-prompt">Out[11]:</div>
 <div class="jp-RenderedText jp-OutputArea-output jp-OutputArea-executeResult" data-mime-type="text/plain" tabindex="0">
 <pre>np.False_</pre>
 </div>
@@ -8278,7 +8308,7 @@ memory usage: 23.4+ KB
 <div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
 </div>
 <div class="jp-InputArea jp-Cell-inputArea">
-<div class="jp-InputPrompt jp-InputArea-prompt">In [14]:</div>
+<div class="jp-InputPrompt jp-InputArea-prompt">In [12]:</div>
 <div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
 <div class="cm-editor cm-s-jupyter">
 <div class="highlight hl-ipython3"><pre><span></span><span class="c1"># Get buy-to-open trades</span>
@@ -8294,7 +8324,7 @@ memory usage: 23.4+ KB
 </div>
 <div class="jp-OutputArea jp-Cell-outputArea">
 <div class="jp-OutputArea-child jp-OutputArea-executeResult">
-<div class="jp-OutputPrompt jp-OutputArea-prompt">Out[14]:</div>
+<div class="jp-OutputPrompt jp-OutputArea-prompt">Out[12]:</div>
 <div class="jp-RenderedHTMLCommon jp-RenderedHTML jp-OutputArea-output jp-OutputArea-executeResult" data-mime-type="text/html" tabindex="0">
 <div>
 <style scoped="">
@@ -8380,7 +8410,7 @@ memory usage: 23.4+ KB
 <div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
 </div>
 <div class="jp-InputArea jp-Cell-inputArea">
-<div class="jp-InputPrompt jp-InputArea-prompt">In [15]:</div>
+<div class="jp-InputPrompt jp-InputArea-prompt">In [13]:</div>
 <div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
 <div class="cm-editor cm-s-jupyter">
 <div class="highlight hl-ipython3"><pre><span></span><span class="c1"># Get sell-to-open trades</span>
@@ -8396,7 +8426,7 @@ memory usage: 23.4+ KB
 </div>
 <div class="jp-OutputArea jp-Cell-outputArea">
 <div class="jp-OutputArea-child jp-OutputArea-executeResult">
-<div class="jp-OutputPrompt jp-OutputArea-prompt">Out[15]:</div>
+<div class="jp-OutputPrompt jp-OutputArea-prompt">Out[13]:</div>
 <div class="jp-RenderedHTMLCommon jp-RenderedHTML jp-OutputArea-output jp-OutputArea-executeResult" data-mime-type="text/html" tabindex="0">
 <div>
 <style scoped="">
@@ -8493,7 +8523,7 @@ memory usage: 23.4+ KB
 <div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
 </div>
 <div class="jp-InputArea jp-Cell-inputArea">
-<div class="jp-InputPrompt jp-InputArea-prompt">In [16]:</div>
+<div class="jp-InputPrompt jp-InputArea-prompt">In [14]:</div>
 <div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
 <div class="cm-editor cm-s-jupyter">
 <div class="highlight hl-ipython3"><pre><span></span><span class="c1"># Load the content of current_pos.csv</span>
@@ -8509,7 +8539,7 @@ memory usage: 23.4+ KB
 </div>
 <div class="jp-OutputArea jp-Cell-outputArea">
 <div class="jp-OutputArea-child jp-OutputArea-executeResult">
-<div class="jp-OutputPrompt jp-OutputArea-prompt">Out[16]:</div>
+<div class="jp-OutputPrompt jp-OutputArea-prompt">Out[14]:</div>
 <div class="jp-RenderedHTMLCommon jp-RenderedHTML jp-OutputArea-output jp-OutputArea-executeResult" data-mime-type="text/html" tabindex="0">
 <div>
 <style scoped="">
@@ -8577,7 +8607,7 @@ memory usage: 23.4+ KB
 <div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
 </div>
 <div class="jp-InputArea jp-Cell-inputArea">
-<div class="jp-InputPrompt jp-InputArea-prompt">In [17]:</div>
+<div class="jp-InputPrompt jp-InputArea-prompt">In [15]:</div>
 <div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
 <div class="cm-editor cm-s-jupyter">
 <div class="highlight hl-ipython3"><pre><span></span><span class="c1"># Use current_pos to filter new buy trades and get undervalued stock buys</span>
@@ -8593,7 +8623,7 @@ memory usage: 23.4+ KB
 </div>
 <div class="jp-OutputArea jp-Cell-outputArea">
 <div class="jp-OutputArea-child jp-OutputArea-executeResult">
-<div class="jp-OutputPrompt jp-OutputArea-prompt">Out[17]:</div>
+<div class="jp-OutputPrompt jp-OutputArea-prompt">Out[15]:</div>
 <div class="jp-RenderedHTMLCommon jp-RenderedHTML jp-OutputArea-output jp-OutputArea-executeResult" data-mime-type="text/html" tabindex="0">
 <div>
 <style scoped="">
@@ -8690,7 +8720,7 @@ memory usage: 23.4+ KB
 <div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
 </div>
 <div class="jp-InputArea jp-Cell-inputArea">
-<div class="jp-InputPrompt jp-InputArea-prompt">In [18]:</div>
+<div class="jp-InputPrompt jp-InputArea-prompt">In [16]:</div>
 <div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
 <div class="cm-editor cm-s-jupyter">
 <div class="highlight hl-ipython3"><pre><span></span><span class="c1"># Load previous undervalued stock trades and get a list of all undervalued stocks traded previously (until 11/14/24)</span>
@@ -8707,7 +8737,7 @@ memory usage: 23.4+ KB
 </div>
 <div class="jp-OutputArea jp-Cell-outputArea">
 <div class="jp-OutputArea-child jp-OutputArea-executeResult">
-<div class="jp-OutputPrompt jp-OutputArea-prompt">Out[18]:</div>
+<div class="jp-OutputPrompt jp-OutputArea-prompt">Out[16]:</div>
 <div class="jp-RenderedText jp-OutputArea-output jp-OutputArea-executeResult" data-mime-type="text/plain" tabindex="0">
 <pre>array(['YRD', 'XYF', 'CCRN', 'LX', 'SITC', 'AMTD', 'GSL', 'HG'],
       dtype=object)</pre>
@@ -8720,7 +8750,7 @@ memory usage: 23.4+ KB
 <div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
 </div>
 <div class="jp-InputArea jp-Cell-inputArea">
-<div class="jp-InputPrompt jp-InputArea-prompt">In [19]:</div>
+<div class="jp-InputPrompt jp-InputArea-prompt">In [17]:</div>
 <div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
 <div class="cm-editor cm-s-jupyter">
 <div class="highlight hl-ipython3"><pre><span></span><span class="c1"># Filter new sell trades and get new undervalued stock sells</span>
@@ -8736,7 +8766,7 @@ memory usage: 23.4+ KB
 </div>
 <div class="jp-OutputArea jp-Cell-outputArea">
 <div class="jp-OutputArea-child jp-OutputArea-executeResult">
-<div class="jp-OutputPrompt jp-OutputArea-prompt">Out[19]:</div>
+<div class="jp-OutputPrompt jp-OutputArea-prompt">Out[17]:</div>
 <div class="jp-RenderedHTMLCommon jp-RenderedHTML jp-OutputArea-output jp-OutputArea-executeResult" data-mime-type="text/html" tabindex="0">
 <div>
 <style scoped="">
@@ -8797,12 +8827,316 @@ memory usage: 23.4+ KB
 <div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
 </div>
 <div class="jp-InputArea jp-Cell-inputArea">
-<div class="jp-InputPrompt jp-InputArea-prompt">In [20]:</div>
+<div class="jp-InputPrompt jp-InputArea-prompt">In [18]:</div>
 <div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
 <div class="cm-editor cm-s-jupyter">
 <div class="highlight hl-ipython3"><pre><span></span><span class="c1"># Combine buy and sell undervalued trades</span>
 <span class="n">new_trades</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">concat</span><span class="p">([</span><span class="n">undervalued_buy</span><span class="p">,</span> <span class="n">undervalued_sell</span><span class="p">])</span>
 <span class="n">new_trades</span>
+</pre></div>
+</div>
+</div>
+</div>
+</div>
+<div class="jp-Cell-outputWrapper">
+<div class="jp-Collapser jp-OutputCollapser jp-Cell-outputCollapser">
+</div>
+<div class="jp-OutputArea jp-Cell-outputArea">
+<div class="jp-OutputArea-child jp-OutputArea-executeResult">
+<div class="jp-OutputPrompt jp-OutputArea-prompt">Out[18]:</div>
+<div class="jp-RenderedHTMLCommon jp-RenderedHTML jp-OutputArea-output jp-OutputArea-executeResult" data-mime-type="text/html" tabindex="0">
+<div>
+<style scoped="">
+    .dataframe tbody tr th:only-of-type {
+        vertical-align: middle;
+    }
+
+    .dataframe tbody tr th {
+        vertical-align: top;
+    }
+
+    .dataframe thead th {
+        text-align: right;
+    }
+</style>
+<table border="1" class="dataframe">
+<thead>
+<tr style="text-align: right;">
+<th></th>
+<th>Exec Time</th>
+<th>Side</th>
+<th>Pos Effect</th>
+<th>Symbol</th>
+<th>Qty</th>
+<th>Price</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<th>5</th>
+<td>12/10/24 12:00:02</td>
+<td>BUY</td>
+<td>TO OPEN</td>
+<td>PDS</td>
+<td>1</td>
+<td>60.9800</td>
+</tr>
+<tr>
+<th>13</th>
+<td>1/6/25 07:11:05</td>
+<td>BUY</td>
+<td>TO OPEN</td>
+<td>MOMO</td>
+<td>1</td>
+<td>7.1800</td>
+</tr>
+<tr>
+<th>14</th>
+<td>1/6/25 07:13:36</td>
+<td>BUY</td>
+<td>TO OPEN</td>
+<td>MOMO</td>
+<td>1</td>
+<td>7.1800</td>
+</tr>
+<tr>
+<th>15</th>
+<td>1/6/25 07:13:59</td>
+<td>BUY</td>
+<td>TO OPEN</td>
+<td>MOMO</td>
+<td>1</td>
+<td>7.1800</td>
+</tr>
+<tr>
+<th>16</th>
+<td>1/6/25 07:25:34</td>
+<td>BUY</td>
+<td>TO OPEN</td>
+<td>MOMO</td>
+<td>1</td>
+<td>7.1800</td>
+</tr>
+<tr>
+<th>...</th>
+<td>...</td>
+<td>...</td>
+<td>...</td>
+<td>...</td>
+<td>...</td>
+<td>...</td>
+</tr>
+<tr>
+<th>315</th>
+<td>10/7/25 09:30:02</td>
+<td>BUY</td>
+<td>TO OPEN</td>
+<td>YUMC</td>
+<td>2</td>
+<td>43.1900</td>
+</tr>
+<tr>
+<th>316</th>
+<td>10/7/25 09:30:02</td>
+<td>BUY</td>
+<td>TO OPEN</td>
+<td>ACN</td>
+<td>1</td>
+<td>249.1300</td>
+</tr>
+<tr>
+<th>318</th>
+<td>10/7/25 09:30:02</td>
+<td>BUY</td>
+<td>TO OPEN</td>
+<td>SU</td>
+<td>2</td>
+<td>41.4200</td>
+</tr>
+<tr>
+<th>319</th>
+<td>10/7/25 09:33:11</td>
+<td>BUY</td>
+<td>TO OPEN</td>
+<td>TMHC</td>
+<td>1</td>
+<td>65.4800</td>
+</tr>
+<tr>
+<th>12</th>
+<td>12/26/24 09:32:49</td>
+<td>SELL</td>
+<td>TO CLOSE</td>
+<td>CCRN</td>
+<td>-8</td>
+<td>17.9404</td>
+</tr>
+</tbody>
+</table>
+<p>129 rows × 6 columns</p>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div><div class="jp-Cell jp-CodeCell jp-Notebook-cell" id="cell-id=a8fc59b3-b79a-4f4d-807a-4ee2e037b8f1">
+<div class="jp-Cell-inputWrapper" tabindex="0">
+<div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
+</div>
+<div class="jp-InputArea jp-Cell-inputArea">
+<div class="jp-InputPrompt jp-InputArea-prompt">In [19]:</div>
+<div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
+<div class="cm-editor cm-s-jupyter">
+<div class="highlight hl-ipython3"><pre><span></span><span class="c1"># Copy the previous trades</span>
+<span class="n">trades</span> <span class="o">=</span> <span class="n">previous_trades</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
+<span class="n">trades</span>
+</pre></div>
+</div>
+</div>
+</div>
+</div>
+<div class="jp-Cell-outputWrapper">
+<div class="jp-Collapser jp-OutputCollapser jp-Cell-outputCollapser">
+</div>
+<div class="jp-OutputArea jp-Cell-outputArea">
+<div class="jp-OutputArea-child jp-OutputArea-executeResult">
+<div class="jp-OutputPrompt jp-OutputArea-prompt">Out[19]:</div>
+<div class="jp-RenderedHTMLCommon jp-RenderedHTML jp-OutputArea-output jp-OutputArea-executeResult" data-mime-type="text/html" tabindex="0">
+<div>
+<style scoped="">
+    .dataframe tbody tr th:only-of-type {
+        vertical-align: middle;
+    }
+
+    .dataframe tbody tr th {
+        vertical-align: top;
+    }
+
+    .dataframe thead th {
+        text-align: right;
+    }
+</style>
+<table border="1" class="dataframe">
+<thead>
+<tr style="text-align: right;">
+<th></th>
+<th>Exec Time</th>
+<th>Side</th>
+<th>Pos Effect</th>
+<th>Symbol</th>
+<th>Qty</th>
+<th>Price</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<th>0</th>
+<td>10/9/24 07:00:00</td>
+<td>BUY</td>
+<td>TO OPEN</td>
+<td>YRD</td>
+<td>15</td>
+<td>6.30</td>
+</tr>
+<tr>
+<th>1</th>
+<td>10/9/24 07:28:36</td>
+<td>BUY</td>
+<td>TO OPEN</td>
+<td>XYF</td>
+<td>4</td>
+<td>7.21</td>
+</tr>
+<tr>
+<th>2</th>
+<td>10/9/24 08:33:48</td>
+<td>BUY</td>
+<td>TO OPEN</td>
+<td>XYF</td>
+<td>1</td>
+<td>7.15</td>
+</tr>
+<tr>
+<th>3</th>
+<td>10/9/24 09:26:17</td>
+<td>BUY</td>
+<td>TO OPEN</td>
+<td>XYF</td>
+<td>8</td>
+<td>7.21</td>
+</tr>
+<tr>
+<th>4</th>
+<td>10/14/24 12:31:17</td>
+<td>BUY</td>
+<td>TO OPEN</td>
+<td>CCRN</td>
+<td>8</td>
+<td>12.50</td>
+</tr>
+<tr>
+<th>5</th>
+<td>10/15/24 07:00:00</td>
+<td>BUY</td>
+<td>TO OPEN</td>
+<td>LX</td>
+<td>27</td>
+<td>3.47</td>
+</tr>
+<tr>
+<th>6</th>
+<td>10/15/24 09:29:51</td>
+<td>BUY</td>
+<td>TO OPEN</td>
+<td>SITC</td>
+<td>6</td>
+<td>17.00</td>
+</tr>
+<tr>
+<th>7</th>
+<td>10/29/24 10:26:17</td>
+<td>BUY</td>
+<td>TO OPEN</td>
+<td>AMTD</td>
+<td>75</td>
+<td>1.33</td>
+</tr>
+<tr>
+<th>8</th>
+<td>11/12/24 09:57:10</td>
+<td>BUY</td>
+<td>TO OPEN</td>
+<td>GSL</td>
+<td>4</td>
+<td>23.26</td>
+</tr>
+<tr>
+<th>9</th>
+<td>11/13/24 09:29:59</td>
+<td>BUY</td>
+<td>TO OPEN</td>
+<td>HG</td>
+<td>5</td>
+<td>17.81</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div><div class="jp-Cell jp-CodeCell jp-Notebook-cell" id="cell-id=e9bb6d7b-d5aa-472d-afc5-e153d7907447">
+<div class="jp-Cell-inputWrapper" tabindex="0">
+<div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
+</div>
+<div class="jp-InputArea jp-Cell-inputArea">
+<div class="jp-InputPrompt jp-InputArea-prompt">In [20]:</div>
+<div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
+<div class="cm-editor cm-s-jupyter">
+<div class="highlight hl-ipython3"><pre><span></span><span class="c1"># Get new records</span>
+<span class="n">rows_to_add</span> <span class="o">=</span> <span class="n">new_trades</span><span class="p">[</span><span class="o">~</span><span class="n">new_trades</span><span class="p">[</span><span class="s1">'Exec Time'</span><span class="p">]</span><span class="o">.</span><span class="n">isin</span><span class="p">(</span><span class="n">trades</span><span class="p">[</span><span class="s1">'Exec Time'</span><span class="p">])]</span>
+<span class="n">rows_to_add</span>
 </pre></div>
 </div>
 </div>
@@ -8949,316 +9283,12 @@ memory usage: 23.4+ KB
 </div>
 </div>
 </div>
-</div><div class="jp-Cell jp-CodeCell jp-Notebook-cell" id="cell-id=a8fc59b3-b79a-4f4d-807a-4ee2e037b8f1">
-<div class="jp-Cell-inputWrapper" tabindex="0">
-<div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
-</div>
-<div class="jp-InputArea jp-Cell-inputArea">
-<div class="jp-InputPrompt jp-InputArea-prompt">In [21]:</div>
-<div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
-<div class="cm-editor cm-s-jupyter">
-<div class="highlight hl-ipython3"><pre><span></span><span class="c1"># Copy the previous trades</span>
-<span class="n">trades</span> <span class="o">=</span> <span class="n">previous_trades</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
-<span class="n">trades</span>
-</pre></div>
-</div>
-</div>
-</div>
-</div>
-<div class="jp-Cell-outputWrapper">
-<div class="jp-Collapser jp-OutputCollapser jp-Cell-outputCollapser">
-</div>
-<div class="jp-OutputArea jp-Cell-outputArea">
-<div class="jp-OutputArea-child jp-OutputArea-executeResult">
-<div class="jp-OutputPrompt jp-OutputArea-prompt">Out[21]:</div>
-<div class="jp-RenderedHTMLCommon jp-RenderedHTML jp-OutputArea-output jp-OutputArea-executeResult" data-mime-type="text/html" tabindex="0">
-<div>
-<style scoped="">
-    .dataframe tbody tr th:only-of-type {
-        vertical-align: middle;
-    }
-
-    .dataframe tbody tr th {
-        vertical-align: top;
-    }
-
-    .dataframe thead th {
-        text-align: right;
-    }
-</style>
-<table border="1" class="dataframe">
-<thead>
-<tr style="text-align: right;">
-<th></th>
-<th>Exec Time</th>
-<th>Side</th>
-<th>Pos Effect</th>
-<th>Symbol</th>
-<th>Qty</th>
-<th>Price</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<th>0</th>
-<td>10/9/24 07:00:00</td>
-<td>BUY</td>
-<td>TO OPEN</td>
-<td>YRD</td>
-<td>15</td>
-<td>6.30</td>
-</tr>
-<tr>
-<th>1</th>
-<td>10/9/24 07:28:36</td>
-<td>BUY</td>
-<td>TO OPEN</td>
-<td>XYF</td>
-<td>4</td>
-<td>7.21</td>
-</tr>
-<tr>
-<th>2</th>
-<td>10/9/24 08:33:48</td>
-<td>BUY</td>
-<td>TO OPEN</td>
-<td>XYF</td>
-<td>1</td>
-<td>7.15</td>
-</tr>
-<tr>
-<th>3</th>
-<td>10/9/24 09:26:17</td>
-<td>BUY</td>
-<td>TO OPEN</td>
-<td>XYF</td>
-<td>8</td>
-<td>7.21</td>
-</tr>
-<tr>
-<th>4</th>
-<td>10/14/24 12:31:17</td>
-<td>BUY</td>
-<td>TO OPEN</td>
-<td>CCRN</td>
-<td>8</td>
-<td>12.50</td>
-</tr>
-<tr>
-<th>5</th>
-<td>10/15/24 07:00:00</td>
-<td>BUY</td>
-<td>TO OPEN</td>
-<td>LX</td>
-<td>27</td>
-<td>3.47</td>
-</tr>
-<tr>
-<th>6</th>
-<td>10/15/24 09:29:51</td>
-<td>BUY</td>
-<td>TO OPEN</td>
-<td>SITC</td>
-<td>6</td>
-<td>17.00</td>
-</tr>
-<tr>
-<th>7</th>
-<td>10/29/24 10:26:17</td>
-<td>BUY</td>
-<td>TO OPEN</td>
-<td>AMTD</td>
-<td>75</td>
-<td>1.33</td>
-</tr>
-<tr>
-<th>8</th>
-<td>11/12/24 09:57:10</td>
-<td>BUY</td>
-<td>TO OPEN</td>
-<td>GSL</td>
-<td>4</td>
-<td>23.26</td>
-</tr>
-<tr>
-<th>9</th>
-<td>11/13/24 09:29:59</td>
-<td>BUY</td>
-<td>TO OPEN</td>
-<td>HG</td>
-<td>5</td>
-<td>17.81</td>
-</tr>
-</tbody>
-</table>
-</div>
-</div>
-</div>
-</div>
-</div>
-</div><div class="jp-Cell jp-CodeCell jp-Notebook-cell" id="cell-id=e9bb6d7b-d5aa-472d-afc5-e153d7907447">
-<div class="jp-Cell-inputWrapper" tabindex="0">
-<div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
-</div>
-<div class="jp-InputArea jp-Cell-inputArea">
-<div class="jp-InputPrompt jp-InputArea-prompt">In [22]:</div>
-<div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
-<div class="cm-editor cm-s-jupyter">
-<div class="highlight hl-ipython3"><pre><span></span><span class="c1"># Get new records</span>
-<span class="n">rows_to_add</span> <span class="o">=</span> <span class="n">new_trades</span><span class="p">[</span><span class="o">~</span><span class="n">new_trades</span><span class="p">[</span><span class="s1">'Exec Time'</span><span class="p">]</span><span class="o">.</span><span class="n">isin</span><span class="p">(</span><span class="n">trades</span><span class="p">[</span><span class="s1">'Exec Time'</span><span class="p">])]</span>
-<span class="n">rows_to_add</span>
-</pre></div>
-</div>
-</div>
-</div>
-</div>
-<div class="jp-Cell-outputWrapper">
-<div class="jp-Collapser jp-OutputCollapser jp-Cell-outputCollapser">
-</div>
-<div class="jp-OutputArea jp-Cell-outputArea">
-<div class="jp-OutputArea-child jp-OutputArea-executeResult">
-<div class="jp-OutputPrompt jp-OutputArea-prompt">Out[22]:</div>
-<div class="jp-RenderedHTMLCommon jp-RenderedHTML jp-OutputArea-output jp-OutputArea-executeResult" data-mime-type="text/html" tabindex="0">
-<div>
-<style scoped="">
-    .dataframe tbody tr th:only-of-type {
-        vertical-align: middle;
-    }
-
-    .dataframe tbody tr th {
-        vertical-align: top;
-    }
-
-    .dataframe thead th {
-        text-align: right;
-    }
-</style>
-<table border="1" class="dataframe">
-<thead>
-<tr style="text-align: right;">
-<th></th>
-<th>Exec Time</th>
-<th>Side</th>
-<th>Pos Effect</th>
-<th>Symbol</th>
-<th>Qty</th>
-<th>Price</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<th>5</th>
-<td>12/10/24 12:00:02</td>
-<td>BUY</td>
-<td>TO OPEN</td>
-<td>PDS</td>
-<td>1</td>
-<td>60.9800</td>
-</tr>
-<tr>
-<th>13</th>
-<td>1/6/25 07:11:05</td>
-<td>BUY</td>
-<td>TO OPEN</td>
-<td>MOMO</td>
-<td>1</td>
-<td>7.1800</td>
-</tr>
-<tr>
-<th>14</th>
-<td>1/6/25 07:13:36</td>
-<td>BUY</td>
-<td>TO OPEN</td>
-<td>MOMO</td>
-<td>1</td>
-<td>7.1800</td>
-</tr>
-<tr>
-<th>15</th>
-<td>1/6/25 07:13:59</td>
-<td>BUY</td>
-<td>TO OPEN</td>
-<td>MOMO</td>
-<td>1</td>
-<td>7.1800</td>
-</tr>
-<tr>
-<th>16</th>
-<td>1/6/25 07:25:34</td>
-<td>BUY</td>
-<td>TO OPEN</td>
-<td>MOMO</td>
-<td>1</td>
-<td>7.1800</td>
-</tr>
-<tr>
-<th>...</th>
-<td>...</td>
-<td>...</td>
-<td>...</td>
-<td>...</td>
-<td>...</td>
-<td>...</td>
-</tr>
-<tr>
-<th>315</th>
-<td>10/7/25 09:30:02</td>
-<td>BUY</td>
-<td>TO OPEN</td>
-<td>YUMC</td>
-<td>2</td>
-<td>43.1900</td>
-</tr>
-<tr>
-<th>316</th>
-<td>10/7/25 09:30:02</td>
-<td>BUY</td>
-<td>TO OPEN</td>
-<td>ACN</td>
-<td>1</td>
-<td>249.1300</td>
-</tr>
-<tr>
-<th>318</th>
-<td>10/7/25 09:30:02</td>
-<td>BUY</td>
-<td>TO OPEN</td>
-<td>SU</td>
-<td>2</td>
-<td>41.4200</td>
-</tr>
-<tr>
-<th>319</th>
-<td>10/7/25 09:33:11</td>
-<td>BUY</td>
-<td>TO OPEN</td>
-<td>TMHC</td>
-<td>1</td>
-<td>65.4800</td>
-</tr>
-<tr>
-<th>12</th>
-<td>12/26/24 09:32:49</td>
-<td>SELL</td>
-<td>TO CLOSE</td>
-<td>CCRN</td>
-<td>-8</td>
-<td>17.9404</td>
-</tr>
-</tbody>
-</table>
-<p>129 rows × 6 columns</p>
-</div>
-</div>
-</div>
-</div>
-</div>
 </div><div class="jp-Cell jp-CodeCell jp-Notebook-cell" id="cell-id=2089e368-1d01-4f1e-b034-008a37661606">
 <div class="jp-Cell-inputWrapper" tabindex="0">
 <div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
 </div>
 <div class="jp-InputArea jp-Cell-inputArea">
-<div class="jp-InputPrompt jp-InputArea-prompt">In [23]:</div>
+<div class="jp-InputPrompt jp-InputArea-prompt">In [21]:</div>
 <div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
 <div class="cm-editor cm-s-jupyter">
 <div class="highlight hl-ipython3"><pre><span></span><span class="c1"># Add new records to undervalued stock trades</span>
@@ -9275,7 +9305,7 @@ memory usage: 23.4+ KB
 </div>
 <div class="jp-OutputArea jp-Cell-outputArea">
 <div class="jp-OutputArea-child jp-OutputArea-executeResult">
-<div class="jp-OutputPrompt jp-OutputArea-prompt">Out[23]:</div>
+<div class="jp-OutputPrompt jp-OutputArea-prompt">Out[21]:</div>
 <div class="jp-RenderedHTMLCommon jp-RenderedHTML jp-OutputArea-output jp-OutputArea-executeResult" data-mime-type="text/html" tabindex="0">
 <div>
 <style scoped="">
@@ -9416,7 +9446,7 @@ memory usage: 23.4+ KB
 <div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
 </div>
 <div class="jp-InputArea jp-Cell-inputArea">
-<div class="jp-InputPrompt jp-InputArea-prompt">In [24]:</div>
+<div class="jp-InputPrompt jp-InputArea-prompt">In [22]:</div>
 <div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
 <div class="cm-editor cm-s-jupyter">
 <div class="highlight hl-ipython3"><pre><span></span><span class="c1"># Check the number of stocks in the trades table</span>
@@ -9431,7 +9461,7 @@ memory usage: 23.4+ KB
 </div>
 <div class="jp-OutputArea jp-Cell-outputArea">
 <div class="jp-OutputArea-child jp-OutputArea-executeResult">
-<div class="jp-OutputPrompt jp-OutputArea-prompt">Out[24]:</div>
+<div class="jp-OutputPrompt jp-OutputArea-prompt">Out[22]:</div>
 <div class="jp-RenderedText jp-OutputArea-output jp-OutputArea-executeResult" data-mime-type="text/plain" tabindex="0">
 <pre>65</pre>
 </div>
@@ -9443,7 +9473,7 @@ memory usage: 23.4+ KB
 <div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
 </div>
 <div class="jp-InputArea jp-Cell-inputArea">
-<div class="jp-InputPrompt jp-InputArea-prompt">In [25]:</div>
+<div class="jp-InputPrompt jp-InputArea-prompt">In [23]:</div>
 <div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
 <div class="cm-editor cm-s-jupyter">
 <div class="highlight hl-ipython3"><pre><span></span><span class="c1"># Save the updated table</span>

@@ -122,13 +122,9 @@ def main (position_statement_path, acc_statement_path):
     # Filter out overlapping stocks
     overlapping = pd.read_excel('overlapping_stocks.xlsx')
 
-    df_copy = new_trades.copy()
-    df_copy['Exec Time'] = pd.to_datetime(df_copy['Exec Time'], format='%m/%d/%y %H:%M:%S')
-    df_copy['Exec Date'] = pd.to_datetime(df_copy['Exec Time'].dt.date)    # Extract date from 'Exec Time'
-    df_copy['orig_index'] = df_copy.index    # Create a column to show the original indices in df
-    merged = pd.merge(df_copy, overlapping, how='inner', on=['Exec Date','Symbol', 'Qty', 'Price'])
-    filter_indices = merged['orig_index']   # Get the indices of the rows to be filtered out in df
-    new_trades = new_trades.drop(filter_indices)
+    new_trades['Exec Date'] = pd.to_datetime(new_trades['Exec Time'], format='%m/%d/%y %H:%M:%S').dt.normalize()   # Convert data from 'Exec Time' to datetime64[ns] and extract the dates
+    merged = pd.merge(new_trades, overlapping, how='left', on=['Exec Date','Symbol', 'Qty', 'Price'], indicator=True)
+    new_trades = merged[merged['_merge'] == 'left_only'].drop(columns=['_merge', 'Exec Date'])
 
     # Split the new trades into buy and sell trades
     buy_to_open = new_trades[(new_trades['Side']=='BUY') & (new_trades['Pos Effect']=='TO OPEN')]
