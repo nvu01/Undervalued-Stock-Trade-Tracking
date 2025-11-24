@@ -25,12 +25,13 @@ The purpose of the ETL pipeline is to retrieve new undervalued stock trades and 
 - The first account statement (**account_statement/2024-11-14-AccountStatement.csv**) include trades from Oct 1st 2024 to Nov 14th 2024. This file was also used to set up the `undervalued_trades.csv` file. Data processing was done in `first trades.ipynb`.
 - The second account statement (**account_statement/2025-11-14-AccountStatement.csv**) include all trades from Nov 15th 2024 to Nov 14th 2025. This file was processed in `new trades.ipynb`.
 - The first position statement (**position_statement/2025-11-13-PositionStatement.csv**) include the "Undervalued" portfolio's holdings as of Nov 13th 2025. This file was also used to set up the `current_pos.csv` file. Data processing was done in `current pos.ipynb`.
+- Excel file (**overlapping_stocks.xlsx**) contains a list of trades which are in other portfolios but their tickers are also in the "Undervalued". These trades will be filtered out of the undervalued stock trades. This file has to be updated before running "etl.py".
 
 #### ETL Pipeline Functions (etl.py):
-- **get_latest_pos_statement** and **get_latest_new_trades**: Functions that fetch the latest position and account statement CSV files from specified folders.
-- **get_current_pos**: This function processes the current position data from the "position_statement" folder, specifically extracting the "Undervalued" group, and saves the relevant positions as current_pos.csv.
-- **get_new_trades**: This function processes the latest account statement to extract the "Account Trade History" table, filtering relevant buy and sell trades.
-- **main**: The core function that updates the undervalued_trades.csv file with new buy-to-open and sell-to-close trades based on the latest position and trade data.
+- `get_latest_pos_statement` and `get_latest_new_trades`: Functions that fetch the latest position and account statement CSV files from specified folders.
+- `get_current_pos`: This function processes the current position data from the "position_statement" folder, specifically extracting the "Undervalued" group, and saves the relevant positions as current_pos.csv.
+- `get_new_trades`: This function processes the latest account statement to extract the "Account Trade History" table, filtering relevant buy and sell trades.
+- `main`: The core function that updates the undervalued_trades.csv file with new buy-to-open and sell-to-close trades based on the latest position and trade data.
 
 ## Excel Reporting
 
