@@ -1,3 +1,9 @@
+Disclaimer: This project is intended for educational and informational purposes only. 
+The analysis, models, and methodologies used in this project are not intended to serve as financial or investment advice. 
+The information presented should not be construed as a recommendation to buy, sell, or hold any securities or assets. 
+Investing in the stock market carries inherent risks, and any decisions based on the content of this project are solely the responsibility of the individual. 
+Always consult with a qualified financial advisor before making any investment decisions.
+
 # Undervalued Stock Trade Tracking
 
 This project automates the process of tracking and analyzing undervalued stock trades using a Python ETL pipeline, combined with Power Query and Excel for real-time reporting. The workflow involves accessing the file system to retrieve account and position statements downloaded from Thinkorswim, extracting data from the source CSV files, processing it for undervalued stock trades, and generating an up-to-date portfolio analysis.
