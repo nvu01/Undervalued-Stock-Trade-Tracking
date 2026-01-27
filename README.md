@@ -22,22 +22,22 @@ Account statements and position statements after Nov 14th 2025 are downloaded ev
 The purpose of the ETL pipeline is to retrieve new undervalued stock trades and add them to the `undervalued_trades.csv` file. 
 
 #### Source Files Used During Pipeline Setup:
-- The first account statement (**account_statement/2024-11-14-AccountStatement.csv**) include trades from Oct 1st 2024 to Nov 14th 2024. This file was also used to set up the `undervalued_trades.csv` file. Data processing was done in `first trades.ipynb`.
-- The second account statement (**account_statement/2025-11-14-AccountStatement.csv**) include all trades from Nov 15th 2024 to Nov 14th 2025. This file was processed in `new trades.ipynb`.
-- The first position statement (**position_statement/2025-11-13-PositionStatement.csv**) include the "Undervalued" portfolio's holdings as of Nov 13th 2025. This file was also used to set up the `current_pos.csv` file. Data processing was done in `current pos.ipynb`.
-- Excel file (**overlapping_stocks.xlsm**) contains a list of trades which are in other portfolios but their tickers are also in the "Undervalued". These trades will be filtered out of the undervalued stock trades. This file has to be updated before running "etl.py".
+- The **first account statement** (`account_statement/2024-11-14-AccountStatement.csv`) include trades from Oct 1st 2024 to Nov 14th 2024. This file was used to set up the table containing the first undervalued trades. Data processing was done in `first trades.ipynb` to generate `undervalued_trades.csv` file.
+- The **second account statement** (`account_statement/2025-11-14-AccountStatement.csv`) include all trades from Nov 15th 2024 to Nov 14th 2025. This file was processed in `new trades.ipynb` to append new stock trades to `undervalued_trades.csv`.
+- The **first position statement** (`position_statement/2025-11-13-PositionStatement.csv`) include the "Undervalued" portfolio's holdings as of Nov 13th 2025. This file was processed in`current pos.ipynb` to set up the `current_pos.csv` file which is used in `new trades.ipynb` to filter undervalued stock trades from all new trades.
+- The **Excel file** (`overlapping_stocks.xlsm`) contains a list of trades which are in other portfolios but their tickers are also in the "Undervalued". These trades will be filtered out of the new trades. This file has to be updated before running "etl.py".
 
 #### ETL Pipeline Functions (etl.py):
 - `get_latest_pos_statement` and `get_latest_new_trades`: Functions that fetch the latest position and account statement CSV files from specified folders.
-- `get_current_pos`: This function processes the current position data from the "position_statement" folder, specifically extracting the "Undervalued" group, and saves the relevant positions as current_pos.csv.
-- `get_new_trades`: This function processes the latest account statement to extract the "Account Trade History" table, filtering relevant buy and sell trades.
-- `main`: The core function that updates the undervalued_trades.csv file with new buy-to-open and sell-to-close trades based on the latest position and trade data.
+- `get_current_pos`: This function processes the current position data from the "position_statement" folder, specifically extracting the "Undervalued" group, and returns the relevant positions.
+- `get_new_trades`: This function processes the latest account statement to extract the "Account Trade History" table and return all the new trades.
+- `main`: The core function that updates the `undervalued_trades.csv` file with new trades based on the latest position and new trade data.
 
 ## Excel Reporting
 
 The data in undervalued_trades.csv is used to generate an Excel report that includes:
 - Real-time stock prices (using the RTD function in Excel)
-- Key performance metrics, including total size, total investment, ROI, open P&L, realized P&L, value weight and monthly P&L.
-- A treemap that shows each stock's value weight in the portfolio
-- A waterfall chart that visualizes the cumulative profit and loss over time.
+- Key performance metrics: portfolio's total size, total investment, ROI, open P&L, realized P&L, value weight and monthly P&L.
+- A treemap that shows each stock's P&L weight and investment weight in the portfolio.
+- Waterfall charts that visualize the cumulative profit and loss over time.
 - A button that executes a VBA macro script which automates data refresh for all the query tables and pivot tables in the right order.
