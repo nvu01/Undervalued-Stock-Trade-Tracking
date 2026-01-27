@@ -3,15 +3,16 @@
 This project automates the process of tracking and analyzing undervalued stock trades using a Python ETL pipeline, combined with Power Query and Excel for real-time reporting. The workflow involves accessing the file system to retrieve account and position statements downloaded from Thinkorswim, extracting data from the source CSV files, processing it for undervalued stock trades, and generating an up-to-date portfolio analysis.
 
 ## Repository Contents
-To protect personal and financial information, the original notebooks and raw CSV files downloaded from TOS are not included in this repository.
+To protect personal and financial information, the original notebooks, raw CSV files downloaded from TOS, and the outcome `undervalued_trades.csv` are not included in this repository. 
+Instead, you can find the HTML versions of the notebooks with some concealed confidential data and a masked version of `undervalued_trades.csv`.
 
 - HTML exports of development notebooks: 
     - `first trades.html`
     - `current pos.html`
     - `new trades.html`
 - `etl.py`: Production ETL pipeline
-- Masked version of `undervalued_trades.csv`
-- `Report.xlsm` generated using the masked `undervalued_trades.csv`
+- `masked_undervalued_trades.csv`: Masked version of undervalued trades CSV file
+- `Report.xlsm`: A report of portfolio's performance, generated using `masked_undervalued_trades.csv`
 
 
 ## Workflow Overview
