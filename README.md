@@ -13,13 +13,21 @@ To protect personal and financial information, the original notebooks and raw CS
 - Masked version of `undervalued_trades.csv`
 - `Report.xlsm` generated using the masked `undervalued_trades.csv`
 
+
 ## Workflow Overview
 
-Account statements and position statements after Nov 14th 2025 are downloaded every month and include trading data from the 15th of the previous month to the 14th of the current month. These files are processed every month to update the `undervalued_trades.csv` file. This file is then used to generate the Excel file `Report.xlsm`.
+Account statements and position statements after Nov 14th 2025 are downloaded and processed every month to update the `undervalued_trades.csv` file. This file is then used to generate the Excel file `Report.xlsm` which shows the portfolio's performance.
+
 
 ## ETL pipeline
 
-The purpose of the ETL pipeline is to retrieve new undervalued stock trades and add them to the `undervalued_trades.csv` file. 
+The purpose of the ETL pipeline is to process current position statement and account statement to extract new undervalued stock trades and add them to the `undervalued_trades.csv` file. 
+
+#### ETL Pipeline Functions (etl.py):
+- `get_latest_pos_statement` and `get_latest_new_trades`: Functions that fetch the latest position and account statement CSV files from specified folders.
+- `get_current_pos`: This function processes the current position data from the "position_statement" folder, specifically extracting the "Undervalued" group, and returns the relevant positions.
+- `get_new_trades`: This function processes the latest account statement from the "account_statement" to extract the "Account Trade History" table and return all the new trades.
+- `main`: The core function that updates the `undervalued_trades.csv` file with new trades based on the latest position and new trade data.
 
 #### Source Files Used During Pipeline Setup:
 - The **first account statement** (`account_statement/2024-11-14-AccountStatement.csv`) include trades from Oct 1st 2024 to Nov 14th 2024. This file was used to set up the table containing the first undervalued trades. Data processing was done in `first trades.ipynb` to generate `undervalued_trades.csv` file.
@@ -27,17 +35,12 @@ The purpose of the ETL pipeline is to retrieve new undervalued stock trades and 
 - The **first position statement** (`position_statement/2025-11-13-PositionStatement.csv`) include the "Undervalued" portfolio's holdings as of Nov 13th 2025. This file was processed in`current pos.ipynb` to set up the `current_pos.csv` file which is used in `new trades.ipynb` to filter undervalued stock trades from all new trades.
 - The **Excel file** (`overlapping_stocks.xlsm`) contains a list of trades which are in other portfolios but their tickers are also in the "Undervalued". These trades will be filtered out of the new trades. This file has to be updated before running "etl.py".
 
-#### ETL Pipeline Functions (etl.py):
-- `get_latest_pos_statement` and `get_latest_new_trades`: Functions that fetch the latest position and account statement CSV files from specified folders.
-- `get_current_pos`: This function processes the current position data from the "position_statement" folder, specifically extracting the "Undervalued" group, and returns the relevant positions.
-- `get_new_trades`: This function processes the latest account statement to extract the "Account Trade History" table and return all the new trades.
-- `main`: The core function that updates the `undervalued_trades.csv` file with new trades based on the latest position and new trade data.
 
 ## Excel Reporting
 
 The data in undervalued_trades.csv is used to generate an Excel report that includes:
-- Real-time stock prices (using the RTD function in Excel)
+- **Real-time** stock prices (using the RTD function in Excel)
 - Key performance metrics: portfolio's total size, total investment, ROI, open P&L, realized P&L, value weight and monthly P&L.
-- A treemap that shows each stock's P&L weight and investment weight in the portfolio.
-- Waterfall charts that visualize the cumulative profit and loss over time.
-- A button that executes a VBA macro script which automates data refresh for all the query tables and pivot tables in the right order.
+- **Treemaps** that show each stock's P&L weight and investment weight in the portfolio.
+- **Waterfall charts** that visualize the cumulative profit and loss over time.
+- A button that executes a **VBA macro** script which automates data refresh for all the query tables and pivot tables in the right order.
