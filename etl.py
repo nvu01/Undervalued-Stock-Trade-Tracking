@@ -5,8 +5,7 @@ from io import StringIO
 import argparse
 
 # Get the filepath for the latest position statement file
-
-def get_latest_pos_statement (folder):
+def get_latest_file (folder):
     '''
     Retrieves the latest CSV file in the "position_statement" folder.
     '''
@@ -14,9 +13,7 @@ def get_latest_pos_statement (folder):
     filepath = max(files, key=os.path.getmtime)
     return filepath
 
-
 # Transform the current position data
-
 def get_current_pos (filepath):
     '''
     Processes the current position data downloaded from TOS.
@@ -55,20 +52,7 @@ def get_current_pos (filepath):
 
     return df
 
-
-# Get the filepath for the latest account statement file
-
-def get_latest_new_trades (folder):
-    '''
-    Get the latest CSV file in the "account_statement" folder.
-    '''
-    files = glob.glob(os.path.join(folder, "*"))
-    filepath = max(files, key=os.path.getmtime)
-    return filepath
-
-
 # Transform new trades data
-
 def get_new_trades (filepath):
     '''
     Processes the new trades data downloaded from TOS.
@@ -103,49 +87,64 @@ def get_new_trades (filepath):
     
     return df
 
-# Update the undervalued_trades table
-
-def main (position_statement_path, acc_statement_path):
+# Get both previous and new undervalued trades
+def filter_new_trades(new_trades, pos_statement_file):
     '''
-    Extract the undervalued stock trades from the new trades and add new records to the undervalued_trades.csv
+    Extract the undervalued stock trades from the new trades
     1. Filter out other portfolios' trades for stocks that are also in the "Undervalued" portfolio
-    1. Extract buy trades for undervalued stocks
-    2. Extract closing trades for underavalued stocks
-    3. Add these undervalued stock trades to undervalued_trades.csv
-    4. Save the updated undervalued_trades.csv
+    2. Extract buy trades for undervalued stocks based on current positions
+    3. Extract closing trades for underavalued stocks based on previous trades
+    Return previous trades and new trades
     '''
-    new_trades = get_new_trades(acc_statement_path)
 
     # Filter out overlapping stocks
     overlapping = pd.read_excel('overlapping_stocks.xlsx')
     overlapping.drop(columns='Strategy', inplace=True)
 
-    new_trades['Exec Date'] = pd.to_datetime(new_trades['Exec Time'], format='%m/%d/%y %H:%M:%S').dt.normalize()   # Convert data from 'Exec Time' to datetime64[ns] and extract the dates
-    merged = pd.merge(new_trades, overlapping, how='left', on=['Exec Date','Symbol', 'Qty', 'Price'], indicator=True)
+    new_trades['Exec Date'] = pd.to_datetime(new_trades['Exec Time'],
+                                             format='%m/%d/%y %H:%M:%S').dt.normalize()  # Convert data from 'Exec Time' to datetime64[ns] and extract the dates
+    merged = pd.merge(new_trades, overlapping, how='left', on=['Exec Date', 'Symbol', 'Qty', 'Price'], indicator=True)
     new_trades = merged[merged['_merge'] == 'left_only'].drop(columns=['_merge', 'Exec Date'])
 
     # Split the new trades into buy and sell trades
-    buy_to_open = new_trades[(new_trades['Side']=='BUY') & (new_trades['Pos Effect']=='TO OPEN')]
-    sell_to_close = new_trades[(new_trades['Side']=='SELL') & (new_trades['Pos Effect']=='TO CLOSE')]
+    buy_to_open = new_trades[(new_trades['Side'] == 'BUY') & (new_trades['Pos Effect'] == 'TO OPEN')]
+    sell_to_close = new_trades[(new_trades['Side'] == 'SELL') & (new_trades['Pos Effect'] == 'TO CLOSE')]
 
     # List of current positions is used to filter buy trades
-    current_position = get_current_pos(position_statement_path)
+    current_position = get_current_pos(pos_statement_file)
     undervalued_buy = buy_to_open[buy_to_open['Symbol'].isin(current_position['Symbol'])]
 
     # List of previous undervalued stock trades is used to filter sell-to-close trade
-    trades = pd.read_csv('undervalued_trades.csv')
-    filter_stocks = trades['Symbol'].unique() 
+    previous_trades = pd.read_csv('undervalued_trades.csv')
+    filter_stocks = previous_trades['Symbol'].unique()
     undervalued_sell = sell_to_close[sell_to_close['Symbol'].isin(filter_stocks)]
+    new_undervalued_trades = pd.concat([undervalued_buy, undervalued_sell])
+
+    return previous_trades, new_undervalued_trades
+
+# Update undervalued trades
+def update_undervalued_trades(previous_trades, new_undervalued_trades):
+    '''
+    Add new trades to previous trades
+    '''
 
     # Add new records to all undervalued_trades.csv
-    new_undervalued_trades = pd.concat([undervalued_buy, undervalued_sell])
-    rows_to_add = new_undervalued_trades[~new_undervalued_trades['Exec Time'].isin(trades['Exec Time'])]
-    trades = pd.concat([trades, rows_to_add])
-    
+    rows_to_add = new_undervalued_trades[~new_undervalued_trades['Exec Time'].isin(previous_trades['Exec Time'])]
+    trades = pd.concat([previous_trades, rows_to_add])
     trades.reset_index(drop=True, inplace=True)
-    trades.to_csv('undervalued_trades.csv', index=False)
 
     return trades
+
+# Process and update undervalued trades
+def main(acc_statement_file, pos_statement_file):
+    '''
+    Apply other functions to update undervalued trades and save all trades to undervalued_trades.csv
+    '''
+    new_trades = get_new_trades(acc_statement_file)
+    previous_trades, new_undervalued_trades = filter_new_trades(new_trades, pos_statement_file)
+    trades = update_undervalued_trades(previous_trades, new_undervalued_trades)
+
+    trades.to_csv('undervalued_trades.csv', index=False)
 
 
 if __name__ == "__main__":
@@ -154,18 +153,30 @@ if __name__ == "__main__":
     parser.add_argument('--acc_statement', help='Optional: A specific file name in account_statement folder')
     args = parser.parse_args()
 
-    # If pos_statement_file is not specified, get_latest_pos_statement will be executed to return the latest file
-    if args.pos_statement:
-        pos_statement_file = os.path.join('position_statement', args.pos_statement)
-    else:
-        pos_statement_file = get_latest_pos_statement('position_statement')
-
     # If acc_statement_file is not specified, get_latest_pos_statement will be executed to return the latest file
     if args.acc_statement:
-        acc_statement_file = os.path.join('account_statement', args.acc_statement)
+        acc_statement_path = os.path.join('account_statement', args.acc_statement)
     else:
-        acc_statement_file = get_latest_new_trades('account_statement')
+        choice = input("Use latest account statement file? (y/n): ").lower()
 
-    main (pos_statement_file, acc_statement_file)
+        if choice == 'y':
+            acc_statement_path = get_latest_file('account_statement')
+        else:
+            acc_file = input("Enter file name: ").strip()
+            acc_statement_path = os.path.join('account_statement', acc_file)
+
+    # If pos_statement_file is not specified, get_latest_pos_statement will be executed to return the latest file
+    if args.pos_statement:
+        pos_statement_path = os.path.join('position_statement', args.pos_statement)
+    else:
+        choice = input("Use latest position statement file? (y/n): ").lower()
+
+        if choice == 'y':
+            pos_statement_path = get_latest_file('position_statement')
+        else:
+            pos_file = input("Enter file name: ").strip()
+            pos_statement_path = os.path.join('position_statement', pos_file)
+
+    main(acc_statement_path, pos_statement_path)
     
-    print(f'Files used: {pos_statement_file}, {acc_statement_file}')
+    print(f'Files used: {acc_statement_path}, {pos_statement_path}')
