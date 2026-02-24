@@ -18,11 +18,10 @@ def get_current_pos (filepath):
     '''
     Processes the current position data downloaded from TOS.
     Parameter is the filepath to the most current CSV file in "position_statement" folder.
-
     1. Load the content of the CSV file.
     2. Find and extract the table named "Undervalued"
     3. Save the table as "current_pos.csv" in the parent folder
-    4. Return the table as a dataframe
+    Return the table as a dataframe
     '''
     with open(filepath) as f:
         lines = f.readlines()
@@ -57,10 +56,9 @@ def get_new_trades (filepath):
     '''
     Processes the new trades data downloaded from TOS.
     Parameter is the filepath to most current CSV file in "account_statement" folder.
-
     1. Load the content of the CSV file.
     2. Find and extract the table named "Account Trade History"
-    3. Return the table as a dataframe
+    Return the table as a dataframe
     '''
     with open (filepath) as f:
         lines = f.readlines()
@@ -126,6 +124,7 @@ def filter_new_trades(new_trades, pos_statement_file):
 def update_undervalued_trades(previous_trades, new_undervalued_trades):
     '''
     Add new trades to previous trades
+    Return all undervalued stock trades
     '''
 
     # Add new records to all undervalued_trades.csv
@@ -143,7 +142,7 @@ def main(acc_statement_file, pos_statement_file):
     new_trades = get_new_trades(acc_statement_file)
     previous_trades, new_undervalued_trades = filter_new_trades(new_trades, pos_statement_file)
     trades = update_undervalued_trades(previous_trades, new_undervalued_trades)
-
+    # Save all trades to undervalued_trades.csv
     trades.to_csv('undervalued_trades.csv', index=False)
 
 
