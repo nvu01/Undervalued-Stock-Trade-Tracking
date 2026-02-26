@@ -3,15 +3,14 @@ import os
 import pandas as pd
 from io import StringIO
 
+# Get all account statements or position statements
 def get_files(folder):
     '''
     Retrieve all files in a folder
     Return a list of file paths
     Return the number files in the folder
     '''
-
     all_files = []
-
     for root, dirs, files in os.walk(folder):
         files = glob.glob(os.path.join(root,'*.csv'))
         for f in files :
@@ -102,7 +101,6 @@ def filter_new_trades(new_trades, pos_statement_file):
     3. Extract closing trades for underavalued stocks based on previous trades
     Return previous trades and new trades
     '''
-
     # Filter out overlapping stocks
     overlapping = pd.read_excel('overlapping_stocks.xlsx')
     overlapping.drop(columns='Strategy', inplace=True)
@@ -133,7 +131,6 @@ def update_undervalued_trades(previous_trades, new_undervalued_trades):
     Add new trades to previous trades
     Return all undervalued stock trades
     '''
-
     # Make sure new rows don't exist in previous_trades
     columns = ['Exec Time', 'Side', 'Pos Effect', 'Symbol', 'Qty', 'Price']
     rows_to_add = pd.merge(new_undervalued_trades, previous_trades, on=columns, how='left', indicator=True)
@@ -155,7 +152,6 @@ def main():
         - Filters new undervalued trades.
         - Updates the 'undervalued_trades.csv' file with any new undervalued trades.
     '''
-
     acc_files, acc_num_files = get_files("account_statement")
     print(f'{acc_num_files} files found in "account_statement"')
 
