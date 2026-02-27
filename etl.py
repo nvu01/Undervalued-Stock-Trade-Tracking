@@ -111,6 +111,7 @@ def filter_new_trades(previous_trades, all_trades, pos_stmt_file):
     # List of previous undervalued stock trades is used to filter sell-to-close trade
     filter_stocks = previous_trades['Symbol'].unique()
     undervalued_sell = sell_to_close[sell_to_close['Symbol'].isin(filter_stocks)]
+    # Combine undervalued_buy and undervalued_sell
     new_undervalued_trades = pd.concat([undervalued_buy, undervalued_sell])
 
     # Make sure new rows don't exist in previous_trades
@@ -128,7 +129,8 @@ def remove_overlapping_stocks(trades):
     overlapping = pd.read_excel('overlapping_stocks.xlsx')
     overlapping.drop(columns='Strategy', inplace=True)
     # Convert data from 'Exec Time' to datetime64[ns] and extract the dates
-    trades['Exec Date'] = pd.to_datetime(trades['Exec Time'], errors='coerce').dt.normalize()
+    trades['Exec Time'] = pd.to_datetime(trades['Exec Time'], format='%m/%d/%y %H:%M:%S')
+    trades['Exec Date'] = trades['Exec Time'].dt.normalize()
     merged = pd.merge(trades, overlapping, how='left', on=['Exec Date', 'Symbol', 'Qty', 'Price'], indicator=True)
     filtered_trades = merged[merged['_merge'] == 'left_only'].drop(columns=['_merge', 'Exec Date'])
 
