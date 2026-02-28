@@ -121,6 +121,7 @@ def filter_new_trades(previous_trades, all_trades, pos_stmt_file):
     Extract the undervalued stock trades from the all the new trades
     1. Extract buy trades for undervalued stocks based on current positions
     2. Extract closing trades for underavalued stocks based on previous trades
+    3. Update any change in symbol or trade data
     Return new undervalued trades
     '''
     # Split the new trades into buy and sell trades
@@ -152,7 +153,7 @@ def filter_new_trades(previous_trades, all_trades, pos_stmt_file):
 
 def remove_overlapping_stocks(trades):
     '''
-    Filter out other portfolios' trades for stocks that are also in the "Undervalued" portfolio
+    Filter out trades that belong to other portfolios but have the same ticker as an undervalued stock
     '''
     # Filter out overlapping stocks
     overlapping = pd.read_excel('Overlapping Stocks.xlsx')
