@@ -3,7 +3,6 @@ import os
 import pandas as pd
 from io import StringIO
 
-
 # Get all account statements or position statements
 def get_files(folder):
     '''
@@ -58,7 +57,6 @@ def get_all_trades(filepath):
 
     return df
 
-
 # Retrieve and transform the current position data
 def get_current_pos(filepath):
     '''
@@ -66,7 +64,6 @@ def get_current_pos(filepath):
     Parameter is the filepath to the most current CSV file in "position_statement" folder.
     1. Load the content of the CSV file.
     2. Find and extract the table named "Undervalued"
-    3. Save the table as "current_pos.csv" in the parent folder
     Return the table as a dataframe
     '''
     with open(filepath) as f:
@@ -165,7 +162,6 @@ def remove_overlapping_stocks(trades):
 
     return filtered_trades
 
-
 # Process and update undervalued trades
 def main(year):
     '''
@@ -215,6 +211,7 @@ def main(year):
     filtered_trades.to_csv('undervalued_trades.csv', index=False)
 
     print('Data update complete')
+
 
 if __name__ == "__main__":
     print('Enter the trading year: ')
