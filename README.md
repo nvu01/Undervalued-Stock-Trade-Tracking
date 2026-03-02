@@ -15,11 +15,12 @@ Instead, you can find the HTML versions of the notebooks with some concealed con
 - `etl.py`: Production ETL pipeline
 - `masked_undervalued_trades.csv`: Masked version of undervalued trades CSV file
 - `Report.xlsm`: A report of portfolio's performance, generated using `masked_undervalued_trades.csv`
-- `Terminologies & Formulas.pdf`: A document containing definitions and formulas for metrics used in the report.
+- `Terminologies & Formulas.pdf`: A document containing definitions and formulas for metrics used in the report
 - HTML exports of development notebooks: 
     - `first trades.html`
     - `current pos.html`
     - `new trades.html`
+- `requirements.txt`: A list of Python packages used in the project
 
 ## Workflow Overview
 
