@@ -7332,7 +7332,12 @@ a.anchor-link {
     if (!diagrams.length) {
       return;
     }
-    const mermaid = (await import("https://cdnjs.cloudflare.com/ajax/libs/mermaid/10.7.0/mermaid.esm.min.mjs")).default;
+    const mermaid = (await import("https://cdnjs.cloudflare.com/ajax/libs/mermaid/11.10.0/mermaid.esm.min.mjs")).default;
+    const elkUrl = "https://cdnjs.cloudflare.com/ajax/libs/mermaid-layout-elk/0.1.9/mermaid-layout-elk.esm.min.mjs";
+    if(elkUrl) {
+      const elkLayouts = (await import(elkUrl)).default;
+      mermaid.registerLayoutLoaders(elkLayouts);
+    }
     const parser = new DOMParser();
 
     mermaid.initialize({
@@ -7429,7 +7434,8 @@ a.anchor-link {
      * Post-process to ensure mermaid diagrams contain only valid SVG and XHTML.
      */
     function cleanMermaidSvg(svg) {
-      return svg.replace(RE_VOID_ELEMENT, replaceVoidElement);
+      svg = svg.replace(RE_VOID_ELEMENT, replaceVoidElement);
+      return `${SVG_XML_HEADER}${svg}`;
     }
 
 
@@ -7455,6 +7461,285 @@ a.anchor-link {
       }
       return `<${tag} ${rest}>`;
     }
+
+
+  /**
+   * Named HTML entities with their decimal equivalent codes.
+   *
+   * @see https://www.w3.org/TR/WD-html40-970708/sgml/entities.html
+   * */
+  const HTML_ENTITIES = `<!ENTITY Aacute "&#193;">
+<!ENTITY aacute "&#225;">
+<!ENTITY Acirc "&#194;">
+<!ENTITY acirc "&#226;">
+<!ENTITY acute "&#180;">
+<!ENTITY AElig "&#198;">
+<!ENTITY aelig "&#230;">
+<!ENTITY Agrave "&#192;">
+<!ENTITY agrave "&#224;">
+<!ENTITY alefsym "&#8501;">
+<!ENTITY Alpha "&#913;">
+<!ENTITY alpha "&#945;">
+<!ENTITY amp "&#38;">
+<!ENTITY and "&#8869;">
+<!ENTITY ang "&#8736;">
+<!ENTITY Aring "&#197;">
+<!ENTITY aring "&#229;">
+<!ENTITY asymp "&#8776;">
+<!ENTITY Atilde "&#195;">
+<!ENTITY atilde "&#227;">
+<!ENTITY Auml "&#196;">
+<!ENTITY auml "&#228;">
+<!ENTITY bdquo "&#8222;">
+<!ENTITY Beta "&#914;">
+<!ENTITY beta "&#946;">
+<!ENTITY brvbar "&#166;">
+<!ENTITY bull "&#8226;">
+<!ENTITY cap "&#8745;">
+<!ENTITY Ccedil "&#199;">
+<!ENTITY ccedil "&#231;">
+<!ENTITY cedil "&#184;">
+<!ENTITY cent "&#162;">
+<!ENTITY Chi "&#935;">
+<!ENTITY chi "&#967;">
+<!ENTITY circ "&#710;">
+<!ENTITY clubs "&#9827;">
+<!ENTITY cong "&#8773;">
+<!ENTITY copy "&#169;">
+<!ENTITY crarr "&#8629;">
+<!ENTITY cup "&#8746;">
+<!ENTITY curren "&#164;">
+<!ENTITY dagger "&#8224;">
+<!ENTITY Dagger "&#8225;">
+<!ENTITY darr "&#8595;">
+<!ENTITY dArr "&#8659;">
+<!ENTITY deg "&#176;">
+<!ENTITY Delta "&#916;">
+<!ENTITY delta "&#948;">
+<!ENTITY diams "&#9830;">
+<!ENTITY divide "&#247;">
+<!ENTITY Eacute "&#201;">
+<!ENTITY eacute "&#233;">
+<!ENTITY Ecirc "&#202;">
+<!ENTITY ecirc "&#234;">
+<!ENTITY Egrave "&#200;">
+<!ENTITY egrave "&#232;">
+<!ENTITY empty "&#8709;">
+<!ENTITY emsp "&#8195;">
+<!ENTITY ensp "&#8194;">
+<!ENTITY epsilon "&#949;">
+<!ENTITY Epsilon "&#917;">
+<!ENTITY equiv "&#8801;">
+<!ENTITY Eta "&#919;">
+<!ENTITY eta "&#951;">
+<!ENTITY ETH "&#208;">
+<!ENTITY eth "&#240;">
+<!ENTITY Euml "&#203;">
+<!ENTITY euml "&#235;">
+<!ENTITY exist "&#8707;">
+<!ENTITY fnof "&#402;">
+<!ENTITY forall "&#8704;">
+<!ENTITY frac12 "&#189;">
+<!ENTITY frac14 "&#188;">
+<!ENTITY frac34 "&#190;">
+<!ENTITY frasl "&#8260;">
+<!ENTITY Gamma "&#915;">
+<!ENTITY gamma "&#947;">
+<!ENTITY ge "&#8805;">
+<!ENTITY gt "&#62;">
+<!ENTITY harr "&#8596;">
+<!ENTITY hArr "&#8660;">
+<!ENTITY hearts "&#9829;">
+<!ENTITY hellip "&#8230;">
+<!ENTITY Iacute "&#205;">
+<!ENTITY iacute "&#237;">
+<!ENTITY Icirc "&#206;">
+<!ENTITY icirc "&#238;">
+<!ENTITY iexcl "&#161;">
+<!ENTITY Igrave "&#204;">
+<!ENTITY igrave "&#236;">
+<!ENTITY image "&#8465;">
+<!ENTITY infin "&#8734;">
+<!ENTITY int "&#8747;">
+<!ENTITY Iota "&#921;">
+<!ENTITY iota "&#953;">
+<!ENTITY iquest "&#191;">
+<!ENTITY isin "&#8712;">
+<!ENTITY Iuml "&#207;">
+<!ENTITY iuml "&#239;">
+<!ENTITY Kappa "&#922;">
+<!ENTITY kappa "&#954;">
+<!ENTITY Lambda "&#923;">
+<!ENTITY lambda "&#955;">
+<!ENTITY lang "&#9001;">
+<!ENTITY laquo "&#171;">
+<!ENTITY larr "&#8592;">
+<!ENTITY lArr "&#8656;">
+<!ENTITY lceil "&#8968;">
+<!ENTITY ldquo "&#8220;">
+<!ENTITY le "&#8804;">
+<!ENTITY lfloor "&#8970;">
+<!ENTITY lowast "&#8727;">
+<!ENTITY loz "&#9674;">
+<!ENTITY lrm "&#8206;">
+<!ENTITY lsaquo "&#8249;">
+<!ENTITY lsquo "&#8216;">
+<!ENTITY lt "&#60;">
+<!ENTITY macr "&#175;">
+<!ENTITY mdash "&#8212;">
+<!ENTITY micro "&#181;">
+<!ENTITY middot "&#183;">
+<!ENTITY minus "&#8722;">
+<!ENTITY Mu "&#924;">
+<!ENTITY mu "&#956;">
+<!ENTITY nabla "&#8711;">
+<!ENTITY nbsp "&#160;">
+<!ENTITY ndash "&#8211;">
+<!ENTITY ne "&#8800;">
+<!ENTITY ni "&#8715;">
+<!ENTITY not "&#172;">
+<!ENTITY notin "&#8713;">
+<!ENTITY nsub "&#8836;">
+<!ENTITY Ntilde "&#209;">
+<!ENTITY ntilde "&#241;">
+<!ENTITY Nu "&#925;">
+<!ENTITY nu "&#957;">
+<!ENTITY Oacute "&#211;">
+<!ENTITY oacute "&#243;">
+<!ENTITY Ocirc "&#212;">
+<!ENTITY ocirc "&#244;">
+<!ENTITY OElig "&#338;">
+<!ENTITY oelig "&#339;">
+<!ENTITY Ograve "&#210;">
+<!ENTITY ograve "&#242;">
+<!ENTITY oline "&#8254;">
+<!ENTITY Omega "&#937;">
+<!ENTITY omega "&#969;">
+<!ENTITY Omicron "&#927;">
+<!ENTITY omicron "&#959;">
+<!ENTITY oplus "&#8853;">
+<!ENTITY or "&#8870;">
+<!ENTITY ordf "&#170;">
+<!ENTITY ordm "&#186;">
+<!ENTITY Oslash "&#216;">
+<!ENTITY oslash "&#248;">
+<!ENTITY Otilde "&#213;">
+<!ENTITY otilde "&#245;">
+<!ENTITY otimes "&#8855;">
+<!ENTITY Ouml "&#214;">
+<!ENTITY ouml "&#246;">
+<!ENTITY para "&#182;">
+<!ENTITY part "&#8706;">
+<!ENTITY permil "&#8240;">
+<!ENTITY perp "&#8869;">
+<!ENTITY Phi "&#934;">
+<!ENTITY phi "&#966;">
+<!ENTITY Pi "&#928;">
+<!ENTITY pi "&#960;">
+<!ENTITY piv "&#982;">
+<!ENTITY plusmn "&#177;">
+<!ENTITY pound "&#163;">
+<!ENTITY prime "&#8242;">
+<!ENTITY Prime "&#8243;">
+<!ENTITY prod "&#8719;">
+<!ENTITY prop "&#8733;">
+<!ENTITY Psi "&#936;">
+<!ENTITY psi "&#968;">
+<!ENTITY quot "&#34;">
+<!ENTITY radic "&#8730;">
+<!ENTITY rang "&#9002;">
+<!ENTITY raquo "&#187;">
+<!ENTITY rarr "&#8594;">
+<!ENTITY rArr "&#8658;">
+<!ENTITY rceil "&#8969;">
+<!ENTITY rdquo "&#8221;">
+<!ENTITY real "&#8476;">
+<!ENTITY reg "&#174;">
+<!ENTITY rfloor "&#8971;">
+<!ENTITY Rho "&#929;">
+<!ENTITY rho "&#961;">
+<!ENTITY rlm "&#8207;">
+<!ENTITY rsaquo "&#8250;">
+<!ENTITY rsquo "&#8217;">
+<!ENTITY sbquo "&#8218;">
+<!ENTITY Scaron "&#352;">
+<!ENTITY scaron "&#353;">
+<!ENTITY sdot "&#8901;">
+<!ENTITY sect "&#167;">
+<!ENTITY shy "&#173;">
+<!ENTITY Sigma "&#931;">
+<!ENTITY sigma "&#963;">
+<!ENTITY sigmaf "&#962;">
+<!ENTITY sim "&#8764;">
+<!ENTITY spades "&#9824;">
+<!ENTITY sub "&#8834;">
+<!ENTITY sube "&#8838;">
+<!ENTITY sum "&#8721;">
+<!ENTITY sup "&#8835;">
+<!ENTITY sup1 "&#185;">
+<!ENTITY sup2 "&#178;">
+<!ENTITY sup3 "&#179;">
+<!ENTITY supe "&#8839;">
+<!ENTITY szlig "&#223;">
+<!ENTITY Tau "&#932;">
+<!ENTITY tau "&#964;">
+<!ENTITY there4 "&#8756;">
+<!ENTITY Theta "&#920;">
+<!ENTITY theta "&#952;">
+<!ENTITY thetasym "&#977;">
+<!ENTITY thinsp "&#8201;">
+<!ENTITY THORN "&#222;">
+<!ENTITY thorn "&#254;">
+<!ENTITY tilde "&#732;">
+<!ENTITY times "&#215;">
+<!ENTITY trade "&#8482;">
+<!ENTITY Uacute "&#218;">
+<!ENTITY uacute "&#250;">
+<!ENTITY uarr "&#8593;">
+<!ENTITY uArr "&#8657;">
+<!ENTITY Ucirc "&#219;">
+<!ENTITY ucirc "&#251;">
+<!ENTITY Ugrave "&#217;">
+<!ENTITY ugrave "&#249;">
+<!ENTITY uml "&#168;">
+<!ENTITY upsih "&#978;">
+<!ENTITY Upsilon "&#933;">
+<!ENTITY upsilon "&#965;">
+<!ENTITY Uuml "&#220;">
+<!ENTITY uuml "&#252;">
+<!ENTITY weierp "&#8472;">
+<!ENTITY Xi "&#926;">
+<!ENTITY xi "&#958;">
+<!ENTITY Yacute "&#221;">
+<!ENTITY yacute "&#253;">
+<!ENTITY yen "&#165;">
+<!ENTITY Yuml "&#376;">
+<!ENTITY yuml "&#255;">
+<!ENTITY Zeta "&#918;">
+<!ENTITY zeta "&#950;">
+<!ENTITY zwj "&#8205;">
+<!ENTITY zwnj "&#8204;">`.replace(/\n/g, ' ');
+
+  /**
+   * A reasonably strict xml declaration.
+   */
+  const XML_DECL = '<?xml version="1.0" standalone="no"?>';
+
+  /**
+   * The beginning of the XML doctype declaration.
+   */
+  const DOCTYPE_START = `<!DOCTYPE svg PUBLIC "-//W3C//DTD SVG 1.1//EN" "http://www.w3.org/Graphics/SVG/1.1/DTD/svg11.dtd" [`;
+
+  /**
+   * The end of the XML docype declaration.
+   */
+  const DOCTYPE_END = ']>';
+
+  /**
+   * A full header for an SVG XML document.
+   */
+  const SVG_XML_HEADER = `${XML_DECL}
+    ${DOCTYPE_START}${HTML_ENTITIES}${DOCTYPE_END}`;
 
     void Promise.all([...diagrams].map(renderOneMarmaid));
   });
@@ -7538,8 +7823,8 @@ a.anchor-link {
 <div class="jp-InputPrompt jp-InputArea-prompt">In [1]:</div>
 <div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
 <div class="cm-editor cm-s-jupyter">
-<div class="highlight hl-ipython3"><pre><span></span><span class="kn">import</span> <span class="nn">pandas</span> <span class="k">as</span> <span class="nn">pd</span>
-<span class="kn">from</span> <span class="nn">io</span> <span class="kn">import</span> <span class="n">StringIO</span>
+<div class="highlight hl-ipython3"><pre><span></span><span class="kn">import</span><span class="w"> </span><span class="nn">pandas</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">pd</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">io</span><span class="w"> </span><span class="kn">import</span> <span class="n">StringIO</span>
 </pre></div>
 </div>
 </div>
@@ -7624,105 +7909,105 @@ a.anchor-link {
 <div class="jp-RenderedHTMLCommon jp-RenderedHTML jp-OutputArea-output jp-OutputArea-executeResult" data-mime-type="text/html" tabindex="0">
 <style type="text/css">
 </style>
-<table id="T_54a6f">
+<table id="T_8c092">
 <thead>
 <tr>
 <th class="blank level0"> </th>
-<th class="col_heading level0 col0" id="T_54a6f_level0_col0">Unnamed: 0</th>
-<th class="col_heading level0 col1" id="T_54a6f_level0_col1">Exec Time</th>
-<th class="col_heading level0 col2" id="T_54a6f_level0_col2">Spread</th>
-<th class="col_heading level0 col3" id="T_54a6f_level0_col3">Type</th>
-<th class="col_heading level0 col4" id="T_54a6f_level0_col4">Side</th>
-<th class="col_heading level0 col5" id="T_54a6f_level0_col5">Pos Effect</th>
-<th class="col_heading level0 col6" id="T_54a6f_level0_col6">Order Type</th>
-<th class="col_heading level0 col7" id="T_54a6f_level0_col7">Symbol</th>
-<th class="col_heading level0 col8" id="T_54a6f_level0_col8">Qty</th>
-<th class="col_heading level0 col9" id="T_54a6f_level0_col9">Price</th>
-<th class="col_heading level0 col10" id="T_54a6f_level0_col10">Net Price</th>
-<th class="col_heading level0 col11" id="T_54a6f_level0_col11">Exp</th>
-<th class="col_heading level0 col12" id="T_54a6f_level0_col12">Strike</th>
+<th class="col_heading level0 col0" id="T_8c092_level0_col0">Unnamed: 0</th>
+<th class="col_heading level0 col1" id="T_8c092_level0_col1">Exec Time</th>
+<th class="col_heading level0 col2" id="T_8c092_level0_col2">Spread</th>
+<th class="col_heading level0 col3" id="T_8c092_level0_col3">Type</th>
+<th class="col_heading level0 col4" id="T_8c092_level0_col4">Side</th>
+<th class="col_heading level0 col5" id="T_8c092_level0_col5">Pos Effect</th>
+<th class="col_heading level0 col6" id="T_8c092_level0_col6">Order Type</th>
+<th class="col_heading level0 col7" id="T_8c092_level0_col7">Symbol</th>
+<th class="col_heading level0 col8" id="T_8c092_level0_col8">Qty</th>
+<th class="col_heading level0 col9" id="T_8c092_level0_col9">Price</th>
+<th class="col_heading level0 col10" id="T_8c092_level0_col10">Net Price</th>
+<th class="col_heading level0 col11" id="T_8c092_level0_col11">Exp</th>
+<th class="col_heading level0 col12" id="T_8c092_level0_col12">Strike</th>
 </tr>
 </thead>
 <tbody>
 <tr>
-<th class="row_heading level0 row0" id="T_54a6f_level0_row0">465</th>
-<td class="data row0 col0" id="T_54a6f_row0_col0">nan</td>
-<td class="data row0 col1" id="T_54a6f_row0_col1"></td>
-<td class="data row0 col2" id="T_54a6f_row0_col2">STOCK</td>
-<td class="data row0 col3" id="T_54a6f_row0_col3">STOCK</td>
-<td class="data row0 col4" id="T_54a6f_row0_col4">BUY</td>
-<td class="data row0 col5" id="T_54a6f_row0_col5">TO OPEN</td>
-<td class="data row0 col6" id="T_54a6f_row0_col6">LMT</td>
-<td class="data row0 col7" id="T_54a6f_row0_col7">SANA</td>
-<td class="data row0 col8" id="T_54a6f_row0_col8"></td>
-<td class="data row0 col9" id="T_54a6f_row0_col9"></td>
-<td class="data row0 col10" id="T_54a6f_row0_col10"></td>
-<td class="data row0 col11" id="T_54a6f_row0_col11">nan</td>
-<td class="data row0 col12" id="T_54a6f_row0_col12">nan</td>
+<th class="row_heading level0 row0" id="T_8c092_level0_row0">465</th>
+<td class="data row0 col0" id="T_8c092_row0_col0">nan</td>
+<td class="data row0 col1" id="T_8c092_row0_col1"></td>
+<td class="data row0 col2" id="T_8c092_row0_col2">STOCK</td>
+<td class="data row0 col3" id="T_8c092_row0_col3">STOCK</td>
+<td class="data row0 col4" id="T_8c092_row0_col4">BUY</td>
+<td class="data row0 col5" id="T_8c092_row0_col5">TO OPEN</td>
+<td class="data row0 col6" id="T_8c092_row0_col6">LMT</td>
+<td class="data row0 col7" id="T_8c092_row0_col7">SANA</td>
+<td class="data row0 col8" id="T_8c092_row0_col8"></td>
+<td class="data row0 col9" id="T_8c092_row0_col9"></td>
+<td class="data row0 col10" id="T_8c092_row0_col10"></td>
+<td class="data row0 col11" id="T_8c092_row0_col11">nan</td>
+<td class="data row0 col12" id="T_8c092_row0_col12">nan</td>
 </tr>
 <tr>
-<th class="row_heading level0 row1" id="T_54a6f_level0_row1">466</th>
-<td class="data row1 col0" id="T_54a6f_row1_col0">nan</td>
-<td class="data row1 col1" id="T_54a6f_row1_col1"></td>
-<td class="data row1 col2" id="T_54a6f_row1_col2">STOCK</td>
-<td class="data row1 col3" id="T_54a6f_row1_col3">STOCK</td>
-<td class="data row1 col4" id="T_54a6f_row1_col4">BUY</td>
-<td class="data row1 col5" id="T_54a6f_row1_col5">TO OPEN</td>
-<td class="data row1 col6" id="T_54a6f_row1_col6">MKT</td>
-<td class="data row1 col7" id="T_54a6f_row1_col7">PDD</td>
-<td class="data row1 col8" id="T_54a6f_row1_col8"></td>
-<td class="data row1 col9" id="T_54a6f_row1_col9"></td>
-<td class="data row1 col10" id="T_54a6f_row1_col10"></td>
-<td class="data row1 col11" id="T_54a6f_row1_col11">nan</td>
-<td class="data row1 col12" id="T_54a6f_row1_col12">nan</td>
+<th class="row_heading level0 row1" id="T_8c092_level0_row1">466</th>
+<td class="data row1 col0" id="T_8c092_row1_col0">nan</td>
+<td class="data row1 col1" id="T_8c092_row1_col1"></td>
+<td class="data row1 col2" id="T_8c092_row1_col2">STOCK</td>
+<td class="data row1 col3" id="T_8c092_row1_col3">STOCK</td>
+<td class="data row1 col4" id="T_8c092_row1_col4">BUY</td>
+<td class="data row1 col5" id="T_8c092_row1_col5">TO OPEN</td>
+<td class="data row1 col6" id="T_8c092_row1_col6">MKT</td>
+<td class="data row1 col7" id="T_8c092_row1_col7">PDD</td>
+<td class="data row1 col8" id="T_8c092_row1_col8"></td>
+<td class="data row1 col9" id="T_8c092_row1_col9"></td>
+<td class="data row1 col10" id="T_8c092_row1_col10"></td>
+<td class="data row1 col11" id="T_8c092_row1_col11">nan</td>
+<td class="data row1 col12" id="T_8c092_row1_col12">nan</td>
 </tr>
 <tr>
-<th class="row_heading level0 row2" id="T_54a6f_level0_row2">467</th>
-<td class="data row2 col0" id="T_54a6f_row2_col0">nan</td>
-<td class="data row2 col1" id="T_54a6f_row2_col1"></td>
-<td class="data row2 col2" id="T_54a6f_row2_col2">STOCK</td>
-<td class="data row2 col3" id="T_54a6f_row2_col3">STOCK</td>
-<td class="data row2 col4" id="T_54a6f_row2_col4">SELL</td>
-<td class="data row2 col5" id="T_54a6f_row2_col5">TO CLOSE</td>
-<td class="data row2 col6" id="T_54a6f_row2_col6">TRSTP</td>
-<td class="data row2 col7" id="T_54a6f_row2_col7">MDLZ</td>
-<td class="data row2 col8" id="T_54a6f_row2_col8"></td>
-<td class="data row2 col9" id="T_54a6f_row2_col9"></td>
-<td class="data row2 col10" id="T_54a6f_row2_col10"></td>
-<td class="data row2 col11" id="T_54a6f_row2_col11">nan</td>
-<td class="data row2 col12" id="T_54a6f_row2_col12">nan</td>
+<th class="row_heading level0 row2" id="T_8c092_level0_row2">467</th>
+<td class="data row2 col0" id="T_8c092_row2_col0">nan</td>
+<td class="data row2 col1" id="T_8c092_row2_col1"></td>
+<td class="data row2 col2" id="T_8c092_row2_col2">STOCK</td>
+<td class="data row2 col3" id="T_8c092_row2_col3">STOCK</td>
+<td class="data row2 col4" id="T_8c092_row2_col4">SELL</td>
+<td class="data row2 col5" id="T_8c092_row2_col5">TO CLOSE</td>
+<td class="data row2 col6" id="T_8c092_row2_col6">TRSTP</td>
+<td class="data row2 col7" id="T_8c092_row2_col7">MDLZ</td>
+<td class="data row2 col8" id="T_8c092_row2_col8"></td>
+<td class="data row2 col9" id="T_8c092_row2_col9"></td>
+<td class="data row2 col10" id="T_8c092_row2_col10"></td>
+<td class="data row2 col11" id="T_8c092_row2_col11">nan</td>
+<td class="data row2 col12" id="T_8c092_row2_col12">nan</td>
 </tr>
 <tr>
-<th class="row_heading level0 row3" id="T_54a6f_level0_row3">468</th>
-<td class="data row3 col0" id="T_54a6f_row3_col0">nan</td>
-<td class="data row3 col1" id="T_54a6f_row3_col1"></td>
-<td class="data row3 col2" id="T_54a6f_row3_col2">STOCK</td>
-<td class="data row3 col3" id="T_54a6f_row3_col3">STOCK</td>
-<td class="data row3 col4" id="T_54a6f_row3_col4">BUY</td>
-<td class="data row3 col5" id="T_54a6f_row3_col5">TO OPEN</td>
-<td class="data row3 col6" id="T_54a6f_row3_col6">LMT</td>
-<td class="data row3 col7" id="T_54a6f_row3_col7">NXE</td>
-<td class="data row3 col8" id="T_54a6f_row3_col8"></td>
-<td class="data row3 col9" id="T_54a6f_row3_col9"></td>
-<td class="data row3 col10" id="T_54a6f_row3_col10"></td>
-<td class="data row3 col11" id="T_54a6f_row3_col11">nan</td>
-<td class="data row3 col12" id="T_54a6f_row3_col12">nan</td>
+<th class="row_heading level0 row3" id="T_8c092_level0_row3">468</th>
+<td class="data row3 col0" id="T_8c092_row3_col0">nan</td>
+<td class="data row3 col1" id="T_8c092_row3_col1"></td>
+<td class="data row3 col2" id="T_8c092_row3_col2">STOCK</td>
+<td class="data row3 col3" id="T_8c092_row3_col3">STOCK</td>
+<td class="data row3 col4" id="T_8c092_row3_col4">BUY</td>
+<td class="data row3 col5" id="T_8c092_row3_col5">TO OPEN</td>
+<td class="data row3 col6" id="T_8c092_row3_col6">LMT</td>
+<td class="data row3 col7" id="T_8c092_row3_col7">NXE</td>
+<td class="data row3 col8" id="T_8c092_row3_col8"></td>
+<td class="data row3 col9" id="T_8c092_row3_col9"></td>
+<td class="data row3 col10" id="T_8c092_row3_col10"></td>
+<td class="data row3 col11" id="T_8c092_row3_col11">nan</td>
+<td class="data row3 col12" id="T_8c092_row3_col12">nan</td>
 </tr>
 <tr>
-<th class="row_heading level0 row4" id="T_54a6f_level0_row4">469</th>
-<td class="data row4 col0" id="T_54a6f_row4_col0">nan</td>
-<td class="data row4 col1" id="T_54a6f_row4_col1"></td>
-<td class="data row4 col2" id="T_54a6f_row4_col2">STOCK</td>
-<td class="data row4 col3" id="T_54a6f_row4_col3">STOCK</td>
-<td class="data row4 col4" id="T_54a6f_row4_col4">BUY</td>
-<td class="data row4 col5" id="T_54a6f_row4_col5">TO OPEN</td>
-<td class="data row4 col6" id="T_54a6f_row4_col6">LMT</td>
-<td class="data row4 col7" id="T_54a6f_row4_col7">AEP</td>
-<td class="data row4 col8" id="T_54a6f_row4_col8"></td>
-<td class="data row4 col9" id="T_54a6f_row4_col9"></td>
-<td class="data row4 col10" id="T_54a6f_row4_col10"></td>
-<td class="data row4 col11" id="T_54a6f_row4_col11">nan</td>
-<td class="data row4 col12" id="T_54a6f_row4_col12">nan</td>
+<th class="row_heading level0 row4" id="T_8c092_level0_row4">469</th>
+<td class="data row4 col0" id="T_8c092_row4_col0">nan</td>
+<td class="data row4 col1" id="T_8c092_row4_col1"></td>
+<td class="data row4 col2" id="T_8c092_row4_col2">STOCK</td>
+<td class="data row4 col3" id="T_8c092_row4_col3">STOCK</td>
+<td class="data row4 col4" id="T_8c092_row4_col4">BUY</td>
+<td class="data row4 col5" id="T_8c092_row4_col5">TO OPEN</td>
+<td class="data row4 col6" id="T_8c092_row4_col6">LMT</td>
+<td class="data row4 col7" id="T_8c092_row4_col7">AEP</td>
+<td class="data row4 col8" id="T_8c092_row4_col8"></td>
+<td class="data row4 col9" id="T_8c092_row4_col9"></td>
+<td class="data row4 col10" id="T_8c092_row4_col10"></td>
+<td class="data row4 col11" id="T_8c092_row4_col11">nan</td>
+<td class="data row4 col12" id="T_8c092_row4_col12">nan</td>
 </tr>
 </tbody>
 </table>
@@ -7769,63 +8054,63 @@ a.anchor-link {
 <div class="jp-RenderedHTMLCommon jp-RenderedHTML jp-OutputArea-output jp-OutputArea-executeResult" data-mime-type="text/html" tabindex="0">
 <style type="text/css">
 </style>
-<table id="T_ed6d8">
+<table id="T_bb2e8">
 <thead>
 <tr>
 <th class="blank level0"> </th>
-<th class="col_heading level0 col0" id="T_ed6d8_level0_col0">Exec Time</th>
-<th class="col_heading level0 col1" id="T_ed6d8_level0_col1">Side</th>
-<th class="col_heading level0 col2" id="T_ed6d8_level0_col2">Pos Effect</th>
-<th class="col_heading level0 col3" id="T_ed6d8_level0_col3">Symbol</th>
-<th class="col_heading level0 col4" id="T_ed6d8_level0_col4">Qty</th>
-<th class="col_heading level0 col5" id="T_ed6d8_level0_col5">Price</th>
+<th class="col_heading level0 col0" id="T_bb2e8_level0_col0">Exec Time</th>
+<th class="col_heading level0 col1" id="T_bb2e8_level0_col1">Side</th>
+<th class="col_heading level0 col2" id="T_bb2e8_level0_col2">Pos Effect</th>
+<th class="col_heading level0 col3" id="T_bb2e8_level0_col3">Symbol</th>
+<th class="col_heading level0 col4" id="T_bb2e8_level0_col4">Qty</th>
+<th class="col_heading level0 col5" id="T_bb2e8_level0_col5">Price</th>
 </tr>
 </thead>
 <tbody>
 <tr>
-<th class="row_heading level0 row0" id="T_ed6d8_level0_row0">0</th>
-<td class="data row0 col0" id="T_ed6d8_row0_col0"></td>
-<td class="data row0 col1" id="T_ed6d8_row0_col1">BUY</td>
-<td class="data row0 col2" id="T_ed6d8_row0_col2">TO OPEN</td>
-<td class="data row0 col3" id="T_ed6d8_row0_col3">XLF</td>
-<td class="data row0 col4" id="T_ed6d8_row0_col4"></td>
-<td class="data row0 col5" id="T_ed6d8_row0_col5"></td>
+<th class="row_heading level0 row0" id="T_bb2e8_level0_row0">0</th>
+<td class="data row0 col0" id="T_bb2e8_row0_col0"></td>
+<td class="data row0 col1" id="T_bb2e8_row0_col1">BUY</td>
+<td class="data row0 col2" id="T_bb2e8_row0_col2">TO OPEN</td>
+<td class="data row0 col3" id="T_bb2e8_row0_col3">XLF</td>
+<td class="data row0 col4" id="T_bb2e8_row0_col4"></td>
+<td class="data row0 col5" id="T_bb2e8_row0_col5"></td>
 </tr>
 <tr>
-<th class="row_heading level0 row1" id="T_ed6d8_level0_row1">1</th>
-<td class="data row1 col0" id="T_ed6d8_row1_col0"></td>
-<td class="data row1 col1" id="T_ed6d8_row1_col1">SELL</td>
-<td class="data row1 col2" id="T_ed6d8_row1_col2">TO CLOSE</td>
-<td class="data row1 col3" id="T_ed6d8_row1_col3">XLF</td>
-<td class="data row1 col4" id="T_ed6d8_row1_col4"></td>
-<td class="data row1 col5" id="T_ed6d8_row1_col5"></td>
+<th class="row_heading level0 row1" id="T_bb2e8_level0_row1">1</th>
+<td class="data row1 col0" id="T_bb2e8_row1_col0"></td>
+<td class="data row1 col1" id="T_bb2e8_row1_col1">SELL</td>
+<td class="data row1 col2" id="T_bb2e8_row1_col2">TO CLOSE</td>
+<td class="data row1 col3" id="T_bb2e8_row1_col3">XLF</td>
+<td class="data row1 col4" id="T_bb2e8_row1_col4"></td>
+<td class="data row1 col5" id="T_bb2e8_row1_col5"></td>
 </tr>
 <tr>
-<th class="row_heading level0 row2" id="T_ed6d8_level0_row2">2</th>
-<td class="data row2 col0" id="T_ed6d8_row2_col0"></td>
-<td class="data row2 col1" id="T_ed6d8_row2_col1">SELL</td>
-<td class="data row2 col2" id="T_ed6d8_row2_col2">TO CLOSE</td>
-<td class="data row2 col3" id="T_ed6d8_row2_col3">CCRN</td>
-<td class="data row2 col4" id="T_ed6d8_row2_col4"></td>
-<td class="data row2 col5" id="T_ed6d8_row2_col5"></td>
+<th class="row_heading level0 row2" id="T_bb2e8_level0_row2">2</th>
+<td class="data row2 col0" id="T_bb2e8_row2_col0"></td>
+<td class="data row2 col1" id="T_bb2e8_row2_col1">SELL</td>
+<td class="data row2 col2" id="T_bb2e8_row2_col2">TO CLOSE</td>
+<td class="data row2 col3" id="T_bb2e8_row2_col3">CCRN</td>
+<td class="data row2 col4" id="T_bb2e8_row2_col4"></td>
+<td class="data row2 col5" id="T_bb2e8_row2_col5"></td>
 </tr>
 <tr>
-<th class="row_heading level0 row3" id="T_ed6d8_level0_row3">3</th>
-<td class="data row3 col0" id="T_ed6d8_row3_col0"></td>
-<td class="data row3 col1" id="T_ed6d8_row3_col1">BUY</td>
-<td class="data row3 col2" id="T_ed6d8_row3_col2">TO OPEN</td>
-<td class="data row3 col3" id="T_ed6d8_row3_col3">MOMO</td>
-<td class="data row3 col4" id="T_ed6d8_row3_col4"></td>
-<td class="data row3 col5" id="T_ed6d8_row3_col5"></td>
+<th class="row_heading level0 row3" id="T_bb2e8_level0_row3">3</th>
+<td class="data row3 col0" id="T_bb2e8_row3_col0"></td>
+<td class="data row3 col1" id="T_bb2e8_row3_col1">BUY</td>
+<td class="data row3 col2" id="T_bb2e8_row3_col2">TO OPEN</td>
+<td class="data row3 col3" id="T_bb2e8_row3_col3">MOMO</td>
+<td class="data row3 col4" id="T_bb2e8_row3_col4"></td>
+<td class="data row3 col5" id="T_bb2e8_row3_col5"></td>
 </tr>
 <tr>
-<th class="row_heading level0 row4" id="T_ed6d8_level0_row4">4</th>
-<td class="data row4 col0" id="T_ed6d8_row4_col0"></td>
-<td class="data row4 col1" id="T_ed6d8_row4_col1">BUY</td>
-<td class="data row4 col2" id="T_ed6d8_row4_col2">TO OPEN</td>
-<td class="data row4 col3" id="T_ed6d8_row4_col3">MOMO</td>
-<td class="data row4 col4" id="T_ed6d8_row4_col4"></td>
-<td class="data row4 col5" id="T_ed6d8_row4_col5"></td>
+<th class="row_heading level0 row4" id="T_bb2e8_level0_row4">4</th>
+<td class="data row4 col0" id="T_bb2e8_row4_col0"></td>
+<td class="data row4 col1" id="T_bb2e8_row4_col1">BUY</td>
+<td class="data row4 col2" id="T_bb2e8_row4_col2">TO OPEN</td>
+<td class="data row4 col3" id="T_bb2e8_row4_col3">MOMO</td>
+<td class="data row4 col4" id="T_bb2e8_row4_col4"></td>
+<td class="data row4 col5" id="T_bb2e8_row4_col5"></td>
 </tr>
 </tbody>
 </table>
@@ -7869,63 +8154,63 @@ a.anchor-link {
 <div class="jp-RenderedHTMLCommon jp-RenderedHTML jp-OutputArea-output jp-OutputArea-executeResult" data-mime-type="text/html" tabindex="0">
 <style type="text/css">
 </style>
-<table id="T_c1aeb">
+<table id="T_ebacf">
 <thead>
 <tr>
 <th class="blank level0"> </th>
-<th class="col_heading level0 col0" id="T_c1aeb_level0_col0">Exec Time</th>
-<th class="col_heading level0 col1" id="T_c1aeb_level0_col1">Side</th>
-<th class="col_heading level0 col2" id="T_c1aeb_level0_col2">Pos Effect</th>
-<th class="col_heading level0 col3" id="T_c1aeb_level0_col3">Symbol</th>
-<th class="col_heading level0 col4" id="T_c1aeb_level0_col4">Qty</th>
-<th class="col_heading level0 col5" id="T_c1aeb_level0_col5">Price</th>
+<th class="col_heading level0 col0" id="T_ebacf_level0_col0">Exec Time</th>
+<th class="col_heading level0 col1" id="T_ebacf_level0_col1">Side</th>
+<th class="col_heading level0 col2" id="T_ebacf_level0_col2">Pos Effect</th>
+<th class="col_heading level0 col3" id="T_ebacf_level0_col3">Symbol</th>
+<th class="col_heading level0 col4" id="T_ebacf_level0_col4">Qty</th>
+<th class="col_heading level0 col5" id="T_ebacf_level0_col5">Price</th>
 </tr>
 </thead>
 <tbody>
 <tr>
-<th class="row_heading level0 row0" id="T_c1aeb_level0_row0">0</th>
-<td class="data row0 col0" id="T_c1aeb_row0_col0"></td>
-<td class="data row0 col1" id="T_c1aeb_row0_col1">BUY</td>
-<td class="data row0 col2" id="T_c1aeb_row0_col2">TO OPEN</td>
-<td class="data row0 col3" id="T_c1aeb_row0_col3">XLF</td>
-<td class="data row0 col4" id="T_c1aeb_row0_col4"></td>
-<td class="data row0 col5" id="T_c1aeb_row0_col5"></td>
+<th class="row_heading level0 row0" id="T_ebacf_level0_row0">0</th>
+<td class="data row0 col0" id="T_ebacf_row0_col0"></td>
+<td class="data row0 col1" id="T_ebacf_row0_col1">BUY</td>
+<td class="data row0 col2" id="T_ebacf_row0_col2">TO OPEN</td>
+<td class="data row0 col3" id="T_ebacf_row0_col3">XLF</td>
+<td class="data row0 col4" id="T_ebacf_row0_col4"></td>
+<td class="data row0 col5" id="T_ebacf_row0_col5"></td>
 </tr>
 <tr>
-<th class="row_heading level0 row1" id="T_c1aeb_level0_row1">3</th>
-<td class="data row1 col0" id="T_c1aeb_row1_col0"></td>
-<td class="data row1 col1" id="T_c1aeb_row1_col1">BUY</td>
-<td class="data row1 col2" id="T_c1aeb_row1_col2">TO OPEN</td>
-<td class="data row1 col3" id="T_c1aeb_row1_col3">MOMO</td>
-<td class="data row1 col4" id="T_c1aeb_row1_col4"></td>
-<td class="data row1 col5" id="T_c1aeb_row1_col5"></td>
+<th class="row_heading level0 row1" id="T_ebacf_level0_row1">3</th>
+<td class="data row1 col0" id="T_ebacf_row1_col0"></td>
+<td class="data row1 col1" id="T_ebacf_row1_col1">BUY</td>
+<td class="data row1 col2" id="T_ebacf_row1_col2">TO OPEN</td>
+<td class="data row1 col3" id="T_ebacf_row1_col3">MOMO</td>
+<td class="data row1 col4" id="T_ebacf_row1_col4"></td>
+<td class="data row1 col5" id="T_ebacf_row1_col5"></td>
 </tr>
 <tr>
-<th class="row_heading level0 row2" id="T_c1aeb_level0_row2">4</th>
-<td class="data row2 col0" id="T_c1aeb_row2_col0"></td>
-<td class="data row2 col1" id="T_c1aeb_row2_col1">BUY</td>
-<td class="data row2 col2" id="T_c1aeb_row2_col2">TO OPEN</td>
-<td class="data row2 col3" id="T_c1aeb_row2_col3">MOMO</td>
-<td class="data row2 col4" id="T_c1aeb_row2_col4"></td>
-<td class="data row2 col5" id="T_c1aeb_row2_col5"></td>
+<th class="row_heading level0 row2" id="T_ebacf_level0_row2">4</th>
+<td class="data row2 col0" id="T_ebacf_row2_col0"></td>
+<td class="data row2 col1" id="T_ebacf_row2_col1">BUY</td>
+<td class="data row2 col2" id="T_ebacf_row2_col2">TO OPEN</td>
+<td class="data row2 col3" id="T_ebacf_row2_col3">MOMO</td>
+<td class="data row2 col4" id="T_ebacf_row2_col4"></td>
+<td class="data row2 col5" id="T_ebacf_row2_col5"></td>
 </tr>
 <tr>
-<th class="row_heading level0 row3" id="T_c1aeb_level0_row3">5</th>
-<td class="data row3 col0" id="T_c1aeb_row3_col0"></td>
-<td class="data row3 col1" id="T_c1aeb_row3_col1">BUY</td>
-<td class="data row3 col2" id="T_c1aeb_row3_col2">TO OPEN</td>
-<td class="data row3 col3" id="T_c1aeb_row3_col3">MOMO</td>
-<td class="data row3 col4" id="T_c1aeb_row3_col4"></td>
-<td class="data row3 col5" id="T_c1aeb_row3_col5"></td>
+<th class="row_heading level0 row3" id="T_ebacf_level0_row3">5</th>
+<td class="data row3 col0" id="T_ebacf_row3_col0"></td>
+<td class="data row3 col1" id="T_ebacf_row3_col1">BUY</td>
+<td class="data row3 col2" id="T_ebacf_row3_col2">TO OPEN</td>
+<td class="data row3 col3" id="T_ebacf_row3_col3">MOMO</td>
+<td class="data row3 col4" id="T_ebacf_row3_col4"></td>
+<td class="data row3 col5" id="T_ebacf_row3_col5"></td>
 </tr>
 <tr>
-<th class="row_heading level0 row4" id="T_c1aeb_level0_row4">6</th>
-<td class="data row4 col0" id="T_c1aeb_row4_col0"></td>
-<td class="data row4 col1" id="T_c1aeb_row4_col1">BUY</td>
-<td class="data row4 col2" id="T_c1aeb_row4_col2">TO OPEN</td>
-<td class="data row4 col3" id="T_c1aeb_row4_col3">MOMO</td>
-<td class="data row4 col4" id="T_c1aeb_row4_col4"></td>
-<td class="data row4 col5" id="T_c1aeb_row4_col5"></td>
+<th class="row_heading level0 row4" id="T_ebacf_level0_row4">6</th>
+<td class="data row4 col0" id="T_ebacf_row4_col0"></td>
+<td class="data row4 col1" id="T_ebacf_row4_col1">BUY</td>
+<td class="data row4 col2" id="T_ebacf_row4_col2">TO OPEN</td>
+<td class="data row4 col3" id="T_ebacf_row4_col3">MOMO</td>
+<td class="data row4 col4" id="T_ebacf_row4_col4"></td>
+<td class="data row4 col5" id="T_ebacf_row4_col5"></td>
 </tr>
 </tbody>
 </table>
@@ -7958,63 +8243,63 @@ a.anchor-link {
 <div class="jp-RenderedHTMLCommon jp-RenderedHTML jp-OutputArea-output jp-OutputArea-executeResult" data-mime-type="text/html" tabindex="0">
 <style type="text/css">
 </style>
-<table id="T_a2786">
+<table id="T_ed66c">
 <thead>
 <tr>
 <th class="blank level0"> </th>
-<th class="col_heading level0 col0" id="T_a2786_level0_col0">Exec Time</th>
-<th class="col_heading level0 col1" id="T_a2786_level0_col1">Side</th>
-<th class="col_heading level0 col2" id="T_a2786_level0_col2">Pos Effect</th>
-<th class="col_heading level0 col3" id="T_a2786_level0_col3">Symbol</th>
-<th class="col_heading level0 col4" id="T_a2786_level0_col4">Qty</th>
-<th class="col_heading level0 col5" id="T_a2786_level0_col5">Price</th>
+<th class="col_heading level0 col0" id="T_ed66c_level0_col0">Exec Time</th>
+<th class="col_heading level0 col1" id="T_ed66c_level0_col1">Side</th>
+<th class="col_heading level0 col2" id="T_ed66c_level0_col2">Pos Effect</th>
+<th class="col_heading level0 col3" id="T_ed66c_level0_col3">Symbol</th>
+<th class="col_heading level0 col4" id="T_ed66c_level0_col4">Qty</th>
+<th class="col_heading level0 col5" id="T_ed66c_level0_col5">Price</th>
 </tr>
 </thead>
 <tbody>
 <tr>
-<th class="row_heading level0 row0" id="T_a2786_level0_row0">1</th>
-<td class="data row0 col0" id="T_a2786_row0_col0"></td>
-<td class="data row0 col1" id="T_a2786_row0_col1">SELL</td>
-<td class="data row0 col2" id="T_a2786_row0_col2">TO CLOSE</td>
-<td class="data row0 col3" id="T_a2786_row0_col3">XLF</td>
-<td class="data row0 col4" id="T_a2786_row0_col4"></td>
-<td class="data row0 col5" id="T_a2786_row0_col5"></td>
+<th class="row_heading level0 row0" id="T_ed66c_level0_row0">1</th>
+<td class="data row0 col0" id="T_ed66c_row0_col0"></td>
+<td class="data row0 col1" id="T_ed66c_row0_col1">SELL</td>
+<td class="data row0 col2" id="T_ed66c_row0_col2">TO CLOSE</td>
+<td class="data row0 col3" id="T_ed66c_row0_col3">XLF</td>
+<td class="data row0 col4" id="T_ed66c_row0_col4"></td>
+<td class="data row0 col5" id="T_ed66c_row0_col5"></td>
 </tr>
 <tr>
-<th class="row_heading level0 row1" id="T_a2786_level0_row1">2</th>
-<td class="data row1 col0" id="T_a2786_row1_col0"></td>
-<td class="data row1 col1" id="T_a2786_row1_col1">SELL</td>
-<td class="data row1 col2" id="T_a2786_row1_col2">TO CLOSE</td>
-<td class="data row1 col3" id="T_a2786_row1_col3">CCRN</td>
-<td class="data row1 col4" id="T_a2786_row1_col4"></td>
-<td class="data row1 col5" id="T_a2786_row1_col5"></td>
+<th class="row_heading level0 row1" id="T_ed66c_level0_row1">2</th>
+<td class="data row1 col0" id="T_ed66c_row1_col0"></td>
+<td class="data row1 col1" id="T_ed66c_row1_col1">SELL</td>
+<td class="data row1 col2" id="T_ed66c_row1_col2">TO CLOSE</td>
+<td class="data row1 col3" id="T_ed66c_row1_col3">CCRN</td>
+<td class="data row1 col4" id="T_ed66c_row1_col4"></td>
+<td class="data row1 col5" id="T_ed66c_row1_col5"></td>
 </tr>
 <tr>
-<th class="row_heading level0 row2" id="T_a2786_level0_row2">12</th>
-<td class="data row2 col0" id="T_a2786_row2_col0"></td>
-<td class="data row2 col1" id="T_a2786_row2_col1">SELL</td>
-<td class="data row2 col2" id="T_a2786_row2_col2">TO CLOSE</td>
-<td class="data row2 col3" id="T_a2786_row2_col3">ROKU</td>
-<td class="data row2 col4" id="T_a2786_row2_col4"></td>
-<td class="data row2 col5" id="T_a2786_row2_col5"></td>
+<th class="row_heading level0 row2" id="T_ed66c_level0_row2">12</th>
+<td class="data row2 col0" id="T_ed66c_row2_col0"></td>
+<td class="data row2 col1" id="T_ed66c_row2_col1">SELL</td>
+<td class="data row2 col2" id="T_ed66c_row2_col2">TO CLOSE</td>
+<td class="data row2 col3" id="T_ed66c_row2_col3">ROKU</td>
+<td class="data row2 col4" id="T_ed66c_row2_col4"></td>
+<td class="data row2 col5" id="T_ed66c_row2_col5"></td>
 </tr>
 <tr>
-<th class="row_heading level0 row3" id="T_a2786_level0_row3">13</th>
-<td class="data row3 col0" id="T_a2786_row3_col0"></td>
-<td class="data row3 col1" id="T_a2786_row3_col1">SELL</td>
-<td class="data row3 col2" id="T_a2786_row3_col2">TO CLOSE</td>
-<td class="data row3 col3" id="T_a2786_row3_col3">ROKU</td>
-<td class="data row3 col4" id="T_a2786_row3_col4"></td>
-<td class="data row3 col5" id="T_a2786_row3_col5"></td>
+<th class="row_heading level0 row3" id="T_ed66c_level0_row3">13</th>
+<td class="data row3 col0" id="T_ed66c_row3_col0"></td>
+<td class="data row3 col1" id="T_ed66c_row3_col1">SELL</td>
+<td class="data row3 col2" id="T_ed66c_row3_col2">TO CLOSE</td>
+<td class="data row3 col3" id="T_ed66c_row3_col3">ROKU</td>
+<td class="data row3 col4" id="T_ed66c_row3_col4"></td>
+<td class="data row3 col5" id="T_ed66c_row3_col5"></td>
 </tr>
 <tr>
-<th class="row_heading level0 row4" id="T_a2786_level0_row4">14</th>
-<td class="data row4 col0" id="T_a2786_row4_col0"></td>
-<td class="data row4 col1" id="T_a2786_row4_col1">SELL</td>
-<td class="data row4 col2" id="T_a2786_row4_col2">TO CLOSE</td>
-<td class="data row4 col3" id="T_a2786_row4_col3">NVDA</td>
-<td class="data row4 col4" id="T_a2786_row4_col4"></td>
-<td class="data row4 col5" id="T_a2786_row4_col5"></td>
+<th class="row_heading level0 row4" id="T_ed66c_level0_row4">14</th>
+<td class="data row4 col0" id="T_ed66c_row4_col0"></td>
+<td class="data row4 col1" id="T_ed66c_row4_col1">SELL</td>
+<td class="data row4 col2" id="T_ed66c_row4_col2">TO CLOSE</td>
+<td class="data row4 col3" id="T_ed66c_row4_col3">NVDA</td>
+<td class="data row4 col4" id="T_ed66c_row4_col4"></td>
+<td class="data row4 col5" id="T_ed66c_row4_col5"></td>
 </tr>
 </tbody>
 </table>
@@ -8058,45 +8343,45 @@ a.anchor-link {
 <div class="jp-RenderedHTMLCommon jp-RenderedHTML jp-OutputArea-output jp-OutputArea-executeResult" data-mime-type="text/html" tabindex="0">
 <style type="text/css">
 </style>
-<table id="T_6c13e">
+<table id="T_f3982">
 <thead>
 <tr>
 <th class="blank level0"> </th>
-<th class="col_heading level0 col0" id="T_6c13e_level0_col0">Symbol</th>
-<th class="col_heading level0 col1" id="T_6c13e_level0_col1">Qty</th>
-<th class="col_heading level0 col2" id="T_6c13e_level0_col2">Trade Price</th>
+<th class="col_heading level0 col0" id="T_f3982_level0_col0">Symbol</th>
+<th class="col_heading level0 col1" id="T_f3982_level0_col1">Qty</th>
+<th class="col_heading level0 col2" id="T_f3982_level0_col2">Trade Price</th>
 </tr>
 </thead>
 <tbody>
 <tr>
-<th class="row_heading level0 row0" id="T_6c13e_level0_row0">0</th>
-<td class="data row0 col0" id="T_6c13e_row0_col0">ABEV</td>
-<td class="data row0 col1" id="T_6c13e_row0_col1"></td>
-<td class="data row0 col2" id="T_6c13e_row0_col2">2.399000</td>
+<th class="row_heading level0 row0" id="T_f3982_level0_row0">0</th>
+<td class="data row0 col0" id="T_f3982_row0_col0">ABEV</td>
+<td class="data row0 col1" id="T_f3982_row0_col1"></td>
+<td class="data row0 col2" id="T_f3982_row0_col2">2.399000</td>
 </tr>
 <tr>
-<th class="row_heading level0 row1" id="T_6c13e_level0_row1">1</th>
-<td class="data row1 col0" id="T_6c13e_row1_col0">ACLS</td>
-<td class="data row1 col1" id="T_6c13e_row1_col1"></td>
-<td class="data row1 col2" id="T_6c13e_row1_col2">80.000000</td>
+<th class="row_heading level0 row1" id="T_f3982_level0_row1">1</th>
+<td class="data row1 col0" id="T_f3982_row1_col0">ACLS</td>
+<td class="data row1 col1" id="T_f3982_row1_col1"></td>
+<td class="data row1 col2" id="T_f3982_row1_col2">80.000000</td>
 </tr>
 <tr>
-<th class="row_heading level0 row2" id="T_6c13e_level0_row2">2</th>
-<td class="data row2 col0" id="T_6c13e_row2_col0">ACN</td>
-<td class="data row2 col1" id="T_6c13e_row2_col1"></td>
-<td class="data row2 col2" id="T_6c13e_row2_col2">249.130000</td>
+<th class="row_heading level0 row2" id="T_f3982_level0_row2">2</th>
+<td class="data row2 col0" id="T_f3982_row2_col0">ACN</td>
+<td class="data row2 col1" id="T_f3982_row2_col1"></td>
+<td class="data row2 col2" id="T_f3982_row2_col2">249.130000</td>
 </tr>
 <tr>
-<th class="row_heading level0 row3" id="T_6c13e_level0_row3">3</th>
-<td class="data row3 col0" id="T_6c13e_row3_col0">AEO</td>
-<td class="data row3 col1" id="T_6c13e_row3_col1"></td>
-<td class="data row3 col2" id="T_6c13e_row3_col2">10.420000</td>
+<th class="row_heading level0 row3" id="T_f3982_level0_row3">3</th>
+<td class="data row3 col0" id="T_f3982_row3_col0">AEO</td>
+<td class="data row3 col1" id="T_f3982_row3_col1"></td>
+<td class="data row3 col2" id="T_f3982_row3_col2">10.420000</td>
 </tr>
 <tr>
-<th class="row_heading level0 row4" id="T_6c13e_level0_row4">4</th>
-<td class="data row4 col0" id="T_6c13e_row4_col0">AMTD</td>
-<td class="data row4 col1" id="T_6c13e_row4_col1"></td>
-<td class="data row4 col2" id="T_6c13e_row4_col2">1.330000</td>
+<th class="row_heading level0 row4" id="T_f3982_level0_row4">4</th>
+<td class="data row4 col0" id="T_f3982_row4_col0">AMTD</td>
+<td class="data row4 col1" id="T_f3982_row4_col1"></td>
+<td class="data row4 col2" id="T_f3982_row4_col2">1.330000</td>
 </tr>
 </tbody>
 </table>
@@ -8129,63 +8414,63 @@ a.anchor-link {
 <div class="jp-RenderedHTMLCommon jp-RenderedHTML jp-OutputArea-output jp-OutputArea-executeResult" data-mime-type="text/html" tabindex="0">
 <style type="text/css">
 </style>
-<table id="T_98527">
+<table id="T_ada19">
 <thead>
 <tr>
 <th class="blank level0"> </th>
-<th class="col_heading level0 col0" id="T_98527_level0_col0">Exec Time</th>
-<th class="col_heading level0 col1" id="T_98527_level0_col1">Side</th>
-<th class="col_heading level0 col2" id="T_98527_level0_col2">Pos Effect</th>
-<th class="col_heading level0 col3" id="T_98527_level0_col3">Symbol</th>
-<th class="col_heading level0 col4" id="T_98527_level0_col4">Qty</th>
-<th class="col_heading level0 col5" id="T_98527_level0_col5">Price</th>
+<th class="col_heading level0 col0" id="T_ada19_level0_col0">Exec Time</th>
+<th class="col_heading level0 col1" id="T_ada19_level0_col1">Side</th>
+<th class="col_heading level0 col2" id="T_ada19_level0_col2">Pos Effect</th>
+<th class="col_heading level0 col3" id="T_ada19_level0_col3">Symbol</th>
+<th class="col_heading level0 col4" id="T_ada19_level0_col4">Qty</th>
+<th class="col_heading level0 col5" id="T_ada19_level0_col5">Price</th>
 </tr>
 </thead>
 <tbody>
 <tr>
-<th class="row_heading level0 row0" id="T_98527_level0_row0">3</th>
-<td class="data row0 col0" id="T_98527_row0_col0"></td>
-<td class="data row0 col1" id="T_98527_row0_col1">BUY</td>
-<td class="data row0 col2" id="T_98527_row0_col2">TO OPEN</td>
-<td class="data row0 col3" id="T_98527_row0_col3">MOMO</td>
-<td class="data row0 col4" id="T_98527_row0_col4"></td>
-<td class="data row0 col5" id="T_98527_row0_col5"></td>
+<th class="row_heading level0 row0" id="T_ada19_level0_row0">3</th>
+<td class="data row0 col0" id="T_ada19_row0_col0"></td>
+<td class="data row0 col1" id="T_ada19_row0_col1">BUY</td>
+<td class="data row0 col2" id="T_ada19_row0_col2">TO OPEN</td>
+<td class="data row0 col3" id="T_ada19_row0_col3">MOMO</td>
+<td class="data row0 col4" id="T_ada19_row0_col4"></td>
+<td class="data row0 col5" id="T_ada19_row0_col5"></td>
 </tr>
 <tr>
-<th class="row_heading level0 row1" id="T_98527_level0_row1">4</th>
-<td class="data row1 col0" id="T_98527_row1_col0"></td>
-<td class="data row1 col1" id="T_98527_row1_col1">BUY</td>
-<td class="data row1 col2" id="T_98527_row1_col2">TO OPEN</td>
-<td class="data row1 col3" id="T_98527_row1_col3">MOMO</td>
-<td class="data row1 col4" id="T_98527_row1_col4"></td>
-<td class="data row1 col5" id="T_98527_row1_col5"></td>
+<th class="row_heading level0 row1" id="T_ada19_level0_row1">4</th>
+<td class="data row1 col0" id="T_ada19_row1_col0"></td>
+<td class="data row1 col1" id="T_ada19_row1_col1">BUY</td>
+<td class="data row1 col2" id="T_ada19_row1_col2">TO OPEN</td>
+<td class="data row1 col3" id="T_ada19_row1_col3">MOMO</td>
+<td class="data row1 col4" id="T_ada19_row1_col4"></td>
+<td class="data row1 col5" id="T_ada19_row1_col5"></td>
 </tr>
 <tr>
-<th class="row_heading level0 row2" id="T_98527_level0_row2">5</th>
-<td class="data row2 col0" id="T_98527_row2_col0"></td>
-<td class="data row2 col1" id="T_98527_row2_col1">BUY</td>
-<td class="data row2 col2" id="T_98527_row2_col2">TO OPEN</td>
-<td class="data row2 col3" id="T_98527_row2_col3">MOMO</td>
-<td class="data row2 col4" id="T_98527_row2_col4"></td>
-<td class="data row2 col5" id="T_98527_row2_col5"></td>
+<th class="row_heading level0 row2" id="T_ada19_level0_row2">5</th>
+<td class="data row2 col0" id="T_ada19_row2_col0"></td>
+<td class="data row2 col1" id="T_ada19_row2_col1">BUY</td>
+<td class="data row2 col2" id="T_ada19_row2_col2">TO OPEN</td>
+<td class="data row2 col3" id="T_ada19_row2_col3">MOMO</td>
+<td class="data row2 col4" id="T_ada19_row2_col4"></td>
+<td class="data row2 col5" id="T_ada19_row2_col5"></td>
 </tr>
 <tr>
-<th class="row_heading level0 row3" id="T_98527_level0_row3">6</th>
-<td class="data row3 col0" id="T_98527_row3_col0"></td>
-<td class="data row3 col1" id="T_98527_row3_col1">BUY</td>
-<td class="data row3 col2" id="T_98527_row3_col2">TO OPEN</td>
-<td class="data row3 col3" id="T_98527_row3_col3">MOMO</td>
-<td class="data row3 col4" id="T_98527_row3_col4"></td>
-<td class="data row3 col5" id="T_98527_row3_col5"></td>
+<th class="row_heading level0 row3" id="T_ada19_level0_row3">6</th>
+<td class="data row3 col0" id="T_ada19_row3_col0"></td>
+<td class="data row3 col1" id="T_ada19_row3_col1">BUY</td>
+<td class="data row3 col2" id="T_ada19_row3_col2">TO OPEN</td>
+<td class="data row3 col3" id="T_ada19_row3_col3">MOMO</td>
+<td class="data row3 col4" id="T_ada19_row3_col4"></td>
+<td class="data row3 col5" id="T_ada19_row3_col5"></td>
 </tr>
 <tr>
-<th class="row_heading level0 row4" id="T_98527_level0_row4">7</th>
-<td class="data row4 col0" id="T_98527_row4_col0"></td>
-<td class="data row4 col1" id="T_98527_row4_col1">BUY</td>
-<td class="data row4 col2" id="T_98527_row4_col2">TO OPEN</td>
-<td class="data row4 col3" id="T_98527_row4_col3">MOMO</td>
-<td class="data row4 col4" id="T_98527_row4_col4"></td>
-<td class="data row4 col5" id="T_98527_row4_col5"></td>
+<th class="row_heading level0 row4" id="T_ada19_level0_row4">7</th>
+<td class="data row4 col0" id="T_ada19_row4_col0"></td>
+<td class="data row4 col1" id="T_ada19_row4_col1">BUY</td>
+<td class="data row4 col2" id="T_ada19_row4_col2">TO OPEN</td>
+<td class="data row4 col3" id="T_ada19_row4_col3">MOMO</td>
+<td class="data row4 col4" id="T_ada19_row4_col4"></td>
+<td class="data row4 col5" id="T_ada19_row4_col5"></td>
 </tr>
 </tbody>
 </table>
@@ -8230,8 +8515,9 @@ a.anchor-link {
 <div class="jp-OutputArea-child jp-OutputArea-executeResult">
 <div class="jp-OutputPrompt jp-OutputArea-prompt">Out[10]:</div>
 <div class="jp-RenderedText jp-OutputArea-output jp-OutputArea-executeResult" data-mime-type="text/plain" tabindex="0">
-<pre>array(['YRD', 'XYF', 'CCRN', 'LX', 'SITC', 'AMTD', 'GSL', 'HG', 'PDS'],
-      dtype=object)</pre>
+<pre>&lt;StringArray&gt;
+['YRD', 'XYF', 'CCRN', 'LX', 'SITC', 'AMTD', 'GSL', 'HG', 'PDS']
+Length: 9, dtype: str</pre>
 </div>
 </div>
 </div>
@@ -8261,27 +8547,27 @@ a.anchor-link {
 <div class="jp-RenderedHTMLCommon jp-RenderedHTML jp-OutputArea-output jp-OutputArea-executeResult" data-mime-type="text/html" tabindex="0">
 <style type="text/css">
 </style>
-<table id="T_3443d">
+<table id="T_01553">
 <thead>
 <tr>
 <th class="blank level0"> </th>
-<th class="col_heading level0 col0" id="T_3443d_level0_col0">Exec Time</th>
-<th class="col_heading level0 col1" id="T_3443d_level0_col1">Side</th>
-<th class="col_heading level0 col2" id="T_3443d_level0_col2">Pos Effect</th>
-<th class="col_heading level0 col3" id="T_3443d_level0_col3">Symbol</th>
-<th class="col_heading level0 col4" id="T_3443d_level0_col4">Qty</th>
-<th class="col_heading level0 col5" id="T_3443d_level0_col5">Price</th>
+<th class="col_heading level0 col0" id="T_01553_level0_col0">Exec Time</th>
+<th class="col_heading level0 col1" id="T_01553_level0_col1">Side</th>
+<th class="col_heading level0 col2" id="T_01553_level0_col2">Pos Effect</th>
+<th class="col_heading level0 col3" id="T_01553_level0_col3">Symbol</th>
+<th class="col_heading level0 col4" id="T_01553_level0_col4">Qty</th>
+<th class="col_heading level0 col5" id="T_01553_level0_col5">Price</th>
 </tr>
 </thead>
 <tbody>
 <tr>
-<th class="row_heading level0 row0" id="T_3443d_level0_row0">2</th>
-<td class="data row0 col0" id="T_3443d_row0_col0"></td>
-<td class="data row0 col1" id="T_3443d_row0_col1">SELL</td>
-<td class="data row0 col2" id="T_3443d_row0_col2">TO CLOSE</td>
-<td class="data row0 col3" id="T_3443d_row0_col3">CCRN</td>
-<td class="data row0 col4" id="T_3443d_row0_col4"></td>
-<td class="data row0 col5" id="T_3443d_row0_col5"></td>
+<th class="row_heading level0 row0" id="T_01553_level0_row0">2</th>
+<td class="data row0 col0" id="T_01553_row0_col0"></td>
+<td class="data row0 col1" id="T_01553_row0_col1">SELL</td>
+<td class="data row0 col2" id="T_01553_row0_col2">TO CLOSE</td>
+<td class="data row0 col3" id="T_01553_row0_col3">CCRN</td>
+<td class="data row0 col4" id="T_01553_row0_col4"></td>
+<td class="data row0 col5" id="T_01553_row0_col5"></td>
 </tr>
 </tbody>
 </table>
@@ -8325,108 +8611,108 @@ a.anchor-link {
 <div class="jp-RenderedHTMLCommon jp-RenderedHTML jp-OutputArea-output jp-OutputArea-executeResult" data-mime-type="text/html" tabindex="0">
 <style type="text/css">
 </style>
-<table id="T_51cb4">
+<table id="T_85df8">
 <thead>
 <tr>
 <th class="blank level0"> </th>
-<th class="col_heading level0 col0" id="T_51cb4_level0_col0">Exec Time</th>
-<th class="col_heading level0 col1" id="T_51cb4_level0_col1">Side</th>
-<th class="col_heading level0 col2" id="T_51cb4_level0_col2">Pos Effect</th>
-<th class="col_heading level0 col3" id="T_51cb4_level0_col3">Symbol</th>
-<th class="col_heading level0 col4" id="T_51cb4_level0_col4">Qty</th>
-<th class="col_heading level0 col5" id="T_51cb4_level0_col5">Price</th>
+<th class="col_heading level0 col0" id="T_85df8_level0_col0">Exec Time</th>
+<th class="col_heading level0 col1" id="T_85df8_level0_col1">Side</th>
+<th class="col_heading level0 col2" id="T_85df8_level0_col2">Pos Effect</th>
+<th class="col_heading level0 col3" id="T_85df8_level0_col3">Symbol</th>
+<th class="col_heading level0 col4" id="T_85df8_level0_col4">Qty</th>
+<th class="col_heading level0 col5" id="T_85df8_level0_col5">Price</th>
 </tr>
 </thead>
 <tbody>
 <tr>
-<th class="row_heading level0 row0" id="T_51cb4_level0_row0">3</th>
-<td class="data row0 col0" id="T_51cb4_row0_col0"></td>
-<td class="data row0 col1" id="T_51cb4_row0_col1">BUY</td>
-<td class="data row0 col2" id="T_51cb4_row0_col2">TO OPEN</td>
-<td class="data row0 col3" id="T_51cb4_row0_col3">MOMO</td>
-<td class="data row0 col4" id="T_51cb4_row0_col4"></td>
-<td class="data row0 col5" id="T_51cb4_row0_col5"></td>
+<th class="row_heading level0 row0" id="T_85df8_level0_row0">3</th>
+<td class="data row0 col0" id="T_85df8_row0_col0"></td>
+<td class="data row0 col1" id="T_85df8_row0_col1">BUY</td>
+<td class="data row0 col2" id="T_85df8_row0_col2">TO OPEN</td>
+<td class="data row0 col3" id="T_85df8_row0_col3">MOMO</td>
+<td class="data row0 col4" id="T_85df8_row0_col4"></td>
+<td class="data row0 col5" id="T_85df8_row0_col5"></td>
 </tr>
 <tr>
-<th class="row_heading level0 row1" id="T_51cb4_level0_row1">4</th>
-<td class="data row1 col0" id="T_51cb4_row1_col0"></td>
-<td class="data row1 col1" id="T_51cb4_row1_col1">BUY</td>
-<td class="data row1 col2" id="T_51cb4_row1_col2">TO OPEN</td>
-<td class="data row1 col3" id="T_51cb4_row1_col3">MOMO</td>
-<td class="data row1 col4" id="T_51cb4_row1_col4"></td>
-<td class="data row1 col5" id="T_51cb4_row1_col5"></td>
+<th class="row_heading level0 row1" id="T_85df8_level0_row1">4</th>
+<td class="data row1 col0" id="T_85df8_row1_col0"></td>
+<td class="data row1 col1" id="T_85df8_row1_col1">BUY</td>
+<td class="data row1 col2" id="T_85df8_row1_col2">TO OPEN</td>
+<td class="data row1 col3" id="T_85df8_row1_col3">MOMO</td>
+<td class="data row1 col4" id="T_85df8_row1_col4"></td>
+<td class="data row1 col5" id="T_85df8_row1_col5"></td>
 </tr>
 <tr>
-<th class="row_heading level0 row2" id="T_51cb4_level0_row2">5</th>
-<td class="data row2 col0" id="T_51cb4_row2_col0"></td>
-<td class="data row2 col1" id="T_51cb4_row2_col1">BUY</td>
-<td class="data row2 col2" id="T_51cb4_row2_col2">TO OPEN</td>
-<td class="data row2 col3" id="T_51cb4_row2_col3">MOMO</td>
-<td class="data row2 col4" id="T_51cb4_row2_col4"></td>
-<td class="data row2 col5" id="T_51cb4_row2_col5"></td>
+<th class="row_heading level0 row2" id="T_85df8_level0_row2">5</th>
+<td class="data row2 col0" id="T_85df8_row2_col0"></td>
+<td class="data row2 col1" id="T_85df8_row2_col1">BUY</td>
+<td class="data row2 col2" id="T_85df8_row2_col2">TO OPEN</td>
+<td class="data row2 col3" id="T_85df8_row2_col3">MOMO</td>
+<td class="data row2 col4" id="T_85df8_row2_col4"></td>
+<td class="data row2 col5" id="T_85df8_row2_col5"></td>
 </tr>
 <tr>
-<th class="row_heading level0 row3" id="T_51cb4_level0_row3">6</th>
-<td class="data row3 col0" id="T_51cb4_row3_col0"></td>
-<td class="data row3 col1" id="T_51cb4_row3_col1">BUY</td>
-<td class="data row3 col2" id="T_51cb4_row3_col2">TO OPEN</td>
-<td class="data row3 col3" id="T_51cb4_row3_col3">MOMO</td>
-<td class="data row3 col4" id="T_51cb4_row3_col4"></td>
-<td class="data row3 col5" id="T_51cb4_row3_col5"></td>
+<th class="row_heading level0 row3" id="T_85df8_level0_row3">6</th>
+<td class="data row3 col0" id="T_85df8_row3_col0"></td>
+<td class="data row3 col1" id="T_85df8_row3_col1">BUY</td>
+<td class="data row3 col2" id="T_85df8_row3_col2">TO OPEN</td>
+<td class="data row3 col3" id="T_85df8_row3_col3">MOMO</td>
+<td class="data row3 col4" id="T_85df8_row3_col4"></td>
+<td class="data row3 col5" id="T_85df8_row3_col5"></td>
 </tr>
 <tr>
-<th class="row_heading level0 row4" id="T_51cb4_level0_row4">7</th>
-<td class="data row4 col0" id="T_51cb4_row4_col0"></td>
-<td class="data row4 col1" id="T_51cb4_row4_col1">BUY</td>
-<td class="data row4 col2" id="T_51cb4_row4_col2">TO OPEN</td>
-<td class="data row4 col3" id="T_51cb4_row4_col3">MOMO</td>
-<td class="data row4 col4" id="T_51cb4_row4_col4"></td>
-<td class="data row4 col5" id="T_51cb4_row4_col5"></td>
+<th class="row_heading level0 row4" id="T_85df8_level0_row4">7</th>
+<td class="data row4 col0" id="T_85df8_row4_col0"></td>
+<td class="data row4 col1" id="T_85df8_row4_col1">BUY</td>
+<td class="data row4 col2" id="T_85df8_row4_col2">TO OPEN</td>
+<td class="data row4 col3" id="T_85df8_row4_col3">MOMO</td>
+<td class="data row4 col4" id="T_85df8_row4_col4"></td>
+<td class="data row4 col5" id="T_85df8_row4_col5"></td>
 </tr>
 <tr>
-<th class="row_heading level0 row5" id="T_51cb4_level0_row5">8</th>
-<td class="data row5 col0" id="T_51cb4_row5_col0"></td>
-<td class="data row5 col1" id="T_51cb4_row5_col1">BUY</td>
-<td class="data row5 col2" id="T_51cb4_row5_col2">TO OPEN</td>
-<td class="data row5 col3" id="T_51cb4_row5_col3">BTU</td>
-<td class="data row5 col4" id="T_51cb4_row5_col4"></td>
-<td class="data row5 col5" id="T_51cb4_row5_col5"></td>
+<th class="row_heading level0 row5" id="T_85df8_level0_row5">8</th>
+<td class="data row5 col0" id="T_85df8_row5_col0"></td>
+<td class="data row5 col1" id="T_85df8_row5_col1">BUY</td>
+<td class="data row5 col2" id="T_85df8_row5_col2">TO OPEN</td>
+<td class="data row5 col3" id="T_85df8_row5_col3">BTU</td>
+<td class="data row5 col4" id="T_85df8_row5_col4"></td>
+<td class="data row5 col5" id="T_85df8_row5_col5"></td>
 </tr>
 <tr>
-<th class="row_heading level0 row6" id="T_51cb4_level0_row6">9</th>
-<td class="data row6 col0" id="T_51cb4_row6_col0"></td>
-<td class="data row6 col1" id="T_51cb4_row6_col1">BUY</td>
-<td class="data row6 col2" id="T_51cb4_row6_col2">TO OPEN</td>
-<td class="data row6 col3" id="T_51cb4_row6_col3">YALA</td>
-<td class="data row6 col4" id="T_51cb4_row6_col4"></td>
-<td class="data row6 col5" id="T_51cb4_row6_col5"></td>
+<th class="row_heading level0 row6" id="T_85df8_level0_row6">9</th>
+<td class="data row6 col0" id="T_85df8_row6_col0"></td>
+<td class="data row6 col1" id="T_85df8_row6_col1">BUY</td>
+<td class="data row6 col2" id="T_85df8_row6_col2">TO OPEN</td>
+<td class="data row6 col3" id="T_85df8_row6_col3">YALA</td>
+<td class="data row6 col4" id="T_85df8_row6_col4"></td>
+<td class="data row6 col5" id="T_85df8_row6_col5"></td>
 </tr>
 <tr>
-<th class="row_heading level0 row7" id="T_51cb4_level0_row7">29</th>
-<td class="data row7 col0" id="T_51cb4_row7_col0"></td>
-<td class="data row7 col1" id="T_51cb4_row7_col1">BUY</td>
-<td class="data row7 col2" id="T_51cb4_row7_col2">TO OPEN</td>
-<td class="data row7 col3" id="T_51cb4_row7_col3">YRD</td>
-<td class="data row7 col4" id="T_51cb4_row7_col4"></td>
-<td class="data row7 col5" id="T_51cb4_row7_col5"></td>
+<th class="row_heading level0 row7" id="T_85df8_level0_row7">29</th>
+<td class="data row7 col0" id="T_85df8_row7_col0"></td>
+<td class="data row7 col1" id="T_85df8_row7_col1">BUY</td>
+<td class="data row7 col2" id="T_85df8_row7_col2">TO OPEN</td>
+<td class="data row7 col3" id="T_85df8_row7_col3">YRD</td>
+<td class="data row7 col4" id="T_85df8_row7_col4"></td>
+<td class="data row7 col5" id="T_85df8_row7_col5"></td>
 </tr>
 <tr>
-<th class="row_heading level0 row8" id="T_51cb4_level0_row8">41</th>
-<td class="data row8 col0" id="T_51cb4_row8_col0"></td>
-<td class="data row8 col1" id="T_51cb4_row8_col1">BUY</td>
-<td class="data row8 col2" id="T_51cb4_row8_col2">TO OPEN</td>
-<td class="data row8 col3" id="T_51cb4_row8_col3">PDS</td>
-<td class="data row8 col4" id="T_51cb4_row8_col4"></td>
-<td class="data row8 col5" id="T_51cb4_row8_col5"></td>
+<th class="row_heading level0 row8" id="T_85df8_level0_row8">41</th>
+<td class="data row8 col0" id="T_85df8_row8_col0"></td>
+<td class="data row8 col1" id="T_85df8_row8_col1">BUY</td>
+<td class="data row8 col2" id="T_85df8_row8_col2">TO OPEN</td>
+<td class="data row8 col3" id="T_85df8_row8_col3">PDS</td>
+<td class="data row8 col4" id="T_85df8_row8_col4"></td>
+<td class="data row8 col5" id="T_85df8_row8_col5"></td>
 </tr>
 <tr>
-<th class="row_heading level0 row9" id="T_51cb4_level0_row9">48</th>
-<td class="data row9 col0" id="T_51cb4_row9_col0"></td>
-<td class="data row9 col1" id="T_51cb4_row9_col1">BUY</td>
-<td class="data row9 col2" id="T_51cb4_row9_col2">TO OPEN</td>
-<td class="data row9 col3" id="T_51cb4_row9_col3">BTU</td>
-<td class="data row9 col4" id="T_51cb4_row9_col4"></td>
-<td class="data row9 col5" id="T_51cb4_row9_col5"></td>
+<th class="row_heading level0 row9" id="T_85df8_level0_row9">48</th>
+<td class="data row9 col0" id="T_85df8_row9_col0"></td>
+<td class="data row9 col1" id="T_85df8_row9_col1">BUY</td>
+<td class="data row9 col2" id="T_85df8_row9_col2">TO OPEN</td>
+<td class="data row9 col3" id="T_85df8_row9_col3">BTU</td>
+<td class="data row9 col4" id="T_85df8_row9_col4"></td>
+<td class="data row9 col5" id="T_85df8_row9_col5"></td>
 </tr>
 </tbody>
 </table>
@@ -8475,108 +8761,108 @@ a.anchor-link {
 <div class="jp-RenderedHTMLCommon jp-RenderedHTML jp-OutputArea-output jp-OutputArea-executeResult" data-mime-type="text/html" tabindex="0">
 <style type="text/css">
 </style>
-<table id="T_88ebb">
+<table id="T_408e5">
 <thead>
 <tr>
 <th class="blank level0"> </th>
-<th class="col_heading level0 col0" id="T_88ebb_level0_col0">Exec Time</th>
-<th class="col_heading level0 col1" id="T_88ebb_level0_col1">Side</th>
-<th class="col_heading level0 col2" id="T_88ebb_level0_col2">Pos Effect</th>
-<th class="col_heading level0 col3" id="T_88ebb_level0_col3">Symbol</th>
-<th class="col_heading level0 col4" id="T_88ebb_level0_col4">Qty</th>
-<th class="col_heading level0 col5" id="T_88ebb_level0_col5">Price</th>
+<th class="col_heading level0 col0" id="T_408e5_level0_col0">Exec Time</th>
+<th class="col_heading level0 col1" id="T_408e5_level0_col1">Side</th>
+<th class="col_heading level0 col2" id="T_408e5_level0_col2">Pos Effect</th>
+<th class="col_heading level0 col3" id="T_408e5_level0_col3">Symbol</th>
+<th class="col_heading level0 col4" id="T_408e5_level0_col4">Qty</th>
+<th class="col_heading level0 col5" id="T_408e5_level0_col5">Price</th>
 </tr>
 </thead>
 <tbody>
 <tr>
-<th class="row_heading level0 row0" id="T_88ebb_level0_row0">0</th>
-<td class="data row0 col0" id="T_88ebb_row0_col0"></td>
-<td class="data row0 col1" id="T_88ebb_row0_col1">BUY</td>
-<td class="data row0 col2" id="T_88ebb_row0_col2">TO OPEN</td>
-<td class="data row0 col3" id="T_88ebb_row0_col3">MOMO</td>
-<td class="data row0 col4" id="T_88ebb_row0_col4"></td>
-<td class="data row0 col5" id="T_88ebb_row0_col5"></td>
+<th class="row_heading level0 row0" id="T_408e5_level0_row0">0</th>
+<td class="data row0 col0" id="T_408e5_row0_col0"></td>
+<td class="data row0 col1" id="T_408e5_row0_col1">BUY</td>
+<td class="data row0 col2" id="T_408e5_row0_col2">TO OPEN</td>
+<td class="data row0 col3" id="T_408e5_row0_col3">MOMO</td>
+<td class="data row0 col4" id="T_408e5_row0_col4"></td>
+<td class="data row0 col5" id="T_408e5_row0_col5"></td>
 </tr>
 <tr>
-<th class="row_heading level0 row1" id="T_88ebb_level0_row1">1</th>
-<td class="data row1 col0" id="T_88ebb_row1_col0"></td>
-<td class="data row1 col1" id="T_88ebb_row1_col1">BUY</td>
-<td class="data row1 col2" id="T_88ebb_row1_col2">TO OPEN</td>
-<td class="data row1 col3" id="T_88ebb_row1_col3">MOMO</td>
-<td class="data row1 col4" id="T_88ebb_row1_col4"></td>
-<td class="data row1 col5" id="T_88ebb_row1_col5"></td>
+<th class="row_heading level0 row1" id="T_408e5_level0_row1">1</th>
+<td class="data row1 col0" id="T_408e5_row1_col0"></td>
+<td class="data row1 col1" id="T_408e5_row1_col1">BUY</td>
+<td class="data row1 col2" id="T_408e5_row1_col2">TO OPEN</td>
+<td class="data row1 col3" id="T_408e5_row1_col3">MOMO</td>
+<td class="data row1 col4" id="T_408e5_row1_col4"></td>
+<td class="data row1 col5" id="T_408e5_row1_col5"></td>
 </tr>
 <tr>
-<th class="row_heading level0 row2" id="T_88ebb_level0_row2">2</th>
-<td class="data row2 col0" id="T_88ebb_row2_col0"></td>
-<td class="data row2 col1" id="T_88ebb_row2_col1">BUY</td>
-<td class="data row2 col2" id="T_88ebb_row2_col2">TO OPEN</td>
-<td class="data row2 col3" id="T_88ebb_row2_col3">MOMO</td>
-<td class="data row2 col4" id="T_88ebb_row2_col4"></td>
-<td class="data row2 col5" id="T_88ebb_row2_col5"></td>
+<th class="row_heading level0 row2" id="T_408e5_level0_row2">2</th>
+<td class="data row2 col0" id="T_408e5_row2_col0"></td>
+<td class="data row2 col1" id="T_408e5_row2_col1">BUY</td>
+<td class="data row2 col2" id="T_408e5_row2_col2">TO OPEN</td>
+<td class="data row2 col3" id="T_408e5_row2_col3">MOMO</td>
+<td class="data row2 col4" id="T_408e5_row2_col4"></td>
+<td class="data row2 col5" id="T_408e5_row2_col5"></td>
 </tr>
 <tr>
-<th class="row_heading level0 row3" id="T_88ebb_level0_row3">3</th>
-<td class="data row3 col0" id="T_88ebb_row3_col0"></td>
-<td class="data row3 col1" id="T_88ebb_row3_col1">BUY</td>
-<td class="data row3 col2" id="T_88ebb_row3_col2">TO OPEN</td>
-<td class="data row3 col3" id="T_88ebb_row3_col3">MOMO</td>
-<td class="data row3 col4" id="T_88ebb_row3_col4"></td>
-<td class="data row3 col5" id="T_88ebb_row3_col5"></td>
+<th class="row_heading level0 row3" id="T_408e5_level0_row3">3</th>
+<td class="data row3 col0" id="T_408e5_row3_col0"></td>
+<td class="data row3 col1" id="T_408e5_row3_col1">BUY</td>
+<td class="data row3 col2" id="T_408e5_row3_col2">TO OPEN</td>
+<td class="data row3 col3" id="T_408e5_row3_col3">MOMO</td>
+<td class="data row3 col4" id="T_408e5_row3_col4"></td>
+<td class="data row3 col5" id="T_408e5_row3_col5"></td>
 </tr>
 <tr>
-<th class="row_heading level0 row4" id="T_88ebb_level0_row4">4</th>
-<td class="data row4 col0" id="T_88ebb_row4_col0"></td>
-<td class="data row4 col1" id="T_88ebb_row4_col1">BUY</td>
-<td class="data row4 col2" id="T_88ebb_row4_col2">TO OPEN</td>
-<td class="data row4 col3" id="T_88ebb_row4_col3">MOMO</td>
-<td class="data row4 col4" id="T_88ebb_row4_col4"></td>
-<td class="data row4 col5" id="T_88ebb_row4_col5"></td>
+<th class="row_heading level0 row4" id="T_408e5_level0_row4">4</th>
+<td class="data row4 col0" id="T_408e5_row4_col0"></td>
+<td class="data row4 col1" id="T_408e5_row4_col1">BUY</td>
+<td class="data row4 col2" id="T_408e5_row4_col2">TO OPEN</td>
+<td class="data row4 col3" id="T_408e5_row4_col3">MOMO</td>
+<td class="data row4 col4" id="T_408e5_row4_col4"></td>
+<td class="data row4 col5" id="T_408e5_row4_col5"></td>
 </tr>
 <tr>
-<th class="row_heading level0 row5" id="T_88ebb_level0_row5">5</th>
-<td class="data row5 col0" id="T_88ebb_row5_col0"></td>
-<td class="data row5 col1" id="T_88ebb_row5_col1">BUY</td>
-<td class="data row5 col2" id="T_88ebb_row5_col2">TO OPEN</td>
-<td class="data row5 col3" id="T_88ebb_row5_col3">BTU</td>
-<td class="data row5 col4" id="T_88ebb_row5_col4"></td>
-<td class="data row5 col5" id="T_88ebb_row5_col5"></td>
+<th class="row_heading level0 row5" id="T_408e5_level0_row5">5</th>
+<td class="data row5 col0" id="T_408e5_row5_col0"></td>
+<td class="data row5 col1" id="T_408e5_row5_col1">BUY</td>
+<td class="data row5 col2" id="T_408e5_row5_col2">TO OPEN</td>
+<td class="data row5 col3" id="T_408e5_row5_col3">BTU</td>
+<td class="data row5 col4" id="T_408e5_row5_col4"></td>
+<td class="data row5 col5" id="T_408e5_row5_col5"></td>
 </tr>
 <tr>
-<th class="row_heading level0 row6" id="T_88ebb_level0_row6">6</th>
-<td class="data row6 col0" id="T_88ebb_row6_col0"></td>
-<td class="data row6 col1" id="T_88ebb_row6_col1">BUY</td>
-<td class="data row6 col2" id="T_88ebb_row6_col2">TO OPEN</td>
-<td class="data row6 col3" id="T_88ebb_row6_col3">YALA</td>
-<td class="data row6 col4" id="T_88ebb_row6_col4"></td>
-<td class="data row6 col5" id="T_88ebb_row6_col5"></td>
+<th class="row_heading level0 row6" id="T_408e5_level0_row6">6</th>
+<td class="data row6 col0" id="T_408e5_row6_col0"></td>
+<td class="data row6 col1" id="T_408e5_row6_col1">BUY</td>
+<td class="data row6 col2" id="T_408e5_row6_col2">TO OPEN</td>
+<td class="data row6 col3" id="T_408e5_row6_col3">YALA</td>
+<td class="data row6 col4" id="T_408e5_row6_col4"></td>
+<td class="data row6 col5" id="T_408e5_row6_col5"></td>
 </tr>
 <tr>
-<th class="row_heading level0 row7" id="T_88ebb_level0_row7">7</th>
-<td class="data row7 col0" id="T_88ebb_row7_col0"></td>
-<td class="data row7 col1" id="T_88ebb_row7_col1">BUY</td>
-<td class="data row7 col2" id="T_88ebb_row7_col2">TO OPEN</td>
-<td class="data row7 col3" id="T_88ebb_row7_col3">YRD</td>
-<td class="data row7 col4" id="T_88ebb_row7_col4"></td>
-<td class="data row7 col5" id="T_88ebb_row7_col5"></td>
+<th class="row_heading level0 row7" id="T_408e5_level0_row7">7</th>
+<td class="data row7 col0" id="T_408e5_row7_col0"></td>
+<td class="data row7 col1" id="T_408e5_row7_col1">BUY</td>
+<td class="data row7 col2" id="T_408e5_row7_col2">TO OPEN</td>
+<td class="data row7 col3" id="T_408e5_row7_col3">YRD</td>
+<td class="data row7 col4" id="T_408e5_row7_col4"></td>
+<td class="data row7 col5" id="T_408e5_row7_col5"></td>
 </tr>
 <tr>
-<th class="row_heading level0 row8" id="T_88ebb_level0_row8">8</th>
-<td class="data row8 col0" id="T_88ebb_row8_col0"></td>
-<td class="data row8 col1" id="T_88ebb_row8_col1">BUY</td>
-<td class="data row8 col2" id="T_88ebb_row8_col2">TO OPEN</td>
-<td class="data row8 col3" id="T_88ebb_row8_col3">PDS</td>
-<td class="data row8 col4" id="T_88ebb_row8_col4"></td>
-<td class="data row8 col5" id="T_88ebb_row8_col5"></td>
+<th class="row_heading level0 row8" id="T_408e5_level0_row8">8</th>
+<td class="data row8 col0" id="T_408e5_row8_col0"></td>
+<td class="data row8 col1" id="T_408e5_row8_col1">BUY</td>
+<td class="data row8 col2" id="T_408e5_row8_col2">TO OPEN</td>
+<td class="data row8 col3" id="T_408e5_row8_col3">PDS</td>
+<td class="data row8 col4" id="T_408e5_row8_col4"></td>
+<td class="data row8 col5" id="T_408e5_row8_col5"></td>
 </tr>
 <tr>
-<th class="row_heading level0 row9" id="T_88ebb_level0_row9">9</th>
-<td class="data row9 col0" id="T_88ebb_row9_col0"></td>
-<td class="data row9 col1" id="T_88ebb_row9_col1">BUY</td>
-<td class="data row9 col2" id="T_88ebb_row9_col2">TO OPEN</td>
-<td class="data row9 col3" id="T_88ebb_row9_col3">BTU</td>
-<td class="data row9 col4" id="T_88ebb_row9_col4"></td>
-<td class="data row9 col5" id="T_88ebb_row9_col5"></td>
+<th class="row_heading level0 row9" id="T_408e5_level0_row9">9</th>
+<td class="data row9 col0" id="T_408e5_row9_col0"></td>
+<td class="data row9 col1" id="T_408e5_row9_col1">BUY</td>
+<td class="data row9 col2" id="T_408e5_row9_col2">TO OPEN</td>
+<td class="data row9 col3" id="T_408e5_row9_col3">BTU</td>
+<td class="data row9 col4" id="T_408e5_row9_col4"></td>
+<td class="data row9 col5" id="T_408e5_row9_col5"></td>
 </tr>
 </tbody>
 </table>
@@ -8610,108 +8896,108 @@ a.anchor-link {
 <div class="jp-RenderedHTMLCommon jp-RenderedHTML jp-OutputArea-output jp-OutputArea-executeResult" data-mime-type="text/html" tabindex="0">
 <style type="text/css">
 </style>
-<table id="T_506c7">
+<table id="T_1ea39">
 <thead>
 <tr>
 <th class="blank level0"> </th>
-<th class="col_heading level0 col0" id="T_506c7_level0_col0">Exec Time</th>
-<th class="col_heading level0 col1" id="T_506c7_level0_col1">Side</th>
-<th class="col_heading level0 col2" id="T_506c7_level0_col2">Pos Effect</th>
-<th class="col_heading level0 col3" id="T_506c7_level0_col3">Symbol</th>
-<th class="col_heading level0 col4" id="T_506c7_level0_col4">Qty</th>
-<th class="col_heading level0 col5" id="T_506c7_level0_col5">Price</th>
+<th class="col_heading level0 col0" id="T_1ea39_level0_col0">Exec Time</th>
+<th class="col_heading level0 col1" id="T_1ea39_level0_col1">Side</th>
+<th class="col_heading level0 col2" id="T_1ea39_level0_col2">Pos Effect</th>
+<th class="col_heading level0 col3" id="T_1ea39_level0_col3">Symbol</th>
+<th class="col_heading level0 col4" id="T_1ea39_level0_col4">Qty</th>
+<th class="col_heading level0 col5" id="T_1ea39_level0_col5">Price</th>
 </tr>
 </thead>
 <tbody>
 <tr>
-<th class="row_heading level0 row0" id="T_506c7_level0_row0">0</th>
-<td class="data row0 col0" id="T_506c7_row0_col0"></td>
-<td class="data row0 col1" id="T_506c7_row0_col1">BUY</td>
-<td class="data row0 col2" id="T_506c7_row0_col2">TO OPEN</td>
-<td class="data row0 col3" id="T_506c7_row0_col3">YRD</td>
-<td class="data row0 col4" id="T_506c7_row0_col4"></td>
-<td class="data row0 col5" id="T_506c7_row0_col5"></td>
+<th class="row_heading level0 row0" id="T_1ea39_level0_row0">0</th>
+<td class="data row0 col0" id="T_1ea39_row0_col0"></td>
+<td class="data row0 col1" id="T_1ea39_row0_col1">BUY</td>
+<td class="data row0 col2" id="T_1ea39_row0_col2">TO OPEN</td>
+<td class="data row0 col3" id="T_1ea39_row0_col3">YRD</td>
+<td class="data row0 col4" id="T_1ea39_row0_col4"></td>
+<td class="data row0 col5" id="T_1ea39_row0_col5"></td>
 </tr>
 <tr>
-<th class="row_heading level0 row1" id="T_506c7_level0_row1">1</th>
-<td class="data row1 col0" id="T_506c7_row1_col0"></td>
-<td class="data row1 col1" id="T_506c7_row1_col1">BUY</td>
-<td class="data row1 col2" id="T_506c7_row1_col2">TO OPEN</td>
-<td class="data row1 col3" id="T_506c7_row1_col3">XYF</td>
-<td class="data row1 col4" id="T_506c7_row1_col4"></td>
-<td class="data row1 col5" id="T_506c7_row1_col5"></td>
+<th class="row_heading level0 row1" id="T_1ea39_level0_row1">1</th>
+<td class="data row1 col0" id="T_1ea39_row1_col0"></td>
+<td class="data row1 col1" id="T_1ea39_row1_col1">BUY</td>
+<td class="data row1 col2" id="T_1ea39_row1_col2">TO OPEN</td>
+<td class="data row1 col3" id="T_1ea39_row1_col3">XYF</td>
+<td class="data row1 col4" id="T_1ea39_row1_col4"></td>
+<td class="data row1 col5" id="T_1ea39_row1_col5"></td>
 </tr>
 <tr>
-<th class="row_heading level0 row2" id="T_506c7_level0_row2">2</th>
-<td class="data row2 col0" id="T_506c7_row2_col0"></td>
-<td class="data row2 col1" id="T_506c7_row2_col1">BUY</td>
-<td class="data row2 col2" id="T_506c7_row2_col2">TO OPEN</td>
-<td class="data row2 col3" id="T_506c7_row2_col3">XYF</td>
-<td class="data row2 col4" id="T_506c7_row2_col4"></td>
-<td class="data row2 col5" id="T_506c7_row2_col5"></td>
+<th class="row_heading level0 row2" id="T_1ea39_level0_row2">2</th>
+<td class="data row2 col0" id="T_1ea39_row2_col0"></td>
+<td class="data row2 col1" id="T_1ea39_row2_col1">BUY</td>
+<td class="data row2 col2" id="T_1ea39_row2_col2">TO OPEN</td>
+<td class="data row2 col3" id="T_1ea39_row2_col3">XYF</td>
+<td class="data row2 col4" id="T_1ea39_row2_col4"></td>
+<td class="data row2 col5" id="T_1ea39_row2_col5"></td>
 </tr>
 <tr>
-<th class="row_heading level0 row3" id="T_506c7_level0_row3">3</th>
-<td class="data row3 col0" id="T_506c7_row3_col0"></td>
-<td class="data row3 col1" id="T_506c7_row3_col1">BUY</td>
-<td class="data row3 col2" id="T_506c7_row3_col2">TO OPEN</td>
-<td class="data row3 col3" id="T_506c7_row3_col3">XYF</td>
-<td class="data row3 col4" id="T_506c7_row3_col4"></td>
-<td class="data row3 col5" id="T_506c7_row3_col5"></td>
+<th class="row_heading level0 row3" id="T_1ea39_level0_row3">3</th>
+<td class="data row3 col0" id="T_1ea39_row3_col0"></td>
+<td class="data row3 col1" id="T_1ea39_row3_col1">BUY</td>
+<td class="data row3 col2" id="T_1ea39_row3_col2">TO OPEN</td>
+<td class="data row3 col3" id="T_1ea39_row3_col3">XYF</td>
+<td class="data row3 col4" id="T_1ea39_row3_col4"></td>
+<td class="data row3 col5" id="T_1ea39_row3_col5"></td>
 </tr>
 <tr>
-<th class="row_heading level0 row4" id="T_506c7_level0_row4">4</th>
-<td class="data row4 col0" id="T_506c7_row4_col0"></td>
-<td class="data row4 col1" id="T_506c7_row4_col1">BUY</td>
-<td class="data row4 col2" id="T_506c7_row4_col2">TO OPEN</td>
-<td class="data row4 col3" id="T_506c7_row4_col3">CCRN</td>
-<td class="data row4 col4" id="T_506c7_row4_col4"></td>
-<td class="data row4 col5" id="T_506c7_row4_col5"></td>
+<th class="row_heading level0 row4" id="T_1ea39_level0_row4">4</th>
+<td class="data row4 col0" id="T_1ea39_row4_col0"></td>
+<td class="data row4 col1" id="T_1ea39_row4_col1">BUY</td>
+<td class="data row4 col2" id="T_1ea39_row4_col2">TO OPEN</td>
+<td class="data row4 col3" id="T_1ea39_row4_col3">CCRN</td>
+<td class="data row4 col4" id="T_1ea39_row4_col4"></td>
+<td class="data row4 col5" id="T_1ea39_row4_col5"></td>
 </tr>
 <tr>
-<th class="row_heading level0 row5" id="T_506c7_level0_row5">5</th>
-<td class="data row5 col0" id="T_506c7_row5_col0"></td>
-<td class="data row5 col1" id="T_506c7_row5_col1">BUY</td>
-<td class="data row5 col2" id="T_506c7_row5_col2">TO OPEN</td>
-<td class="data row5 col3" id="T_506c7_row5_col3">LX</td>
-<td class="data row5 col4" id="T_506c7_row5_col4"></td>
-<td class="data row5 col5" id="T_506c7_row5_col5"></td>
+<th class="row_heading level0 row5" id="T_1ea39_level0_row5">5</th>
+<td class="data row5 col0" id="T_1ea39_row5_col0"></td>
+<td class="data row5 col1" id="T_1ea39_row5_col1">BUY</td>
+<td class="data row5 col2" id="T_1ea39_row5_col2">TO OPEN</td>
+<td class="data row5 col3" id="T_1ea39_row5_col3">LX</td>
+<td class="data row5 col4" id="T_1ea39_row5_col4"></td>
+<td class="data row5 col5" id="T_1ea39_row5_col5"></td>
 </tr>
 <tr>
-<th class="row_heading level0 row6" id="T_506c7_level0_row6">6</th>
-<td class="data row6 col0" id="T_506c7_row6_col0"></td>
-<td class="data row6 col1" id="T_506c7_row6_col1">BUY</td>
-<td class="data row6 col2" id="T_506c7_row6_col2">TO OPEN</td>
-<td class="data row6 col3" id="T_506c7_row6_col3">SITC</td>
-<td class="data row6 col4" id="T_506c7_row6_col4"></td>
-<td class="data row6 col5" id="T_506c7_row6_col5"></td>
+<th class="row_heading level0 row6" id="T_1ea39_level0_row6">6</th>
+<td class="data row6 col0" id="T_1ea39_row6_col0"></td>
+<td class="data row6 col1" id="T_1ea39_row6_col1">BUY</td>
+<td class="data row6 col2" id="T_1ea39_row6_col2">TO OPEN</td>
+<td class="data row6 col3" id="T_1ea39_row6_col3">SITC</td>
+<td class="data row6 col4" id="T_1ea39_row6_col4"></td>
+<td class="data row6 col5" id="T_1ea39_row6_col5"></td>
 </tr>
 <tr>
-<th class="row_heading level0 row7" id="T_506c7_level0_row7">7</th>
-<td class="data row7 col0" id="T_506c7_row7_col0"></td>
-<td class="data row7 col1" id="T_506c7_row7_col1">BUY</td>
-<td class="data row7 col2" id="T_506c7_row7_col2">TO OPEN</td>
-<td class="data row7 col3" id="T_506c7_row7_col3">AMTD</td>
-<td class="data row7 col4" id="T_506c7_row7_col4"></td>
-<td class="data row7 col5" id="T_506c7_row7_col5"></td>
+<th class="row_heading level0 row7" id="T_1ea39_level0_row7">7</th>
+<td class="data row7 col0" id="T_1ea39_row7_col0"></td>
+<td class="data row7 col1" id="T_1ea39_row7_col1">BUY</td>
+<td class="data row7 col2" id="T_1ea39_row7_col2">TO OPEN</td>
+<td class="data row7 col3" id="T_1ea39_row7_col3">AMTD</td>
+<td class="data row7 col4" id="T_1ea39_row7_col4"></td>
+<td class="data row7 col5" id="T_1ea39_row7_col5"></td>
 </tr>
 <tr>
-<th class="row_heading level0 row8" id="T_506c7_level0_row8">8</th>
-<td class="data row8 col0" id="T_506c7_row8_col0"></td>
-<td class="data row8 col1" id="T_506c7_row8_col1">BUY</td>
-<td class="data row8 col2" id="T_506c7_row8_col2">TO OPEN</td>
-<td class="data row8 col3" id="T_506c7_row8_col3">GSL</td>
-<td class="data row8 col4" id="T_506c7_row8_col4"></td>
-<td class="data row8 col5" id="T_506c7_row8_col5"></td>
+<th class="row_heading level0 row8" id="T_1ea39_level0_row8">8</th>
+<td class="data row8 col0" id="T_1ea39_row8_col0"></td>
+<td class="data row8 col1" id="T_1ea39_row8_col1">BUY</td>
+<td class="data row8 col2" id="T_1ea39_row8_col2">TO OPEN</td>
+<td class="data row8 col3" id="T_1ea39_row8_col3">GSL</td>
+<td class="data row8 col4" id="T_1ea39_row8_col4"></td>
+<td class="data row8 col5" id="T_1ea39_row8_col5"></td>
 </tr>
 <tr>
-<th class="row_heading level0 row9" id="T_506c7_level0_row9">9</th>
-<td class="data row9 col0" id="T_506c7_row9_col0"></td>
-<td class="data row9 col1" id="T_506c7_row9_col1">BUY</td>
-<td class="data row9 col2" id="T_506c7_row9_col2">TO OPEN</td>
-<td class="data row9 col3" id="T_506c7_row9_col3">HG</td>
-<td class="data row9 col4" id="T_506c7_row9_col4"></td>
-<td class="data row9 col5" id="T_506c7_row9_col5"></td>
+<th class="row_heading level0 row9" id="T_1ea39_level0_row9">9</th>
+<td class="data row9 col0" id="T_1ea39_row9_col0"></td>
+<td class="data row9 col1" id="T_1ea39_row9_col1">BUY</td>
+<td class="data row9 col2" id="T_1ea39_row9_col2">TO OPEN</td>
+<td class="data row9 col3" id="T_1ea39_row9_col3">HG</td>
+<td class="data row9 col4" id="T_1ea39_row9_col4"></td>
+<td class="data row9 col5" id="T_1ea39_row9_col5"></td>
 </tr>
 </tbody>
 </table>
@@ -8740,19 +9026,19 @@ a.anchor-link {
 <div class="jp-OutputArea-child">
 <div class="jp-OutputPrompt jp-OutputArea-prompt"></div>
 <div class="jp-RenderedText jp-OutputArea-output" data-mime-type="text/plain" tabindex="0">
-<pre>&lt;class 'pandas.core.frame.DataFrame'&gt;
+<pre>&lt;class 'pandas.DataFrame'&gt;
 RangeIndex: 143 entries, 0 to 142
 Data columns (total 6 columns):
  #   Column      Non-Null Count  Dtype         
 ---  ------      --------------  -----         
- 0   Exec Time   143 non-null    datetime64[ns]
- 1   Side        143 non-null    object        
- 2   Pos Effect  143 non-null    object        
- 3   Symbol      143 non-null    object        
+ 0   Exec Time   143 non-null    datetime64[us]
+ 1   Side        143 non-null    str           
+ 2   Pos Effect  143 non-null    str           
+ 3   Symbol      143 non-null    str           
  4   Qty         143 non-null    int64         
  5   Price       143 non-null    float64       
-dtypes: datetime64[ns](1), float64(1), int64(1), object(3)
-memory usage: 6.8+ KB
+dtypes: datetime64[us](1), float64(1), int64(1), str(3)
+memory usage: 6.8 KB
 </pre>
 </div>
 </div>
@@ -8765,7 +9051,7 @@ memory usage: 6.8+ KB
 </div>
 <div class="jp-InputArea jp-Cell-inputArea"><div class="jp-InputPrompt jp-InputArea-prompt">
 </div><div class="jp-RenderedHTMLCommon jp-RenderedMarkdown jp-MarkdownOutput" data-mime-type="text/markdown">
-<h2 id="Update-Changes-in-Ticker-Symbol-and-Trade-Data">Update Changes in Ticker Symbol and Trade Data<a class="anchor-link" href="#Update-Changes-in-Ticker-Symbol-and-Trade-Data">¶</a></h2><p>Sometimes companies' stock symbols change due to rebranding, merger, acquisition or spinoffs. In the case of merger or acquisition, the trade price and share quantity may change as well. To keep track of the changes, I have an Excel file that stores the new symbols, changes in trade data and the old symbol connected to the changes.</p>
+<h2 id="Update-Corporate-Changes">Update Corporate Changes<a class="anchor-link" href="#Update-Corporate-Changes">¶</a></h2><p>Sometimes companies' stock symbols change due to rebranding, merger, acquisition or spinoffs. In the case of merger or acquisition or exchange switching, the trade price and share quantity may change as well. To keep track of the changes, I have an Excel file called <code>Trade History Changes.xlsx</code> that stores these updates.</p>
 </div>
 </div>
 </div>
@@ -8778,8 +9064,8 @@ memory usage: 6.8+ KB
 <div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
 <div class="cm-editor cm-s-jupyter">
 <div class="highlight hl-ipython3"><pre><span></span><span class="c1"># Import the Excel file</span>
-<span class="n">ticker_change</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">read_excel</span><span class="p">(</span><span class="s1">'Symbol Change.xlsx'</span><span class="p">)</span>
-<span class="n">ticker_change</span><span class="o">.</span><span class="n">style</span><span class="o">.</span><span class="n">format</span><span class="p">({</span><span class="s1">'Exec Time'</span><span class="p">:</span><span class="s2">""</span><span class="p">,</span> <span class="s1">'Price'</span><span class="p">:</span> <span class="s2">""</span><span class="p">,</span> <span class="s1">'Qty'</span><span class="p">:</span> <span class="s2">""</span><span class="p">})</span>
+<span class="n">changes</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">read_excel</span><span class="p">(</span><span class="s1">'Trade History Changes.xlsx'</span><span class="p">)</span>
+<span class="n">changes</span><span class="o">.</span><span class="n">style</span><span class="o">.</span><span class="n">format</span><span class="p">({</span><span class="s1">'Old_Exec Time'</span><span class="p">:</span><span class="s2">""</span><span class="p">,</span> <span class="s1">'Old_Price'</span><span class="p">:</span> <span class="s2">""</span><span class="p">,</span> <span class="s1">'Old_Qty'</span><span class="p">:</span> <span class="s2">""</span><span class="p">,</span> <span class="s1">'Exec Time'</span><span class="p">:</span><span class="s2">""</span><span class="p">,</span> <span class="s1">'Price'</span><span class="p">:</span> <span class="s2">""</span><span class="p">,</span> <span class="s1">'Qty'</span><span class="p">:</span> <span class="s2">""</span><span class="p">})</span>
 </pre></div>
 </div>
 </div>
@@ -8794,33 +9080,73 @@ memory usage: 6.8+ KB
 <div class="jp-RenderedHTMLCommon jp-RenderedHTML jp-OutputArea-output jp-OutputArea-executeResult" data-mime-type="text/html" tabindex="0">
 <style type="text/css">
 </style>
-<table id="T_53ac5">
+<table id="T_6c22e">
 <thead>
 <tr>
 <th class="blank level0"> </th>
-<th class="col_heading level0 col0" id="T_53ac5_level0_col0">Old Symbol</th>
-<th class="col_heading level0 col1" id="T_53ac5_level0_col1">Exec Time</th>
-<th class="col_heading level0 col2" id="T_53ac5_level0_col2">Side</th>
-<th class="col_heading level0 col3" id="T_53ac5_level0_col3">Pos Effect</th>
-<th class="col_heading level0 col4" id="T_53ac5_level0_col4">Symbol</th>
-<th class="col_heading level0 col5" id="T_53ac5_level0_col5">Qty</th>
-<th class="col_heading level0 col6" id="T_53ac5_level0_col6">Price</th>
+<th class="col_heading level0 col0" id="T_6c22e_level0_col0">Old_Exec Time</th>
+<th class="col_heading level0 col1" id="T_6c22e_level0_col1">Old_Side</th>
+<th class="col_heading level0 col2" id="T_6c22e_level0_col2">Old_Pos Effect</th>
+<th class="col_heading level0 col3" id="T_6c22e_level0_col3">Old_Symbol</th>
+<th class="col_heading level0 col4" id="T_6c22e_level0_col4">Old_Qty</th>
+<th class="col_heading level0 col5" id="T_6c22e_level0_col5">Old_Price</th>
+<th class="col_heading level0 col6" id="T_6c22e_level0_col6">Exec Time</th>
+<th class="col_heading level0 col7" id="T_6c22e_level0_col7">Side</th>
+<th class="col_heading level0 col8" id="T_6c22e_level0_col8">Pos Effect</th>
+<th class="col_heading level0 col9" id="T_6c22e_level0_col9">Symbol</th>
+<th class="col_heading level0 col10" id="T_6c22e_level0_col10">Qty</th>
+<th class="col_heading level0 col11" id="T_6c22e_level0_col11">Price</th>
 </tr>
 </thead>
 <tbody>
 <tr>
-<th class="row_heading level0 row0" id="T_53ac5_level0_row0">0</th>
-<td class="data row0 col0" id="T_53ac5_row0_col0">CIVI</td>
-<td class="data row0 col1" id="T_53ac5_row0_col1"></td>
-<td class="data row0 col2" id="T_53ac5_row0_col2">BUY</td>
-<td class="data row0 col3" id="T_53ac5_row0_col3">TO OPEN</td>
-<td class="data row0 col4" id="T_53ac5_row0_col4">SM</td>
-<td class="data row0 col5" id="T_53ac5_row0_col5"></td>
-<td class="data row0 col6" id="T_53ac5_row0_col6"></td>
+<th class="row_heading level0 row0" id="T_6c22e_level0_row0">0</th>
+<td class="data row0 col0" id="T_6c22e_row0_col0"></td>
+<td class="data row0 col1" id="T_6c22e_row0_col1">BUY</td>
+<td class="data row0 col2" id="T_6c22e_row0_col2">TO OPEN</td>
+<td class="data row0 col3" id="T_6c22e_row0_col3">CIVI</td>
+<td class="data row0 col4" id="T_6c22e_row0_col4"></td>
+<td class="data row0 col5" id="T_6c22e_row0_col5"></td>
+<td class="data row0 col6" id="T_6c22e_row0_col6"></td>
+<td class="data row0 col7" id="T_6c22e_row0_col7">BUY</td>
+<td class="data row0 col8" id="T_6c22e_row0_col8">TO OPEN</td>
+<td class="data row0 col9" id="T_6c22e_row0_col9">SM</td>
+<td class="data row0 col10" id="T_6c22e_row0_col10"></td>
+<td class="data row0 col11" id="T_6c22e_row0_col11"></td>
+</tr>
+<tr>
+<th class="row_heading level0 row1" id="T_6c22e_level0_row1">1</th>
+<td class="data row1 col0" id="T_6c22e_row1_col0"></td>
+<td class="data row1 col1" id="T_6c22e_row1_col1">nan</td>
+<td class="data row1 col2" id="T_6c22e_row1_col2">nan</td>
+<td class="data row1 col3" id="T_6c22e_row1_col3">nan</td>
+<td class="data row1 col4" id="T_6c22e_row1_col4"></td>
+<td class="data row1 col5" id="T_6c22e_row1_col5"></td>
+<td class="data row1 col6" id="T_6c22e_row1_col6"></td>
+<td class="data row1 col7" id="T_6c22e_row1_col7">SELL</td>
+<td class="data row1 col8" id="T_6c22e_row1_col8">TO CLOSE</td>
+<td class="data row1 col9" id="T_6c22e_row1_col9">AZN</td>
+<td class="data row1 col10" id="T_6c22e_row1_col10"></td>
+<td class="data row1 col11" id="T_6c22e_row1_col11"></td>
 </tr>
 </tbody>
 </table>
 </div>
+</div>
+</div>
+</div>
+</div>
+<div class="jp-Cell jp-MarkdownCell jp-Notebook-cell" id="cell-id=ba868e27-1179-4d44-9a78-1f46a32e4b80">
+<div class="jp-Cell-inputWrapper" tabindex="0">
+<div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
+</div>
+<div class="jp-InputArea jp-Cell-inputArea"><div class="jp-InputPrompt jp-InputArea-prompt">
+</div><div class="jp-RenderedHTMLCommon jp-RenderedMarkdown jp-MarkdownOutput" data-mime-type="text/markdown">
+<p>There're 2 sample corporate changes in <code>Trade History Changes.xlsx</code>:</p>
+<ul>
+<li>CIVI was acquired by SM in January 2026. The holdings in CIVIs were converted to SM shares. Purchase of CIVI shares shall be replaced with a new SM trade with new Exec Time, Qty and Price.</li>
+<li>AZN switched from NASDAQ to NYSE in February 2026. Holdings in AZN were automatically paid out instead of being converted to new quantity and price. In Thinkorswim, this type of transaction is not considered a trade, so there's no sell order in the account statement. The new sell transaction will be added to the current trade data.</li>
+</ul>
 </div>
 </div>
 </div>
@@ -8832,7 +9158,7 @@ memory usage: 6.8+ KB
 <div class="jp-InputPrompt jp-InputArea-prompt">In [17]:</div>
 <div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
 <div class="cm-editor cm-s-jupyter">
-<div class="highlight hl-ipython3"><pre><span></span><span class="n">ticker_change</span><span class="o">.</span><span class="n">info</span><span class="p">()</span>
+<div class="highlight hl-ipython3"><pre><span></span><span class="n">changes</span><span class="o">.</span><span class="n">info</span><span class="p">()</span>
 </pre></div>
 </div>
 </div>
@@ -8845,26 +9171,31 @@ memory usage: 6.8+ KB
 <div class="jp-OutputArea-child">
 <div class="jp-OutputPrompt jp-OutputArea-prompt"></div>
 <div class="jp-RenderedText jp-OutputArea-output" data-mime-type="text/plain" tabindex="0">
-<pre>&lt;class 'pandas.core.frame.DataFrame'&gt;
-RangeIndex: 1 entries, 0 to 0
-Data columns (total 7 columns):
- #   Column      Non-Null Count  Dtype         
----  ------      --------------  -----         
- 0   Old Symbol  1 non-null      object        
- 1   Exec Time   1 non-null      datetime64[ns]
- 2   Side        1 non-null      object        
- 3   Pos Effect  1 non-null      object        
- 4   Symbol      1 non-null      object        
- 5   Qty         1 non-null      int64         
- 6   Price       1 non-null      float64       
-dtypes: datetime64[ns](1), float64(1), int64(1), object(4)
-memory usage: 188.0+ bytes
+<pre>&lt;class 'pandas.DataFrame'&gt;
+RangeIndex: 2 entries, 0 to 1
+Data columns (total 12 columns):
+ #   Column          Non-Null Count  Dtype         
+---  ------          --------------  -----         
+ 0   Old_Exec Time   1 non-null      datetime64[us]
+ 1   Old_Side        1 non-null      str           
+ 2   Old_Pos Effect  1 non-null      str           
+ 3   Old_Symbol      1 non-null      str           
+ 4   Old_Qty         1 non-null      float64       
+ 5   Old_Price       1 non-null      float64       
+ 6   Exec Time       2 non-null      datetime64[us]
+ 7   Side            2 non-null      str           
+ 8   Pos Effect      2 non-null      str           
+ 9   Symbol          2 non-null      str           
+ 10  Qty             2 non-null      int64         
+ 11  Price           2 non-null      float64       
+dtypes: datetime64[us](2), float64(3), int64(1), str(6)
+memory usage: 324.0 bytes
 </pre>
 </div>
 </div>
 </div>
 </div>
-</div><div class="jp-Cell jp-CodeCell jp-Notebook-cell" id="cell-id=fb8b858b-63c6-4cc6-9131-4b1773a14607">
+</div><div class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs" id="cell-id=e1e9e676-3fe8-4873-8b71-8a2617ddb8ed">
 <div class="jp-Cell-inputWrapper" tabindex="0">
 <div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
 </div>
@@ -8872,52 +9203,18 @@ memory usage: 188.0+ bytes
 <div class="jp-InputPrompt jp-InputArea-prompt">In [18]:</div>
 <div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
 <div class="cm-editor cm-s-jupyter">
-<div class="highlight hl-ipython3"><pre><span></span><span class="c1"># Find changes that are not yet updated in trades</span>
-<span class="n">replace_rows</span> <span class="o">=</span> <span class="n">ticker_change</span><span class="o">.</span><span class="n">loc</span><span class="p">[</span><span class="n">ticker_change</span><span class="p">[</span><span class="s1">'Old Symbol'</span><span class="p">]</span><span class="o">.</span><span class="n">isin</span><span class="p">(</span><span class="n">trades</span><span class="p">[</span><span class="s1">'Symbol'</span><span class="p">]),</span> <span class="p">[</span><span class="s1">'Exec Time'</span><span class="p">,</span> <span class="s1">'Side'</span><span class="p">,</span> <span class="s1">'Pos Effect'</span><span class="p">,</span> <span class="s1">'Symbol'</span><span class="p">,</span> <span class="s1">'Qty'</span><span class="p">,</span> <span class="s1">'Price'</span><span class="p">]]</span>
-<span class="n">replace_rows</span><span class="o">.</span><span class="n">style</span><span class="o">.</span><span class="n">format</span><span class="p">({</span><span class="s1">'Exec Time'</span><span class="p">:</span><span class="s2">""</span><span class="p">,</span> <span class="s1">'Price'</span><span class="p">:</span> <span class="s2">""</span><span class="p">,</span> <span class="s1">'Qty'</span><span class="p">:</span> <span class="s2">""</span><span class="p">})</span>
+<div class="highlight hl-ipython3"><pre><span></span><span class="c1"># Remove old records that need updates</span>
+<span class="n">update_cols</span> <span class="o">=</span> <span class="p">[</span><span class="s1">'Exec Time'</span><span class="p">,</span> <span class="s1">'Side'</span><span class="p">,</span> <span class="s1">'Pos Effect'</span><span class="p">,</span> <span class="s1">'Symbol'</span><span class="p">,</span> <span class="s1">'Qty'</span><span class="p">,</span> <span class="s1">'Price'</span><span class="p">]</span>
+<span class="n">old_cols</span> <span class="o">=</span> <span class="p">[</span><span class="s1">'Old_Exec Time'</span><span class="p">,</span> <span class="s1">'Old_Side'</span><span class="p">,</span> <span class="s1">'Old_Pos Effect'</span><span class="p">,</span> <span class="s1">'Old_Symbol'</span><span class="p">,</span> <span class="s1">'Old_Qty'</span><span class="p">,</span> <span class="s1">'Old_Price'</span><span class="p">]</span>
+<span class="n">data_to_remove</span> <span class="o">=</span> <span class="n">changes</span><span class="p">[</span><span class="n">old_cols</span><span class="p">]</span>
+<span class="n">matching_rows</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">merge</span><span class="p">(</span><span class="n">trades</span><span class="p">,</span> <span class="n">data_to_remove</span><span class="p">,</span> <span class="n">how</span><span class="o">=</span><span class="s1">'left'</span><span class="p">,</span> <span class="n">left_on</span><span class="o">=</span><span class="n">update_cols</span><span class="p">,</span> <span class="n">right_on</span><span class="o">=</span><span class="n">old_cols</span><span class="p">,</span> <span class="n">indicator</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+<span class="n">updated_trades</span> <span class="o">=</span> <span class="n">matching_rows</span><span class="p">[</span><span class="n">matching_rows</span><span class="p">[</span><span class="s1">'_merge'</span><span class="p">]</span> <span class="o">==</span> <span class="s1">'left_only'</span><span class="p">]</span><span class="o">.</span><span class="n">drop</span><span class="p">(</span><span class="n">columns</span><span class="o">=</span><span class="n">old_cols</span><span class="p">)</span><span class="o">.</span><span class="n">drop</span><span class="p">(</span><span class="n">columns</span><span class="o">=</span><span class="s1">'_merge'</span><span class="p">)</span>
 </pre></div>
 </div>
 </div>
 </div>
 </div>
-<div class="jp-Cell-outputWrapper">
-<div class="jp-Collapser jp-OutputCollapser jp-Cell-outputCollapser">
-</div>
-<div class="jp-OutputArea jp-Cell-outputArea">
-<div class="jp-OutputArea-child jp-OutputArea-executeResult">
-<div class="jp-OutputPrompt jp-OutputArea-prompt">Out[18]:</div>
-<div class="jp-RenderedHTMLCommon jp-RenderedHTML jp-OutputArea-output jp-OutputArea-executeResult" data-mime-type="text/html" tabindex="0">
-<style type="text/css">
-</style>
-<table id="T_cbd35">
-<thead>
-<tr>
-<th class="blank level0"> </th>
-<th class="col_heading level0 col0" id="T_cbd35_level0_col0">Exec Time</th>
-<th class="col_heading level0 col1" id="T_cbd35_level0_col1">Side</th>
-<th class="col_heading level0 col2" id="T_cbd35_level0_col2">Pos Effect</th>
-<th class="col_heading level0 col3" id="T_cbd35_level0_col3">Symbol</th>
-<th class="col_heading level0 col4" id="T_cbd35_level0_col4">Qty</th>
-<th class="col_heading level0 col5" id="T_cbd35_level0_col5">Price</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<th class="row_heading level0 row0" id="T_cbd35_level0_row0">0</th>
-<td class="data row0 col0" id="T_cbd35_row0_col0"></td>
-<td class="data row0 col1" id="T_cbd35_row0_col1">BUY</td>
-<td class="data row0 col2" id="T_cbd35_row0_col2">TO OPEN</td>
-<td class="data row0 col3" id="T_cbd35_row0_col3">SM</td>
-<td class="data row0 col4" id="T_cbd35_row0_col4"></td>
-<td class="data row0 col5" id="T_cbd35_row0_col5"></td>
-</tr>
-</tbody>
-</table>
-</div>
-</div>
-</div>
-</div>
-</div><div class="jp-Cell jp-CodeCell jp-Notebook-cell" id="cell-id=02b81c61-7f32-473a-a111-0a9e66b60325">
+</div><div class="jp-Cell jp-CodeCell jp-Notebook-cell" id="cell-id=3454c750-9271-4fd6-b2bc-2a85a2750508">
 <div class="jp-Cell-inputWrapper" tabindex="0">
 <div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
 </div>
@@ -8925,9 +9222,8 @@ memory usage: 188.0+ bytes
 <div class="jp-InputPrompt jp-InputArea-prompt">In [19]:</div>
 <div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
 <div class="cm-editor cm-s-jupyter">
-<div class="highlight hl-ipython3"><pre><span></span><span class="c1"># Remove the records of old symbols</span>
-<span class="n">updated_trades</span> <span class="o">=</span> <span class="n">trades</span><span class="p">[</span><span class="o">~</span><span class="n">trades</span><span class="p">[</span><span class="s1">'Symbol'</span><span class="p">]</span><span class="o">.</span><span class="n">isin</span><span class="p">(</span><span class="n">ticker_change</span><span class="p">[</span><span class="s1">'Old Symbol'</span><span class="p">])]</span>
-<span class="n">updated_trades</span><span class="p">[</span><span class="s1">'Symbol'</span><span class="p">]</span><span class="o">.</span><span class="n">nunique</span><span class="p">()</span>
+<div class="highlight hl-ipython3"><pre><span></span><span class="c1"># Check if CIVI is still in the trade data</span>
+<span class="n">updated_trades</span><span class="p">[</span><span class="n">updated_trades</span><span class="p">[</span><span class="s1">'Symbol'</span><span class="p">]</span> <span class="o">==</span> <span class="s1">'CIVI'</span><span class="p">]</span>
 </pre></div>
 </div>
 </div>
@@ -8939,13 +9235,42 @@ memory usage: 188.0+ bytes
 <div class="jp-OutputArea jp-Cell-outputArea">
 <div class="jp-OutputArea-child jp-OutputArea-executeResult">
 <div class="jp-OutputPrompt jp-OutputArea-prompt">Out[19]:</div>
-<div class="jp-RenderedText jp-OutputArea-output jp-OutputArea-executeResult" data-mime-type="text/plain" tabindex="0">
-<pre>64</pre>
+<div class="jp-RenderedHTMLCommon jp-RenderedHTML jp-OutputArea-output jp-OutputArea-executeResult" data-mime-type="text/html" tabindex="0">
+<div>
+<style scoped="">
+    .dataframe tbody tr th:only-of-type {
+        vertical-align: middle;
+    }
+
+    .dataframe tbody tr th {
+        vertical-align: top;
+    }
+
+    .dataframe thead th {
+        text-align: right;
+    }
+</style>
+<table border="1" class="dataframe">
+<thead>
+<tr style="text-align: right;">
+<th></th>
+<th>Exec Time</th>
+<th>Side</th>
+<th>Pos Effect</th>
+<th>Symbol</th>
+<th>Qty</th>
+<th>Price</th>
+</tr>
+</thead>
+<tbody>
+</tbody>
+</table>
 </div>
 </div>
 </div>
 </div>
-</div><div class="jp-Cell jp-CodeCell jp-Notebook-cell" id="cell-id=4cc44c77-d3a1-4f8f-82c6-783533d818b6">
+</div>
+</div><div class="jp-Cell jp-CodeCell jp-Notebook-cell" id="cell-id=58d81ca0-bd5e-4fb0-84aa-be81602ff30b">
 <div class="jp-Cell-inputWrapper" tabindex="0">
 <div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
 </div>
@@ -8953,9 +9278,13 @@ memory usage: 188.0+ bytes
 <div class="jp-InputPrompt jp-InputArea-prompt">In [20]:</div>
 <div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
 <div class="cm-editor cm-s-jupyter">
-<div class="highlight hl-ipython3"><pre><span></span><span class="c1"># Add new updated records to trades</span>
-<span class="n">updated_trades</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">concat</span><span class="p">([</span><span class="n">updated_trades</span><span class="p">,</span> <span class="n">replace_rows</span><span class="p">])</span>
-<span class="n">updated_trades</span><span class="o">.</span><span class="n">tail</span><span class="p">()</span><span class="o">.</span><span class="n">style</span><span class="o">.</span><span class="n">format</span><span class="p">({</span><span class="s1">'Exec Time'</span><span class="p">:</span><span class="s2">""</span><span class="p">,</span> <span class="s1">'Price'</span><span class="p">:</span> <span class="s2">""</span><span class="p">,</span> <span class="s1">'Qty'</span><span class="p">:</span> <span class="s2">""</span><span class="p">})</span>
+<div class="highlight hl-ipython3"><pre><span></span><span class="c1"># Find changes that are not yet included in all trades</span>
+<span class="n">update_cols</span> <span class="o">=</span> <span class="p">[</span><span class="s1">'Exec Time'</span><span class="p">,</span> <span class="s1">'Side'</span><span class="p">,</span> <span class="s1">'Pos Effect'</span><span class="p">,</span> <span class="s1">'Symbol'</span><span class="p">,</span> <span class="s1">'Qty'</span><span class="p">,</span> <span class="s1">'Price'</span><span class="p">]</span>
+<span class="n">updates</span> <span class="o">=</span> <span class="n">changes</span><span class="p">[</span><span class="n">update_cols</span><span class="p">]</span>
+<span class="n">merged</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">merge</span><span class="p">(</span><span class="n">updates</span><span class="p">,</span> <span class="n">updated_trades</span><span class="p">,</span> <span class="n">how</span><span class="o">=</span><span class="s1">'left'</span><span class="p">,</span> <span class="n">on</span><span class="o">=</span><span class="n">update_cols</span><span class="p">,</span> <span class="n">indicator</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+<span class="n">new_rows</span> <span class="o">=</span> <span class="n">merged</span><span class="p">[</span><span class="n">merged</span><span class="p">[</span><span class="s1">'_merge'</span><span class="p">]</span> <span class="o">==</span> <span class="s1">'left_only'</span><span class="p">]</span><span class="o">.</span><span class="n">drop</span><span class="p">(</span><span class="n">columns</span><span class="o">=</span><span class="s1">'_merge'</span><span class="p">)</span>
+
+<span class="n">new_rows</span><span class="o">.</span><span class="n">style</span><span class="o">.</span><span class="n">format</span><span class="p">({</span><span class="s1">'Exec Time'</span><span class="p">:</span><span class="s2">""</span><span class="p">,</span> <span class="s1">'Price'</span><span class="p">:</span> <span class="s2">""</span><span class="p">,</span> <span class="s1">'Qty'</span><span class="p">:</span> <span class="s2">""</span><span class="p">})</span>
 </pre></div>
 </div>
 </div>
@@ -8970,63 +9299,125 @@ memory usage: 188.0+ bytes
 <div class="jp-RenderedHTMLCommon jp-RenderedHTML jp-OutputArea-output jp-OutputArea-executeResult" data-mime-type="text/html" tabindex="0">
 <style type="text/css">
 </style>
-<table id="T_ee14d">
+<table id="T_403a8">
 <thead>
 <tr>
 <th class="blank level0"> </th>
-<th class="col_heading level0 col0" id="T_ee14d_level0_col0">Exec Time</th>
-<th class="col_heading level0 col1" id="T_ee14d_level0_col1">Side</th>
-<th class="col_heading level0 col2" id="T_ee14d_level0_col2">Pos Effect</th>
-<th class="col_heading level0 col3" id="T_ee14d_level0_col3">Symbol</th>
-<th class="col_heading level0 col4" id="T_ee14d_level0_col4">Qty</th>
-<th class="col_heading level0 col5" id="T_ee14d_level0_col5">Price</th>
+<th class="col_heading level0 col0" id="T_403a8_level0_col0">Exec Time</th>
+<th class="col_heading level0 col1" id="T_403a8_level0_col1">Side</th>
+<th class="col_heading level0 col2" id="T_403a8_level0_col2">Pos Effect</th>
+<th class="col_heading level0 col3" id="T_403a8_level0_col3">Symbol</th>
+<th class="col_heading level0 col4" id="T_403a8_level0_col4">Qty</th>
+<th class="col_heading level0 col5" id="T_403a8_level0_col5">Price</th>
 </tr>
 </thead>
 <tbody>
 <tr>
-<th class="row_heading level0 row0" id="T_ee14d_level0_row0">139</th>
-<td class="data row0 col0" id="T_ee14d_row0_col0"></td>
-<td class="data row0 col1" id="T_ee14d_row0_col1">BUY</td>
-<td class="data row0 col2" id="T_ee14d_row0_col2">TO OPEN</td>
-<td class="data row0 col3" id="T_ee14d_row0_col3">VICI</td>
-<td class="data row0 col4" id="T_ee14d_row0_col4"></td>
-<td class="data row0 col5" id="T_ee14d_row0_col5"></td>
+<th class="row_heading level0 row0" id="T_403a8_level0_row0">0</th>
+<td class="data row0 col0" id="T_403a8_row0_col0"></td>
+<td class="data row0 col1" id="T_403a8_row0_col1">BUY</td>
+<td class="data row0 col2" id="T_403a8_row0_col2">TO OPEN</td>
+<td class="data row0 col3" id="T_403a8_row0_col3">SM</td>
+<td class="data row0 col4" id="T_403a8_row0_col4"></td>
+<td class="data row0 col5" id="T_403a8_row0_col5"></td>
 </tr>
 <tr>
-<th class="row_heading level0 row1" id="T_ee14d_level0_row1">140</th>
-<td class="data row1 col0" id="T_ee14d_row1_col0"></td>
-<td class="data row1 col1" id="T_ee14d_row1_col1">BUY</td>
-<td class="data row1 col2" id="T_ee14d_row1_col2">TO OPEN</td>
-<td class="data row1 col3" id="T_ee14d_row1_col3">CTSH</td>
-<td class="data row1 col4" id="T_ee14d_row1_col4"></td>
-<td class="data row1 col5" id="T_ee14d_row1_col5"></td>
+<th class="row_heading level0 row1" id="T_403a8_level0_row1">1</th>
+<td class="data row1 col0" id="T_403a8_row1_col0"></td>
+<td class="data row1 col1" id="T_403a8_row1_col1">SELL</td>
+<td class="data row1 col2" id="T_403a8_row1_col2">TO CLOSE</td>
+<td class="data row1 col3" id="T_403a8_row1_col3">AZN</td>
+<td class="data row1 col4" id="T_403a8_row1_col4"></td>
+<td class="data row1 col5" id="T_403a8_row1_col5"></td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+</div>
+</div>
+</div><div class="jp-Cell jp-CodeCell jp-Notebook-cell" id="cell-id=6d44bfec-72f6-44dc-9482-7a2910845ebf">
+<div class="jp-Cell-inputWrapper" tabindex="0">
+<div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
+</div>
+<div class="jp-InputArea jp-Cell-inputArea">
+<div class="jp-InputPrompt jp-InputArea-prompt">In [21]:</div>
+<div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
+<div class="cm-editor cm-s-jupyter">
+<div class="highlight hl-ipython3"><pre><span></span><span class="c1"># Add new rows to all undervalued stock trade dataset</span>
+<span class="n">updated_trades</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">concat</span><span class="p">([</span><span class="n">updated_trades</span><span class="p">,</span> <span class="n">new_rows</span><span class="p">],</span> <span class="n">ignore_index</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+<span class="n">updated_trades</span><span class="o">.</span><span class="n">tail</span><span class="p">()</span><span class="o">.</span><span class="n">style</span><span class="o">.</span><span class="n">format</span><span class="p">({</span><span class="s1">'Exec Time'</span><span class="p">:</span><span class="s2">""</span><span class="p">,</span> <span class="s1">'Price'</span><span class="p">:</span> <span class="s2">""</span><span class="p">,</span> <span class="s1">'Qty'</span><span class="p">:</span> <span class="s2">""</span><span class="p">})</span>
+</pre></div>
+</div>
+</div>
+</div>
+</div>
+<div class="jp-Cell-outputWrapper">
+<div class="jp-Collapser jp-OutputCollapser jp-Cell-outputCollapser">
+</div>
+<div class="jp-OutputArea jp-Cell-outputArea">
+<div class="jp-OutputArea-child jp-OutputArea-executeResult">
+<div class="jp-OutputPrompt jp-OutputArea-prompt">Out[21]:</div>
+<div class="jp-RenderedHTMLCommon jp-RenderedHTML jp-OutputArea-output jp-OutputArea-executeResult" data-mime-type="text/html" tabindex="0">
+<style type="text/css">
+</style>
+<table id="T_f1d3b">
+<thead>
+<tr>
+<th class="blank level0"> </th>
+<th class="col_heading level0 col0" id="T_f1d3b_level0_col0">Exec Time</th>
+<th class="col_heading level0 col1" id="T_f1d3b_level0_col1">Side</th>
+<th class="col_heading level0 col2" id="T_f1d3b_level0_col2">Pos Effect</th>
+<th class="col_heading level0 col3" id="T_f1d3b_level0_col3">Symbol</th>
+<th class="col_heading level0 col4" id="T_f1d3b_level0_col4">Qty</th>
+<th class="col_heading level0 col5" id="T_f1d3b_level0_col5">Price</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<th class="row_heading level0 row0" id="T_f1d3b_level0_row0">139</th>
+<td class="data row0 col0" id="T_f1d3b_row0_col0"></td>
+<td class="data row0 col1" id="T_f1d3b_row0_col1">BUY</td>
+<td class="data row0 col2" id="T_f1d3b_row0_col2">TO OPEN</td>
+<td class="data row0 col3" id="T_f1d3b_row0_col3">CTSH</td>
+<td class="data row0 col4" id="T_f1d3b_row0_col4"></td>
+<td class="data row0 col5" id="T_f1d3b_row0_col5"></td>
 </tr>
 <tr>
-<th class="row_heading level0 row2" id="T_ee14d_level0_row2">141</th>
-<td class="data row2 col0" id="T_ee14d_row2_col0"></td>
-<td class="data row2 col1" id="T_ee14d_row2_col1">BUY</td>
-<td class="data row2 col2" id="T_ee14d_row2_col2">TO OPEN</td>
-<td class="data row2 col3" id="T_ee14d_row2_col3">PDD</td>
-<td class="data row2 col4" id="T_ee14d_row2_col4"></td>
-<td class="data row2 col5" id="T_ee14d_row2_col5"></td>
+<th class="row_heading level0 row1" id="T_f1d3b_level0_row1">140</th>
+<td class="data row1 col0" id="T_f1d3b_row1_col0"></td>
+<td class="data row1 col1" id="T_f1d3b_row1_col1">BUY</td>
+<td class="data row1 col2" id="T_f1d3b_row1_col2">TO OPEN</td>
+<td class="data row1 col3" id="T_f1d3b_row1_col3">PDD</td>
+<td class="data row1 col4" id="T_f1d3b_row1_col4"></td>
+<td class="data row1 col5" id="T_f1d3b_row1_col5"></td>
 </tr>
 <tr>
-<th class="row_heading level0 row3" id="T_ee14d_level0_row3">142</th>
-<td class="data row3 col0" id="T_ee14d_row3_col0"></td>
-<td class="data row3 col1" id="T_ee14d_row3_col1">SELL</td>
-<td class="data row3 col2" id="T_ee14d_row3_col2">TO CLOSE</td>
-<td class="data row3 col3" id="T_ee14d_row3_col3">CCRN</td>
-<td class="data row3 col4" id="T_ee14d_row3_col4"></td>
-<td class="data row3 col5" id="T_ee14d_row3_col5"></td>
+<th class="row_heading level0 row2" id="T_f1d3b_level0_row2">141</th>
+<td class="data row2 col0" id="T_f1d3b_row2_col0"></td>
+<td class="data row2 col1" id="T_f1d3b_row2_col1">SELL</td>
+<td class="data row2 col2" id="T_f1d3b_row2_col2">TO CLOSE</td>
+<td class="data row2 col3" id="T_f1d3b_row2_col3">CCRN</td>
+<td class="data row2 col4" id="T_f1d3b_row2_col4"></td>
+<td class="data row2 col5" id="T_f1d3b_row2_col5"></td>
 </tr>
 <tr>
-<th class="row_heading level0 row4" id="T_ee14d_level0_row4">0</th>
-<td class="data row4 col0" id="T_ee14d_row4_col0"></td>
-<td class="data row4 col1" id="T_ee14d_row4_col1">BUY</td>
-<td class="data row4 col2" id="T_ee14d_row4_col2">TO OPEN</td>
-<td class="data row4 col3" id="T_ee14d_row4_col3">SM</td>
-<td class="data row4 col4" id="T_ee14d_row4_col4"></td>
-<td class="data row4 col5" id="T_ee14d_row4_col5"></td>
+<th class="row_heading level0 row3" id="T_f1d3b_level0_row3">142</th>
+<td class="data row3 col0" id="T_f1d3b_row3_col0"></td>
+<td class="data row3 col1" id="T_f1d3b_row3_col1">BUY</td>
+<td class="data row3 col2" id="T_f1d3b_row3_col2">TO OPEN</td>
+<td class="data row3 col3" id="T_f1d3b_row3_col3">SM</td>
+<td class="data row3 col4" id="T_f1d3b_row3_col4"></td>
+<td class="data row3 col5" id="T_f1d3b_row3_col5"></td>
+</tr>
+<tr>
+<th class="row_heading level0 row4" id="T_f1d3b_level0_row4">143</th>
+<td class="data row4 col0" id="T_f1d3b_row4_col0"></td>
+<td class="data row4 col1" id="T_f1d3b_row4_col1">SELL</td>
+<td class="data row4 col2" id="T_f1d3b_row4_col2">TO CLOSE</td>
+<td class="data row4 col3" id="T_f1d3b_row4_col3">AZN</td>
+<td class="data row4 col4" id="T_f1d3b_row4_col4"></td>
+<td class="data row4 col5" id="T_f1d3b_row4_col5"></td>
 </tr>
 </tbody>
 </table>
@@ -9039,7 +9430,7 @@ memory usage: 188.0+ bytes
 <div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
 </div>
 <div class="jp-InputArea jp-Cell-inputArea">
-<div class="jp-InputPrompt jp-InputArea-prompt">In [21]:</div>
+<div class="jp-InputPrompt jp-InputArea-prompt">In [22]:</div>
 <div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
 <div class="cm-editor cm-s-jupyter">
 <div class="highlight hl-ipython3"><pre><span></span><span class="n">updated_trades</span><span class="p">[</span><span class="s1">'Symbol'</span><span class="p">]</span><span class="o">.</span><span class="n">nunique</span><span class="p">()</span>
@@ -9053,7 +9444,7 @@ memory usage: 188.0+ bytes
 </div>
 <div class="jp-OutputArea jp-Cell-outputArea">
 <div class="jp-OutputArea-child jp-OutputArea-executeResult">
-<div class="jp-OutputPrompt jp-OutputArea-prompt">Out[21]:</div>
+<div class="jp-OutputPrompt jp-OutputArea-prompt">Out[22]:</div>
 <div class="jp-RenderedText jp-OutputArea-output jp-OutputArea-executeResult" data-mime-type="text/plain" tabindex="0">
 <pre>65</pre>
 </div>
@@ -9065,7 +9456,7 @@ memory usage: 188.0+ bytes
 <div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
 </div>
 <div class="jp-InputArea jp-Cell-inputArea">
-<div class="jp-InputPrompt jp-InputArea-prompt">In [22]:</div>
+<div class="jp-InputPrompt jp-InputArea-prompt">In [23]:</div>
 <div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
 <div class="cm-editor cm-s-jupyter">
 <div class="highlight hl-ipython3"><pre><span></span><span class="n">updated_trades</span><span class="o">.</span><span class="n">info</span><span class="p">()</span>
@@ -9081,21 +9472,32 @@ memory usage: 188.0+ bytes
 <div class="jp-OutputArea-child">
 <div class="jp-OutputPrompt jp-OutputArea-prompt"></div>
 <div class="jp-RenderedText jp-OutputArea-output" data-mime-type="text/plain" tabindex="0">
-<pre>&lt;class 'pandas.core.frame.DataFrame'&gt;
-Index: 143 entries, 0 to 0
+<pre>&lt;class 'pandas.DataFrame'&gt;
+RangeIndex: 144 entries, 0 to 143
 Data columns (total 6 columns):
  #   Column      Non-Null Count  Dtype         
 ---  ------      --------------  -----         
- 0   Exec Time   143 non-null    datetime64[ns]
- 1   Side        143 non-null    object        
- 2   Pos Effect  143 non-null    object        
- 3   Symbol      143 non-null    object        
- 4   Qty         143 non-null    int64         
- 5   Price       143 non-null    float64       
-dtypes: datetime64[ns](1), float64(1), int64(1), object(3)
-memory usage: 7.8+ KB
+ 0   Exec Time   144 non-null    datetime64[us]
+ 1   Side        144 non-null    str           
+ 2   Pos Effect  144 non-null    str           
+ 3   Symbol      144 non-null    str           
+ 4   Qty         144 non-null    int64         
+ 5   Price       144 non-null    float64       
+dtypes: datetime64[us](1), float64(1), int64(1), str(3)
+memory usage: 6.9 KB
 </pre>
 </div>
+</div>
+</div>
+</div>
+</div>
+<div class="jp-Cell jp-MarkdownCell jp-Notebook-cell" id="cell-id=333f9798-cf69-4da3-aec6-5a16a7dcd24b">
+<div class="jp-Cell-inputWrapper" tabindex="0">
+<div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
+</div>
+<div class="jp-InputArea jp-Cell-inputArea"><div class="jp-InputPrompt jp-InputArea-prompt">
+</div><div class="jp-RenderedHTMLCommon jp-RenderedMarkdown jp-MarkdownOutput" data-mime-type="text/markdown">
+<p>In <code>etl.py</code>, <code>Trade History Changes.xlsx</code> is used to update both the new trades and the previous trades to make sure that no outdated record remains or is added back into the final dataset.</p>
 </div>
 </div>
 </div>
@@ -9116,7 +9518,7 @@ memory usage: 7.8+ KB
 <div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
 </div>
 <div class="jp-InputArea jp-Cell-inputArea">
-<div class="jp-InputPrompt jp-InputArea-prompt">In [23]:</div>
+<div class="jp-InputPrompt jp-InputArea-prompt">In [24]:</div>
 <div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
 <div class="cm-editor cm-s-jupyter">
 <div class="highlight hl-ipython3"><pre><span></span><span class="c1"># Load the overlapping_stocks.xlsx</span>
@@ -9131,7 +9533,7 @@ memory usage: 7.8+ KB
 <div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
 </div>
 <div class="jp-InputArea jp-Cell-inputArea">
-<div class="jp-InputPrompt jp-InputArea-prompt">In [24]:</div>
+<div class="jp-InputPrompt jp-InputArea-prompt">In [25]:</div>
 <div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
 <div class="cm-editor cm-s-jupyter">
 <div class="highlight hl-ipython3"><pre><span></span><span class="n">overlapping</span><span class="o">.</span><span class="n">head</span><span class="p">()</span><span class="o">.</span><span class="n">style</span><span class="o">.</span><span class="n">format</span><span class="p">({</span><span class="s1">'Exec Date'</span><span class="p">:</span><span class="s2">""</span><span class="p">,</span> <span class="s1">'Qty'</span><span class="p">:</span><span class="s2">""</span><span class="p">,</span> <span class="s1">'Price'</span><span class="p">:</span><span class="s2">""</span><span class="p">,</span> <span class="s1">'Strategy'</span><span class="p">:</span> <span class="s2">""</span><span class="p">})</span>
@@ -9145,53 +9547,53 @@ memory usage: 7.8+ KB
 </div>
 <div class="jp-OutputArea jp-Cell-outputArea">
 <div class="jp-OutputArea-child jp-OutputArea-executeResult">
-<div class="jp-OutputPrompt jp-OutputArea-prompt">Out[24]:</div>
+<div class="jp-OutputPrompt jp-OutputArea-prompt">Out[25]:</div>
 <div class="jp-RenderedHTMLCommon jp-RenderedHTML jp-OutputArea-output jp-OutputArea-executeResult" data-mime-type="text/html" tabindex="0">
 <style type="text/css">
 </style>
-<table id="T_96877">
+<table id="T_fe718">
 <thead>
 <tr>
 <th class="blank level0"> </th>
-<th class="col_heading level0 col0" id="T_96877_level0_col0">Exec Date</th>
-<th class="col_heading level0 col1" id="T_96877_level0_col1">Symbol</th>
-<th class="col_heading level0 col2" id="T_96877_level0_col2">Qty</th>
-<th class="col_heading level0 col3" id="T_96877_level0_col3">Price</th>
-<th class="col_heading level0 col4" id="T_96877_level0_col4">Strategy</th>
+<th class="col_heading level0 col0" id="T_fe718_level0_col0">Exec Date</th>
+<th class="col_heading level0 col1" id="T_fe718_level0_col1">Symbol</th>
+<th class="col_heading level0 col2" id="T_fe718_level0_col2">Qty</th>
+<th class="col_heading level0 col3" id="T_fe718_level0_col3">Price</th>
+<th class="col_heading level0 col4" id="T_fe718_level0_col4">Strategy</th>
 </tr>
 </thead>
 <tbody>
 <tr>
-<th class="row_heading level0 row0" id="T_96877_level0_row0">0</th>
-<td class="data row0 col0" id="T_96877_row0_col0"></td>
-<td class="data row0 col1" id="T_96877_row0_col1">CVE</td>
-<td class="data row0 col2" id="T_96877_row0_col2"></td>
-<td class="data row0 col3" id="T_96877_row0_col3"></td>
-<td class="data row0 col4" id="T_96877_row0_col4"></td>
+<th class="row_heading level0 row0" id="T_fe718_level0_row0">0</th>
+<td class="data row0 col0" id="T_fe718_row0_col0"></td>
+<td class="data row0 col1" id="T_fe718_row0_col1">CVE</td>
+<td class="data row0 col2" id="T_fe718_row0_col2"></td>
+<td class="data row0 col3" id="T_fe718_row0_col3"></td>
+<td class="data row0 col4" id="T_fe718_row0_col4"></td>
 </tr>
 <tr>
-<th class="row_heading level0 row1" id="T_96877_level0_row1">1</th>
-<td class="data row1 col0" id="T_96877_row1_col0"></td>
-<td class="data row1 col1" id="T_96877_row1_col1">VICI</td>
-<td class="data row1 col2" id="T_96877_row1_col2"></td>
-<td class="data row1 col3" id="T_96877_row1_col3"></td>
-<td class="data row1 col4" id="T_96877_row1_col4"></td>
+<th class="row_heading level0 row1" id="T_fe718_level0_row1">1</th>
+<td class="data row1 col0" id="T_fe718_row1_col0"></td>
+<td class="data row1 col1" id="T_fe718_row1_col1">VICI</td>
+<td class="data row1 col2" id="T_fe718_row1_col2"></td>
+<td class="data row1 col3" id="T_fe718_row1_col3"></td>
+<td class="data row1 col4" id="T_fe718_row1_col4"></td>
 </tr>
 <tr>
-<th class="row_heading level0 row2" id="T_96877_level0_row2">2</th>
-<td class="data row2 col0" id="T_96877_row2_col0"></td>
-<td class="data row2 col1" id="T_96877_row2_col1">CTSH</td>
-<td class="data row2 col2" id="T_96877_row2_col2"></td>
-<td class="data row2 col3" id="T_96877_row2_col3"></td>
-<td class="data row2 col4" id="T_96877_row2_col4"></td>
+<th class="row_heading level0 row2" id="T_fe718_level0_row2">2</th>
+<td class="data row2 col0" id="T_fe718_row2_col0"></td>
+<td class="data row2 col1" id="T_fe718_row2_col1">CTSH</td>
+<td class="data row2 col2" id="T_fe718_row2_col2"></td>
+<td class="data row2 col3" id="T_fe718_row2_col3"></td>
+<td class="data row2 col4" id="T_fe718_row2_col4"></td>
 </tr>
 <tr>
-<th class="row_heading level0 row3" id="T_96877_level0_row3">3</th>
-<td class="data row3 col0" id="T_96877_row3_col0"></td>
-<td class="data row3 col1" id="T_96877_row3_col1">CVE</td>
-<td class="data row3 col2" id="T_96877_row3_col2"></td>
-<td class="data row3 col3" id="T_96877_row3_col3"></td>
-<td class="data row3 col4" id="T_96877_row3_col4"></td>
+<th class="row_heading level0 row3" id="T_fe718_level0_row3">3</th>
+<td class="data row3 col0" id="T_fe718_row3_col0"></td>
+<td class="data row3 col1" id="T_fe718_row3_col1">CVE</td>
+<td class="data row3 col2" id="T_fe718_row3_col2"></td>
+<td class="data row3 col3" id="T_fe718_row3_col3"></td>
+<td class="data row3 col4" id="T_fe718_row3_col4"></td>
 </tr>
 </tbody>
 </table>
@@ -9204,7 +9606,7 @@ memory usage: 7.8+ KB
 <div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
 </div>
 <div class="jp-InputArea jp-Cell-inputArea">
-<div class="jp-InputPrompt jp-InputArea-prompt">In [25]:</div>
+<div class="jp-InputPrompt jp-InputArea-prompt">In [26]:</div>
 <div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
 <div class="cm-editor cm-s-jupyter">
 <div class="highlight hl-ipython3"><pre><span></span><span class="c1"># Remove 'Strategy' column</span>
@@ -9220,48 +9622,48 @@ memory usage: 7.8+ KB
 </div>
 <div class="jp-OutputArea jp-Cell-outputArea">
 <div class="jp-OutputArea-child jp-OutputArea-executeResult">
-<div class="jp-OutputPrompt jp-OutputArea-prompt">Out[25]:</div>
+<div class="jp-OutputPrompt jp-OutputArea-prompt">Out[26]:</div>
 <div class="jp-RenderedHTMLCommon jp-RenderedHTML jp-OutputArea-output jp-OutputArea-executeResult" data-mime-type="text/html" tabindex="0">
 <style type="text/css">
 </style>
-<table id="T_b2cf7">
+<table id="T_45de5">
 <thead>
 <tr>
 <th class="blank level0"> </th>
-<th class="col_heading level0 col0" id="T_b2cf7_level0_col0">Exec Date</th>
-<th class="col_heading level0 col1" id="T_b2cf7_level0_col1">Symbol</th>
-<th class="col_heading level0 col2" id="T_b2cf7_level0_col2">Qty</th>
-<th class="col_heading level0 col3" id="T_b2cf7_level0_col3">Price</th>
+<th class="col_heading level0 col0" id="T_45de5_level0_col0">Exec Date</th>
+<th class="col_heading level0 col1" id="T_45de5_level0_col1">Symbol</th>
+<th class="col_heading level0 col2" id="T_45de5_level0_col2">Qty</th>
+<th class="col_heading level0 col3" id="T_45de5_level0_col3">Price</th>
 </tr>
 </thead>
 <tbody>
 <tr>
-<th class="row_heading level0 row0" id="T_b2cf7_level0_row0">0</th>
-<td class="data row0 col0" id="T_b2cf7_row0_col0"></td>
-<td class="data row0 col1" id="T_b2cf7_row0_col1">CVE</td>
-<td class="data row0 col2" id="T_b2cf7_row0_col2"></td>
-<td class="data row0 col3" id="T_b2cf7_row0_col3"></td>
+<th class="row_heading level0 row0" id="T_45de5_level0_row0">0</th>
+<td class="data row0 col0" id="T_45de5_row0_col0"></td>
+<td class="data row0 col1" id="T_45de5_row0_col1">CVE</td>
+<td class="data row0 col2" id="T_45de5_row0_col2"></td>
+<td class="data row0 col3" id="T_45de5_row0_col3"></td>
 </tr>
 <tr>
-<th class="row_heading level0 row1" id="T_b2cf7_level0_row1">1</th>
-<td class="data row1 col0" id="T_b2cf7_row1_col0"></td>
-<td class="data row1 col1" id="T_b2cf7_row1_col1">VICI</td>
-<td class="data row1 col2" id="T_b2cf7_row1_col2"></td>
-<td class="data row1 col3" id="T_b2cf7_row1_col3"></td>
+<th class="row_heading level0 row1" id="T_45de5_level0_row1">1</th>
+<td class="data row1 col0" id="T_45de5_row1_col0"></td>
+<td class="data row1 col1" id="T_45de5_row1_col1">VICI</td>
+<td class="data row1 col2" id="T_45de5_row1_col2"></td>
+<td class="data row1 col3" id="T_45de5_row1_col3"></td>
 </tr>
 <tr>
-<th class="row_heading level0 row2" id="T_b2cf7_level0_row2">2</th>
-<td class="data row2 col0" id="T_b2cf7_row2_col0"></td>
-<td class="data row2 col1" id="T_b2cf7_row2_col1">CTSH</td>
-<td class="data row2 col2" id="T_b2cf7_row2_col2"></td>
-<td class="data row2 col3" id="T_b2cf7_row2_col3"></td>
+<th class="row_heading level0 row2" id="T_45de5_level0_row2">2</th>
+<td class="data row2 col0" id="T_45de5_row2_col0"></td>
+<td class="data row2 col1" id="T_45de5_row2_col1">CTSH</td>
+<td class="data row2 col2" id="T_45de5_row2_col2"></td>
+<td class="data row2 col3" id="T_45de5_row2_col3"></td>
 </tr>
 <tr>
-<th class="row_heading level0 row3" id="T_b2cf7_level0_row3">3</th>
-<td class="data row3 col0" id="T_b2cf7_row3_col0"></td>
-<td class="data row3 col1" id="T_b2cf7_row3_col1">CVE</td>
-<td class="data row3 col2" id="T_b2cf7_row3_col2"></td>
-<td class="data row3 col3" id="T_b2cf7_row3_col3"></td>
+<th class="row_heading level0 row3" id="T_45de5_level0_row3">3</th>
+<td class="data row3 col0" id="T_45de5_row3_col0"></td>
+<td class="data row3 col1" id="T_45de5_row3_col1">CVE</td>
+<td class="data row3 col2" id="T_45de5_row3_col2"></td>
+<td class="data row3 col3" id="T_45de5_row3_col3"></td>
 </tr>
 </tbody>
 </table>
@@ -9285,7 +9687,7 @@ memory usage: 7.8+ KB
 <div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
 </div>
 <div class="jp-InputArea jp-Cell-inputArea">
-<div class="jp-InputPrompt jp-InputArea-prompt">In [26]:</div>
+<div class="jp-InputPrompt jp-InputArea-prompt">In [27]:</div>
 <div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
 <div class="cm-editor cm-s-jupyter">
 <div class="highlight hl-ipython3"><pre><span></span><span class="c1"># Check the data types of overlapping dataframe</span>
@@ -9302,17 +9704,17 @@ memory usage: 7.8+ KB
 <div class="jp-OutputArea-child">
 <div class="jp-OutputPrompt jp-OutputArea-prompt"></div>
 <div class="jp-RenderedText jp-OutputArea-output" data-mime-type="text/plain" tabindex="0">
-<pre>&lt;class 'pandas.core.frame.DataFrame'&gt;
+<pre>&lt;class 'pandas.DataFrame'&gt;
 RangeIndex: 4 entries, 0 to 3
 Data columns (total 4 columns):
  #   Column     Non-Null Count  Dtype         
 ---  ------     --------------  -----         
- 0   Exec Date  4 non-null      datetime64[ns]
- 1   Symbol     4 non-null      object        
+ 0   Exec Date  4 non-null      datetime64[us]
+ 1   Symbol     4 non-null      str           
  2   Qty        4 non-null      int64         
  3   Price      4 non-null      float64       
-dtypes: datetime64[ns](1), float64(1), int64(1), object(1)
-memory usage: 260.0+ bytes
+dtypes: datetime64[us](1), float64(1), int64(1), str(1)
+memory usage: 260.0 bytes
 </pre>
 </div>
 </div>
@@ -9323,7 +9725,7 @@ memory usage: 260.0+ bytes
 <div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
 </div>
 <div class="jp-InputArea jp-Cell-inputArea">
-<div class="jp-InputPrompt jp-InputArea-prompt">In [27]:</div>
+<div class="jp-InputPrompt jp-InputArea-prompt">In [28]:</div>
 <div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
 <div class="cm-editor cm-s-jupyter">
 <div class="highlight hl-ipython3"><pre><span></span><span class="c1"># Check the data types of 'Exec Time' column in df dataframe</span>
@@ -9338,9 +9740,9 @@ memory usage: 260.0+ bytes
 </div>
 <div class="jp-OutputArea jp-Cell-outputArea">
 <div class="jp-OutputArea-child jp-OutputArea-executeResult">
-<div class="jp-OutputPrompt jp-OutputArea-prompt">Out[27]:</div>
+<div class="jp-OutputPrompt jp-OutputArea-prompt">Out[28]:</div>
 <div class="jp-RenderedText jp-OutputArea-output jp-OutputArea-executeResult" data-mime-type="text/plain" tabindex="0">
-<pre>dtype('&lt;M8[ns]')</pre>
+<pre>dtype('&lt;M8[us]')</pre>
 </div>
 </div>
 </div>
@@ -9361,7 +9763,7 @@ memory usage: 260.0+ bytes
 <div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
 </div>
 <div class="jp-InputArea jp-Cell-inputArea">
-<div class="jp-InputPrompt jp-InputArea-prompt">In [28]:</div>
+<div class="jp-InputPrompt jp-InputArea-prompt">In [29]:</div>
 <div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
 <div class="cm-editor cm-s-jupyter">
 <div class="highlight hl-ipython3"><pre><span></span><span class="c1"># Convert data from 'Exec Time' to datetime64[ns] and extract the dates</span>
@@ -9379,7 +9781,7 @@ memory usage: 260.0+ bytes
 <div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
 </div>
 <div class="jp-InputArea jp-Cell-inputArea">
-<div class="jp-InputPrompt jp-InputArea-prompt">In [29]:</div>
+<div class="jp-InputPrompt jp-InputArea-prompt">In [30]:</div>
 <div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
 <div class="cm-editor cm-s-jupyter">
 <div class="highlight hl-ipython3"><pre><span></span><span class="n">filtered_trades</span><span class="o">.</span><span class="n">head</span><span class="p">()</span><span class="o">.</span><span class="n">style</span><span class="o">.</span><span class="n">format</span><span class="p">({</span><span class="s1">'Exec Time'</span><span class="p">:</span><span class="s2">""</span><span class="p">,</span> <span class="s1">'Price'</span><span class="p">:</span> <span class="s2">""</span><span class="p">,</span> <span class="s1">'Qty'</span><span class="p">:</span> <span class="s2">""</span><span class="p">})</span>
@@ -9393,67 +9795,67 @@ memory usage: 260.0+ bytes
 </div>
 <div class="jp-OutputArea jp-Cell-outputArea">
 <div class="jp-OutputArea-child jp-OutputArea-executeResult">
-<div class="jp-OutputPrompt jp-OutputArea-prompt">Out[29]:</div>
+<div class="jp-OutputPrompt jp-OutputArea-prompt">Out[30]:</div>
 <div class="jp-RenderedHTMLCommon jp-RenderedHTML jp-OutputArea-output jp-OutputArea-executeResult" data-mime-type="text/html" tabindex="0">
 <style type="text/css">
 </style>
-<table id="T_eeeb7">
+<table id="T_72eb0">
 <thead>
 <tr>
 <th class="blank level0"> </th>
-<th class="col_heading level0 col0" id="T_eeeb7_level0_col0">Exec Time</th>
-<th class="col_heading level0 col1" id="T_eeeb7_level0_col1">Side</th>
-<th class="col_heading level0 col2" id="T_eeeb7_level0_col2">Pos Effect</th>
-<th class="col_heading level0 col3" id="T_eeeb7_level0_col3">Symbol</th>
-<th class="col_heading level0 col4" id="T_eeeb7_level0_col4">Qty</th>
-<th class="col_heading level0 col5" id="T_eeeb7_level0_col5">Price</th>
+<th class="col_heading level0 col0" id="T_72eb0_level0_col0">Exec Time</th>
+<th class="col_heading level0 col1" id="T_72eb0_level0_col1">Side</th>
+<th class="col_heading level0 col2" id="T_72eb0_level0_col2">Pos Effect</th>
+<th class="col_heading level0 col3" id="T_72eb0_level0_col3">Symbol</th>
+<th class="col_heading level0 col4" id="T_72eb0_level0_col4">Qty</th>
+<th class="col_heading level0 col5" id="T_72eb0_level0_col5">Price</th>
 </tr>
 </thead>
 <tbody>
 <tr>
-<th class="row_heading level0 row0" id="T_eeeb7_level0_row0">0</th>
-<td class="data row0 col0" id="T_eeeb7_row0_col0"></td>
-<td class="data row0 col1" id="T_eeeb7_row0_col1">BUY</td>
-<td class="data row0 col2" id="T_eeeb7_row0_col2">TO OPEN</td>
-<td class="data row0 col3" id="T_eeeb7_row0_col3">YRD</td>
-<td class="data row0 col4" id="T_eeeb7_row0_col4"></td>
-<td class="data row0 col5" id="T_eeeb7_row0_col5"></td>
+<th class="row_heading level0 row0" id="T_72eb0_level0_row0">0</th>
+<td class="data row0 col0" id="T_72eb0_row0_col0"></td>
+<td class="data row0 col1" id="T_72eb0_row0_col1">BUY</td>
+<td class="data row0 col2" id="T_72eb0_row0_col2">TO OPEN</td>
+<td class="data row0 col3" id="T_72eb0_row0_col3">YRD</td>
+<td class="data row0 col4" id="T_72eb0_row0_col4"></td>
+<td class="data row0 col5" id="T_72eb0_row0_col5"></td>
 </tr>
 <tr>
-<th class="row_heading level0 row1" id="T_eeeb7_level0_row1">1</th>
-<td class="data row1 col0" id="T_eeeb7_row1_col0"></td>
-<td class="data row1 col1" id="T_eeeb7_row1_col1">BUY</td>
-<td class="data row1 col2" id="T_eeeb7_row1_col2">TO OPEN</td>
-<td class="data row1 col3" id="T_eeeb7_row1_col3">XYF</td>
-<td class="data row1 col4" id="T_eeeb7_row1_col4"></td>
-<td class="data row1 col5" id="T_eeeb7_row1_col5"></td>
+<th class="row_heading level0 row1" id="T_72eb0_level0_row1">1</th>
+<td class="data row1 col0" id="T_72eb0_row1_col0"></td>
+<td class="data row1 col1" id="T_72eb0_row1_col1">BUY</td>
+<td class="data row1 col2" id="T_72eb0_row1_col2">TO OPEN</td>
+<td class="data row1 col3" id="T_72eb0_row1_col3">XYF</td>
+<td class="data row1 col4" id="T_72eb0_row1_col4"></td>
+<td class="data row1 col5" id="T_72eb0_row1_col5"></td>
 </tr>
 <tr>
-<th class="row_heading level0 row2" id="T_eeeb7_level0_row2">2</th>
-<td class="data row2 col0" id="T_eeeb7_row2_col0"></td>
-<td class="data row2 col1" id="T_eeeb7_row2_col1">BUY</td>
-<td class="data row2 col2" id="T_eeeb7_row2_col2">TO OPEN</td>
-<td class="data row2 col3" id="T_eeeb7_row2_col3">XYF</td>
-<td class="data row2 col4" id="T_eeeb7_row2_col4"></td>
-<td class="data row2 col5" id="T_eeeb7_row2_col5"></td>
+<th class="row_heading level0 row2" id="T_72eb0_level0_row2">2</th>
+<td class="data row2 col0" id="T_72eb0_row2_col0"></td>
+<td class="data row2 col1" id="T_72eb0_row2_col1">BUY</td>
+<td class="data row2 col2" id="T_72eb0_row2_col2">TO OPEN</td>
+<td class="data row2 col3" id="T_72eb0_row2_col3">XYF</td>
+<td class="data row2 col4" id="T_72eb0_row2_col4"></td>
+<td class="data row2 col5" id="T_72eb0_row2_col5"></td>
 </tr>
 <tr>
-<th class="row_heading level0 row3" id="T_eeeb7_level0_row3">3</th>
-<td class="data row3 col0" id="T_eeeb7_row3_col0"></td>
-<td class="data row3 col1" id="T_eeeb7_row3_col1">BUY</td>
-<td class="data row3 col2" id="T_eeeb7_row3_col2">TO OPEN</td>
-<td class="data row3 col3" id="T_eeeb7_row3_col3">XYF</td>
-<td class="data row3 col4" id="T_eeeb7_row3_col4"></td>
-<td class="data row3 col5" id="T_eeeb7_row3_col5"></td>
+<th class="row_heading level0 row3" id="T_72eb0_level0_row3">3</th>
+<td class="data row3 col0" id="T_72eb0_row3_col0"></td>
+<td class="data row3 col1" id="T_72eb0_row3_col1">BUY</td>
+<td class="data row3 col2" id="T_72eb0_row3_col2">TO OPEN</td>
+<td class="data row3 col3" id="T_72eb0_row3_col3">XYF</td>
+<td class="data row3 col4" id="T_72eb0_row3_col4"></td>
+<td class="data row3 col5" id="T_72eb0_row3_col5"></td>
 </tr>
 <tr>
-<th class="row_heading level0 row4" id="T_eeeb7_level0_row4">4</th>
-<td class="data row4 col0" id="T_eeeb7_row4_col0"></td>
-<td class="data row4 col1" id="T_eeeb7_row4_col1">BUY</td>
-<td class="data row4 col2" id="T_eeeb7_row4_col2">TO OPEN</td>
-<td class="data row4 col3" id="T_eeeb7_row4_col3">CCRN</td>
-<td class="data row4 col4" id="T_eeeb7_row4_col4"></td>
-<td class="data row4 col5" id="T_eeeb7_row4_col5"></td>
+<th class="row_heading level0 row4" id="T_72eb0_level0_row4">4</th>
+<td class="data row4 col0" id="T_72eb0_row4_col0"></td>
+<td class="data row4 col1" id="T_72eb0_row4_col1">BUY</td>
+<td class="data row4 col2" id="T_72eb0_row4_col2">TO OPEN</td>
+<td class="data row4 col3" id="T_72eb0_row4_col3">CCRN</td>
+<td class="data row4 col4" id="T_72eb0_row4_col4"></td>
+<td class="data row4 col5" id="T_72eb0_row4_col5"></td>
 </tr>
 </tbody>
 </table>
@@ -9466,7 +9868,7 @@ memory usage: 260.0+ bytes
 <div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
 </div>
 <div class="jp-InputArea jp-Cell-inputArea">
-<div class="jp-InputPrompt jp-InputArea-prompt">In [30]:</div>
+<div class="jp-InputPrompt jp-InputArea-prompt">In [31]:</div>
 <div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
 <div class="cm-editor cm-s-jupyter">
 <div class="highlight hl-ipython3"><pre><span></span><span class="n">filtered_trades</span><span class="o">.</span><span class="n">info</span><span class="p">()</span>
@@ -9482,19 +9884,19 @@ memory usage: 260.0+ bytes
 <div class="jp-OutputArea-child">
 <div class="jp-OutputPrompt jp-OutputArea-prompt"></div>
 <div class="jp-RenderedText jp-OutputArea-output" data-mime-type="text/plain" tabindex="0">
-<pre>&lt;class 'pandas.core.frame.DataFrame'&gt;
-Index: 140 entries, 0 to 142
+<pre>&lt;class 'pandas.DataFrame'&gt;
+Index: 141 entries, 0 to 143
 Data columns (total 6 columns):
  #   Column      Non-Null Count  Dtype         
 ---  ------      --------------  -----         
- 0   Exec Time   140 non-null    datetime64[ns]
- 1   Side        140 non-null    object        
- 2   Pos Effect  140 non-null    object        
- 3   Symbol      140 non-null    object        
- 4   Qty         140 non-null    int64         
- 5   Price       140 non-null    float64       
-dtypes: datetime64[ns](1), float64(1), int64(1), object(3)
-memory usage: 7.7+ KB
+ 0   Exec Time   141 non-null    datetime64[us]
+ 1   Side        141 non-null    str           
+ 2   Pos Effect  141 non-null    str           
+ 3   Symbol      141 non-null    str           
+ 4   Qty         141 non-null    int64         
+ 5   Price       141 non-null    float64       
+dtypes: datetime64[us](1), float64(1), int64(1), str(3)
+memory usage: 7.7 KB
 </pre>
 </div>
 </div>
@@ -9505,7 +9907,7 @@ memory usage: 7.7+ KB
 <div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
 </div>
 <div class="jp-InputArea jp-Cell-inputArea">
-<div class="jp-InputPrompt jp-InputArea-prompt">In [31]:</div>
+<div class="jp-InputPrompt jp-InputArea-prompt">In [32]:</div>
 <div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
 <div class="cm-editor cm-s-jupyter">
 <div class="highlight hl-ipython3"><pre><span></span><span class="n">filtered_trades</span><span class="p">[</span><span class="s1">'Symbol'</span><span class="p">]</span><span class="o">.</span><span class="n">nunique</span><span class="p">()</span>
@@ -9519,7 +9921,7 @@ memory usage: 7.7+ KB
 </div>
 <div class="jp-OutputArea jp-Cell-outputArea">
 <div class="jp-OutputArea-child jp-OutputArea-executeResult">
-<div class="jp-OutputPrompt jp-OutputArea-prompt">Out[31]:</div>
+<div class="jp-OutputPrompt jp-OutputArea-prompt">Out[32]:</div>
 <div class="jp-RenderedText jp-OutputArea-output jp-OutputArea-executeResult" data-mime-type="text/plain" tabindex="0">
 <pre>65</pre>
 </div>
