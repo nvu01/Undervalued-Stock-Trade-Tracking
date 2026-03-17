@@ -3,6 +3,7 @@ import os
 import pandas as pd
 from io import StringIO
 
+
 # Get all account statements or position statements
 def get_files(folder):
     '''
@@ -57,6 +58,7 @@ def get_all_trades(filepath):
 
     return df
 
+
 # Retrieve and transform the current position data
 def get_current_pos(filepath):
     '''
@@ -64,6 +66,7 @@ def get_current_pos(filepath):
     Parameter is the filepath to the most current CSV file in "position_statement" folder.
     1. Load the content of the CSV file.
     2. Find and extract the table named "Undervalued"
+    3. Save the table as "current_pos.csv" in the parent folder
     Return the table as a dataframe
     '''
     with open(filepath) as f:
@@ -97,33 +100,45 @@ def get_current_pos(filepath):
 def update_changes(trades):
     '''
     Update changes in ticker symbol
-    1. Get the new changes from "Symbol Change.xlsx"
+    1. Get the new changes from "Trade History Change.xlsx"
     2. Remove records of old symbols
     3. Add new changes to the trade data
     '''
+
     # Import the Excel file that stores changes
-    ticker_change = pd.read_excel('Symbol Change.xlsx')
-    # Find new changes that are not yet updated in trades
-    replace_rows = ticker_change.loc[ticker_change['Old Symbol'].isin(trades['Symbol']), ['Exec Time', 'Side', 'Pos Effect', 'Symbol', 'Qty','Price']]
-    # Remove the records of old symbols
-    trades = trades[~trades['Symbol'].isin(ticker_change['Old Symbol'])]
+    changes = pd.read_excel('Trade History Changes.xlsx')
+    changes['Old_Exec Time'] = pd.to_datetime(changes['Exec Time'], format='mixed')
+    changes['Exec Time'] = pd.to_datetime(changes['Exec Time'], format='%m/%d/%y %H:%M:%S')
+
+    # Remove old records that need updates
+    update_cols = ['Exec Time', 'Side', 'Pos Effect', 'Symbol', 'Qty', 'Price']
+    old_cols = ['Old_Exec Time', 'Old_Side', 'Old_Pos Effect', 'Old_Symbol', 'Old_Qty', 'Old_Price']
+    data_to_remove = changes[old_cols]
+    matching_rows = pd.merge(trades, data_to_remove, how='left', left_on=update_cols, right_on=old_cols, indicator=True)
+    updated_trades = matching_rows[matching_rows['_merge'] == 'left_only'].drop(columns=old_cols).drop(columns='_merge')
+
+    # Find changes that are not yet updated in trades
+    update_cols = ['Exec Time', 'Side', 'Pos Effect', 'Symbol', 'Qty', 'Price']
+    updates = changes[update_cols]
+    merged = pd.merge(updates, updated_trades, how='left', on=update_cols, indicator=True)
+    new_rows = merged[merged['_merge'] == 'left_only'].drop(columns='_merge')
+
     # Add new updated records to trades
-    updated_trades = pd.concat([trades, replace_rows])
+    updated_trades = pd.concat([updated_trades, new_rows])
 
     return updated_trades
 
 # Use previous trades and position statement to get new trades
-def filter_new_trades(previous_trades, all_trades, pos_stmt_file):
+def filter_new_trades(previous_trades, all_new_trades, pos_stmt_file):
     '''
     Extract the undervalued stock trades from the all the new trades
     1. Extract buy trades for undervalued stocks based on current positions
     2. Extract closing trades for underavalued stocks based on previous trades
-    3. Update any change in symbol or trade data
     Return new undervalued trades
     '''
     # Split the new trades into buy and sell trades
-    buy_to_open = all_trades[(all_trades['Side'] == 'BUY') & (all_trades['Pos Effect'] == 'TO OPEN')]
-    sell_to_close = all_trades[(all_trades['Side'] == 'SELL') & (all_trades['Pos Effect'] == 'TO CLOSE')]
+    buy_to_open = all_new_trades[(all_new_trades['Side'] == 'BUY') & (all_new_trades['Pos Effect'] == 'TO OPEN')]
+    sell_to_close = all_new_trades[(all_new_trades['Side'] == 'SELL') & (all_new_trades['Pos Effect'] == 'TO CLOSE')]
 
     # List of current positions is used to filter buy trades
     current_position = get_current_pos(pos_stmt_file)
@@ -134,23 +149,24 @@ def filter_new_trades(previous_trades, all_trades, pos_stmt_file):
     undervalued_sell = sell_to_close[sell_to_close['Symbol'].isin(filter_stocks)]
 
     # Combine undervalued_buy and undervalued_sell
-    undervalued_trades = pd.concat([undervalued_buy, undervalued_sell])
+    new_undervalued_trades = pd.concat([undervalued_buy, undervalued_sell])
 
-    # Update any symbol changes
-    updated_undervalued_trades = update_changes(undervalued_trades)
+    # Convert "Exec Time" in 'new_undervalued_trades' to datetime64
+    new_undervalued_trades['Exec Time'] = pd.to_datetime(new_undervalued_trades['Exec Time'], format='%m/%d/%y %H:%M:%S')
 
-    # Convert "Exec Time" in updated_undervalued_trades before comparing it with previous_trades
-    updated_undervalued_trades['Exec Time'] = pd.to_datetime(updated_undervalued_trades['Exec Time'], format='%m/%d/%y %H:%M:%S')
+    # Update any corporate changes
+    updated_new_trades = update_changes(new_undervalued_trades)
+
     # Exclude trades already existing in previous_trades
     columns = ['Exec Time', 'Side', 'Pos Effect', 'Symbol', 'Qty', 'Price']
-    rows_to_add = pd.merge(updated_undervalued_trades, previous_trades, on=columns, how='left', indicator=True)
+    rows_to_add = pd.merge(updated_new_trades, previous_trades, on=columns, how='left', indicator=True)
     rows_to_add = rows_to_add[rows_to_add['_merge'] == 'left_only'].drop(columns='_merge')
 
     return rows_to_add
 
 def remove_overlapping_stocks(trades):
     '''
-    Filter out trades that belong to other portfolios but have the same ticker as an undervalued stock
+    Filter out other portfolios' trades for stocks that are also in the "Undervalued" portfolio
     '''
     # Filter out overlapping stocks
     overlapping = pd.read_excel('Overlapping Stocks.xlsx')
@@ -161,6 +177,7 @@ def remove_overlapping_stocks(trades):
     filtered_trades = merged[merged['_merge'] == 'left_only'].drop(columns=['_merge', 'Exec Date'])
 
     return filtered_trades
+
 
 # Process and update undervalued trades
 def main(year):
@@ -191,27 +208,28 @@ def main(year):
         previous_trades = pd.read_csv('undervalued_trades.csv')
         previous_trades['Exec Time'] = pd.to_datetime(previous_trades['Exec Time'], format='%Y-%m-%d %H:%M:%S')
 
+        updated_previous_trades = update_changes(previous_trades)
+
         for i in range(len(acc_files)):
             acc_filepath = acc_files[i]
             pos_filepath = pos_files[i]
 
-            all_trades = get_all_trades(acc_filepath)
-            new_trades = filter_new_trades(previous_trades, all_trades, pos_filepath)
+            all_new_trades = get_all_trades(acc_filepath)
+            new_trades = filter_new_trades(updated_previous_trades, all_new_trades, pos_filepath)
 
             # Update running DataFrame
-            previous_trades = pd.concat([previous_trades, new_trades], ignore_index=True)
+            updated_previous_trades = pd.concat([updated_previous_trades, new_trades], ignore_index=True)
 
             acc_file_name = os.path.basename(acc_filepath)
             pos_file_name = os.path.basename(pos_filepath)
             print(f'Files used: {acc_file_name}, {pos_file_name}')
 
-        filtered_trades = remove_overlapping_stocks(previous_trades)
+        filtered_trades = remove_overlapping_stocks(updated_previous_trades)
 
     # Save all trades to undervalued_trades.csv
     filtered_trades.to_csv('undervalued_trades.csv', index=False)
 
     print('Data update complete')
-
 
 if __name__ == "__main__":
     print('Enter the trading year: ')
