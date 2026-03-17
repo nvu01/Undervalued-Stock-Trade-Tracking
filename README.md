@@ -49,7 +49,7 @@ project/
 ├─ etl.py                                       # Main ETL script
 ├─ undervalued_trades.csv                       # Updated by etl.py
 ├─ Overlapping Stocks.xlsx                      # Filter trades present in other portfolios
-├─ Symbol Change.xlsx                           # Stores ticker changes and trade updates
+├─ Trade History Changes.xlsx                   # Stores trade updates due to corporate actions
 └─ Report.xlsm                                  # Imports undervalued_trades.csv to generate performance reports
 ```
 Unlike other later years, the year 2025 only contains one account statement and one position statement because:
@@ -85,7 +85,7 @@ There is no need to update `undervalued_trades.csv` monthly for 2025, since sell
 - `get_current_pos`: Processes the position statement, specifically extracting the "Undervalued" group, and returns the relevant positions.
 - `get_new_trades`: Processes the account statement to extract the "Account Trade History" table and returns all the new trades.
 - `filter_new_trades`: Filters the new trades to extract only undervalued stock trades.
-- `update_changes`: Update the new trades with any changes in symbol or trade data as recorded in `Symbol Change.xlsx`.
+- `update_changes`: Update the new trades with any changes in symbol or trade data as recorded in `Trade History Changes.xlsx`.
 - `remove_overlapping_stocks`: Excludes trades that belong to other portfolios but have the same ticker as an undervalued stock, based on `Overlapping Stocks.xlsx`.
 - `main`: Iterates through each file in a given year, applies all functions above, and updates `undervalued_trades.csv`.
 
@@ -95,7 +95,7 @@ There is no need to update `undervalued_trades.csv` monthly for 2025, since sell
 - The **first position statement** (`position_statement/2025/2025-12-143-PositionStatement.csv`) includes the "Undervalued" portfolio's holdings as of Dec 14th 2025. This file is used to extract the open positions for undervalued stocks. Data processing was done in `current pos.ipynb`.
 - The **Excel file** (`Overlapping Stocks.xlsx`) contains a list of trades which are in other portfolios but their tickers are also in the "Undervalued". 
 These trades are filtered out of the new trades. This file has to be updated before running `etl.py`.
-- Excel file (`Symbol Change.xlsx`) stores changes in ticker symbol and trade data due to rebranding, merger or acquisation. 
+- Excel file (`Trade History Changes.xlsx`) stores changes in ticker symbol and trade data due to rebranding, merger or acquisation. 
 This file has to be manually updated before running etl.py.
 
 ## Excel Reporting
