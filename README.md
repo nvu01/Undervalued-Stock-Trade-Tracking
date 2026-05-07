@@ -9,14 +9,18 @@ Always consult with a qualified financial advisor before making any investment d
 This project automates the process of tracking and analyzing undervalued stock trades using a Python ETL pipeline, combined with Power Query and Excel for real-time reporting. The workflow involves accessing the file system to retrieve account and position statements downloaded from Thinkorswim, extracting data from the source CSV files, processing it for undervalued stock trades, and generating an up-to-date portfolio analysis.
 
 ## Repository Contents
-To protect personal and financial information, the original notebooks, raw CSV files downloaded from TOS, and the outcome `undervalued_trades.csv` are not included in this repository. 
-Instead, you can find the HTML versions of the notebooks with some concealed confidential data and a masked version of `undervalued_trades.csv`.
+To protect personal and financial information, the following files are not included in this repository:
+- The original notebooks
+- Raw CSV files downloaded from TOS
+- Supporting .xlsx files (`Trade History Changes.xlsx`, `Overlapping Stocks.xlsx`)
+- The output `undervalued_trades.csv`
 
+Files included in this repository:
 - `etl.py`: Production ETL pipeline
-- `masked_undervalued_trades.csv`: Masked version of undervalued trades CSV file
+- `masked_undervalued_trades.csv`: Masked version of the output CSV file
 - `Report.xlsm`: A report of portfolio's performance, generated using `masked_undervalued_trades.csv`
 - `Terminologies & Formulas.pdf`: A document containing definitions and formulas for metrics used in the report
-- HTML exports of development notebooks: 
+- HTML exports of development notebooks with some concealed confidential data: 
     - `first trades.html`
     - `current pos.html`
     - `new trades.html`
@@ -27,7 +31,7 @@ Instead, you can find the HTML versions of the notebooks with some concealed con
 Account statements and position statements are downloaded and processed every month to update the `undervalued_trades.csv` file. 
 This file is then used to generate the Excel file `Report.xlsm` which shows the portfolio's performance.
 
-## Project Folder and File Structure
+## Original Project Folder and File Structure
 ```bash
 project/
 ├─ account_statement/
@@ -53,7 +57,7 @@ project/
 └─ Report.xlsm                                  # Imports undervalued_trades.csv to generate performance reports
 ```
 Unlike other later years, the year 2025 only contains one account statement and one position statement because:
-- This project started at the end of 2025, so monthly snapshots of positions were not available. 
+- This subproject started at the end of 2025, so monthly snapshots of positions were not available. 
 - All trades in 2025 were buy transactions, so there were no sell transactions to track. 
 
 ## ETL pipeline
