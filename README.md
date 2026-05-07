@@ -10,8 +10,8 @@ This project automates the process of tracking and analyzing undervalued stock t
 
 ## Repository Contents
 To protect personal and financial information, the following files are not included in this repository:
-- The original notebooks
-- Raw CSV files downloaded from TOS
+- The original development notebooks
+- Raw CSV files downloaded from TOS (position statement and account statement)
 - Supporting .xlsx files (`Trade History Changes.xlsx`, `Overlapping Stocks.xlsx`)
 - The output `undervalued_trades.csv`
 
@@ -19,7 +19,7 @@ Files included in this repository:
 - `etl.py`: Production ETL pipeline
 - `masked_undervalued_trades.csv`: Masked version of the output CSV file
 - `Report.xlsm`: A report of portfolio's performance, generated using `masked_undervalued_trades.csv`
-- `Terminologies & Formulas.pdf`: A document containing definitions and formulas for metrics used in the report
+- `Terminologies & Formulas.pdf`: A document containing definitions and formulas for metrics used in the Excel report
 - HTML exports of development notebooks with some concealed confidential data: 
     - `first trades.html`
     - `current pos.html`
