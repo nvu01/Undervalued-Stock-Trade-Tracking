@@ -107,8 +107,8 @@ def update_changes(trades):
     # Import the Excel file that stores changes
     changes = pd.read_excel('Trade History Changes.xlsx')
     # Make sure the 'Old_Exec Time' and 'Exec Time' columns are in datetime64 format
-    changes['Old_Exec Time'] = pd.to_datetime(changes['Exec Time'], format='%m/%d/%y %H:%M:%S')
-    changes['Exec Time'] = pd.to_datetime(changes['Exec Time'], format='%m/%d/%y %H:%M:%S')
+    changes['Old_Exec Time'] = pd.to_datetime(changes['Old_Exec Time'], format='%m/%d/%Y  %I:%M:%S %p')
+    changes['Exec Time'] = pd.to_datetime(changes['Exec Time'], format='%m/%d/%Y  %I:%M:%S %p')
 
     # Remove old records that need updates
     update_cols = ['Exec Time', 'Side', 'Pos Effect', 'Symbol', 'Qty', 'Price']
@@ -118,7 +118,6 @@ def update_changes(trades):
     updated_trades = matching_rows[matching_rows['_merge'] == 'left_only'].drop(columns=old_cols).drop(columns='_merge')
 
     # Find new updates that are not yet in the trade data
-    update_cols = ['Exec Time', 'Side', 'Pos Effect', 'Symbol', 'Qty', 'Price']
     updates = changes[update_cols]
     merged = pd.merge(updates, updated_trades, how='left', on=update_cols, indicator=True)
     new_rows = merged[merged['_merge'] == 'left_only'].drop(columns='_merge')
@@ -157,7 +156,7 @@ def filter_new_trades(previous_trades, all_new_trades, pos_stmt_file):
     # Update new trades with any changes to the trade history
     updated_new_trades = update_changes(new_undervalued_trades)
 
-    # Any trades or updates found in both new and previous datasets will not be added as new records.
+    # Any trades or updates found in both new and previous datasets will not be added as new records
     columns = ['Exec Time', 'Side', 'Pos Effect', 'Symbol', 'Qty', 'Price']
     rows_to_add = pd.merge(updated_new_trades, previous_trades, on=columns, how='left', indicator=True)
     rows_to_add = rows_to_add[rows_to_add['_merge'] == 'left_only'].drop(columns='_merge')
